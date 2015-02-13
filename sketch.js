@@ -6,22 +6,26 @@ function preload(){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(0);
+  background(0,0,0,255);
 
-  for (var i=0; i<3; i++) {
+//Generate players
+  for (var i=0; i<1; i++) {
 	  playerColor = color(random(255),random(255),random(255));
-	  players.push(new bike(i,5,3,6,playerColor));
+	  players.push(new bike(i,5,3,6,playerColor)); //playerID, spd, dir, bikeSz, color
   }
 }
 
 function draw() {
 
-  loadPixels();
+  color(255,100,4);
+  rect(width/2,height/2, 100,100);
+
+  loadPixels(); //once per frame for collision detection based on alpha.
 
 	for (var i=0; i<players.length; i++) {
 		players[i].move('w','s','a','d');
-		players[i].display(playerColor);
-		players[i].edgeDetection('horizLoop');
+		players[i].display();
+		players[i].edgeDetection('horizLoop'); // loop,destroy,horizLoop,vertLoop
 		players[i].collision();
 	}
 
@@ -84,29 +88,52 @@ function bike(playerID, spd, dir, bikeSz, color){
   this.collision = function(){
     fill(255,255,255);
 
-    // if(get(x,y) != color(0)){
-    //   console.log("dead")
-    // }
-
     //****** Need to figure out scalable offset
-    var szOffset = 2; //2 is about good for a bikesize of 6
+    var szOffset = 3; //2 is about good for a bikesize of 6
     //X
     if(this.direction == 3 || this.direction == 4){
       if(this.dirDetectX == 1){
-        rect(this.x+this.dirDetectX+szOffset,this.y,1,1);
+        //check for the color test
+        this.checkX = this.x+this.dirDetectX+szOffset ;
+        this.checkY = this.y ;
+        //visual proof
+        rect(this.checkX,this.checkY,1,1);
       } else if(this.dirDetectX == -1) {
-        rect(this.x+this.dirDetectX-szOffset,this.y,1,1);
+        //check for the color test 
+        this.checkX = this.x+this.dirDetectX-szOffset;
+        this.checkY = this.y;
+         //visual proof
+        rect(this.checkX,this.checkY,1,1);
       }
     }// close X
 
     //Y
     if(this.direction == 1 || this.direction == 2){
       if(this.dirDetectY == 1){
-        rect(this.x,this.y+this.dirDetectY+szOffset,1,1);
+        //check for the color test
+        this.checkX = this.x
+        this.checkY = this.y+this.dirDetectY+szOffset
+         //visual proof
+        rect(this.checkX,this.checkY,1,1);
       } else if(this.dirDetectY == -1){
-        rect(this.x,this.y+this.dirDetectY-szOffset,1,1);
+        //check for the color test
+        this.checkX = this.x ;
+        this.checkY = this.y+this.dirDetectY-szOffset ;
+         //visual proof
+        rect(this.checkX,this.checkY,1,1);
+
       }
     } //close Y
+
+
+
+    console.log(get(this.checkX,this.checkY));
+    //main collision check.
+
+     //  if( get(this.checkX,this.checkY) !== color(0,0,0,0) ){
+     //   console.log("dead");
+     // }
+
 
   }; //close collision
 
@@ -151,8 +178,8 @@ function bike(playerID, spd, dir, bikeSz, color){
   } //close edge detection 
 
   this.destroy = function(){
-    
-    console.log("destroy fired" + this.playerID);
+
+    console.log("destroy player #" + this.playerID);
 
   }
 
