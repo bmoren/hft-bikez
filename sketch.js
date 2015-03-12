@@ -17,7 +17,7 @@ function setup() {
 
 function draw() {
 
-  color(255,100,4);
+  fill(90,255,50,255);
   rect(width/2,height/2, 100,100);
 
   loadPixels(); //once per frame for collision detection based on alpha.
@@ -86,6 +86,7 @@ function bike(playerID, spd, dir, bikeSz, color){
   }; //close display
 
   this.collision = function(){
+    
     fill(255,255,255);
 
     //****** Need to figure out scalable offset
@@ -97,13 +98,13 @@ function bike(playerID, spd, dir, bikeSz, color){
         this.checkX = this.x+this.dirDetectX+szOffset ;
         this.checkY = this.y ;
         //visual proof
-        rect(this.checkX,this.checkY,1,1);
+        //rect(this.checkX,this.checkY,1,1);
       } else if(this.dirDetectX == -1) {
         //check for the color test 
         this.checkX = this.x+this.dirDetectX-szOffset;
         this.checkY = this.y;
          //visual proof
-        rect(this.checkX,this.checkY,1,1);
+       // rect(this.checkX,this.checkY,1,1);
       }
     }// close X
 
@@ -114,25 +115,24 @@ function bike(playerID, spd, dir, bikeSz, color){
         this.checkX = this.x
         this.checkY = this.y+this.dirDetectY+szOffset
          //visual proof
-        rect(this.checkX,this.checkY,1,1);
+        //rect(this.checkX,this.checkY,1,1);
       } else if(this.dirDetectY == -1){
         //check for the color test
         this.checkX = this.x ;
         this.checkY = this.y+this.dirDetectY-szOffset ;
          //visual proof
-        rect(this.checkX,this.checkY,1,1);
+        //rect(this.checkX,this.checkY,1,1);
 
       }
     } //close Y
 
-
-
-    console.log(get(this.checkX,this.checkY));
+    //console.log(get(this.checkX,this.checkY));
     //main collision check.
 
-     //  if( get(this.checkX,this.checkY) !== color(0,0,0,0) ){
-     //   console.log("dead");
-     // }
+      var check = get(this.checkX,this.checkY)
+      if( check[0] != 0 ){
+       this.destroy()
+     }
 
 
   }; //close collision
