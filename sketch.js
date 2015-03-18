@@ -1,13 +1,22 @@
 var drawFrame = 2; //lower is faster frameRate
 var frames = 0;
 var playerColor;
-var playerSize = 40;
+var playerLength = 40;
+var playerSize = 15;
+var numPlayers = 20;
 var players = [];
+
+// constants
+var _UP    = 1;
+var _DOWN  = 2;
+var _LEFT  = 3;
+var _RIGHT = 4;
+
 function preload(){
   destroySound = loadSound('boom.mp3');
   // @timgormly freesound.org
   music = loadSound('bkg.mp3');
-
+  gameOverSound = loadSound('gameover.mp3');
 
 }
 
@@ -24,23 +33,54 @@ function setup() {
   background(0);
   // frameRate(10);
 
-  music.play();
-  music.loop();
+  initGame();
 
-  
+}
 
-//Generate players
-  for (var i=0; i<2; i++) {
-    playerSize = round(random(5,20));
+function initGame(){
+
+  players = []; // reset players array
+  //Generate players
+  for (var i=0; i<numPlayers; i++) {
+    // playerSize = round(random(2,40));
     playerColor = color(random(255),random(255),random(255));
-    players.push(new bike(i,3,playerSize,playerColor, 200)); //playerID,  dir, bikeSz, color
+    players.push(new bike(i, _LEFT, playerSize, playerColor, playerLength)); //playerID, dir, bikeSz, color, num segments
      // players[i].setControls('w','s','a','d');
   }
   players[0].setControls('w','s','a','d');
-  players[1].setControls('i','k','j','l');  
-}
+  players[1].setControls('i','k','j','l');
+
+  // player1 is hot pink human 
+  players[0].ai = false;
+  players[0].color = color(255,0,255);
+
+  // player2 is white human 
+  players[1].ai = false;
+  players[1].color = color(255,255,255);
+
+  console.log('Game starts in 5 seconds...');
+  loop();
+  noLoop();
+  setTimeout(function(){
+    loop();
+    music.play();
+    music.loop();
+  }, 5000);
+
+};
+
+function gameOver(){
+  var alive = [];
+  for(var i=0; i<players.length; i++){
+    if (players[i] != null) alive.push(players[i]);
+  }
+  return (alive.length > 1) ? false : true;
+};
 
 function draw() {
+
+  if (gameOver()) initGame();
+
   frames++;
 
   for(var i=0; i<players.length; i++){
@@ -48,7 +88,6 @@ function draw() {
     players[i].setDirection();
     players[i].setDirection();
   }
-
 
   if (frames % drawFrame != 0) return;
   background(0);
@@ -63,17 +102,50 @@ function draw() {
 
   }
 
+  if (gameOver()) {
+    noLoop();
+    music.stop();
+    gameOverSound.play();
+    setTimeout(function(){
+      loop();
+    }, 3000);
+  }
+
 }
 
-function bike(playerID,  dir, bikeSz, color, len){
+function bike(playerID, dir, bikeSz, color, len){
  
  	this.color = color ;
-	this.x = round(random(width));
-	this.y = round(random(height)); //use whole numbers so getting values from the pixel array later is easier!
-	this.bikeSize = bikeSz;
-	this.direction = dir ;
+	
+  var yOffset = (height / numPlayers) * 2;
+
+  // set initial x/y coords of bike
+  this.x = (width - (bikeSz*6)) - round(random(0, bikeSz*4));
+  this.x = this.x - (playerID * bikeSz);
+  this.y = (playerID * yOffset) + (height / numPlayers);
+
+  if (playerID >= numPlayers/2){
+    var nf = numPlayers/2;
+    this.x = bikeSz*2 + round(random(0,bikeSz*5));
+    this.x = this.x + ((playerID-nf) * bikeSz);
+    this.y = (playerID-nf) * yOffset;
+    this.y += bikeSz*2;
+    this.direction = _RIGHT;
+  }
+
+  this.x = round(this.x);
+  this.y = round(this.y);
+
+  // - or, set random x/y coords
+  // this.x = round(random(width));
+  // this.y = round(random(height));
+
+  this.bikeSize = bikeSz;
+  this.direction = dir ;
   this.playerID = playerID;
   this.len = len ;
+  this.ai = true;
+
 
 
   this.segment = [  ] ; //array of arrays!
@@ -90,37 +162,96 @@ function bike(playerID,  dir, bikeSz, color, len){
     this.control.right = right;
   };
 
+  this.moveAI = function(){
+    if (!this.ai) return; // i'm human, i swear...
+    var dir = this.direction;
+    var next = round(random(1,4));
+
+    // i'll move when I want to
+    var entropy = round(random(0, 20));
+    if (entropy == 5) this.direction = next;
+    
+    // try to avoid the top
+    if (this.direction == _UP && (this.y-this.bikeSize) <= this.bikeSize*2){
+      this.direction = round(random(3,4));
+      return;
+    }
+    // try to avoid the bottom
+    if (this.direction == _DOWN && (this.y+this.bikeSize) >= height-(this.bikeSize*2)){
+      this.direction = round(random(3,4));
+      return;
+    }
+    // try to avoid hitting myself and others?
+    var attempt = 20;
+    while( this.hitTestAI()){
+      attempt--;
+      if (attempt < 0) break;
+      this.direction = round(random(1,4));
+    }
+
+  };
+
+  this.hitTestAI = function(){
+    var o = this.move(true);
+    var hit = false;
+    theLaw:
+    for(var j=0; j<players.length; j++){
+      var player = players[j];
+      if (player == null) continue;
+      var seg = player.segment;
+      for(var i=1; i<seg.length; i++){
+        var s = seg[i];
+        if ( hitTest(o.x, o.y, this.bikeSize, s[0],s[1],this.bikeSize) ){
+          hit = true;
+          break theLaw;
+        }
+      }
+    }
+    return hit;
+  };
+
   this.setDirection = function(){
-    if (keyIsPressed === true){ // determine direction //reimplement this using HFT for the controller
-      if (key === this.control.up){
-        this.direction = 1 ;
+    if (keyIsPressed === true || this.ai){ // determine direction //reimplement this using HFT for the controller
+
+      // randomly choose direction, if we are an AI
+      this.moveAI();
+
+      if (key === this.control.up && this.direction != _DOWN){
+        this.direction = _UP ;
       }
-      if (key === this.control.down){
-        this.direction = 2 ;
+      if (key === this.control.down && this.direction != _UP){
+        this.direction = _DOWN ;
       }
-      if (key === this.control.left){
-        this.direction = 3 ;
+      if (key === this.control.left && this.direction != _RIGHT){
+        this.direction = _LEFT ;
       }
-      if (key === this.control.right){
-        this.direction = 4 ;
+      if (key === this.control.right && this.direction != _LEFT){
+        this.direction = _RIGHT ;
       }
     } //close keyIsPressed
   }
 
-  this.move = function() {
+  this.move = function(hTest) {
+    var x = this.x;
+    var y = this.y;
 
-    if (this.direction === 1){ //up
-  		this.y -= this.bikeSize ; 
+    if (this.direction === _UP){ //up
+  		y -= this.bikeSize ; 
   	}
-  	if (this.direction === 2){ //down
-  		this.y += this.bikeSize ; 
+  	if (this.direction === _DOWN){ //down
+  		y += this.bikeSize ; 
   	}
-  	if (this.direction === 3){ //left
-  		this.x -= this.bikeSize ; 
+  	if (this.direction === _LEFT){ //left
+  		x -= this.bikeSize ; 
   	}
-  	if (this.direction === 4){ //right
-  		this.x += this.bikeSize ; 
+  	if (this.direction === _RIGHT){ //right
+  		x += this.bikeSize ; 
   	}
+    // return results instead of setting them, for hit testing stuff
+    if (hTest) return {x:x, y:y};
+
+    this.x = x;
+    this.y = y;
 
   };// close move class
 
@@ -188,7 +319,7 @@ function bike(playerID,  dir, bikeSz, color, len){
   			this.x = 0; //loop to left side
   		}
   		if (mode === 'destroy' || mode === 'vertLoop'){
-  			this.destroy();
+  			return this.destroy();
   		}
   	} 
 
@@ -197,7 +328,7 @@ function bike(playerID,  dir, bikeSz, color, len){
   			this.x = width; //loop to right side
   		}
   		if (mode === 'destroy' || mode === 'vertLoop'){
-  			this.destroy();
+  			return this.destroy();
   		}
 	}
 
@@ -206,7 +337,7 @@ function bike(playerID,  dir, bikeSz, color, len){
   			this.y = 0; //loop to top
   		}
   		if (mode === 'destroy' || mode === 'horizLoop'){
-        this.destroy();
+        return this.destroy();
   		}
   	}
 
@@ -215,19 +346,19 @@ function bike(playerID,  dir, bikeSz, color, len){
   			this.y = height; //loop to bottom
   		}
   		if (mode === 'destroy' || mode === 'horizLoop'){
-  			this.destroy();
+  			return this.destroy();
   		}
   	}
-  } //close edge detection 
+  }; //close edgeDetection
+
 
   this.destroy = function(){
 
     var id = this.playerID;
-    console.log('player', id);
     players[id] = null;
     destroySound.play();
 
-  }
+  };
 
 
 } // close Bike class/object
