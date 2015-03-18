@@ -1,37 +1,60 @@
+var drawFrame = 5; //lower is faster frameRate
+var frames = 0;
 var playerColor;
+var playerSize = 40;
 var players = [];
 function preload(){
 
 }
 
+function _collide(x, xW, y, yW,  sX, sXW, sY, sYW) {
+  return sXW > x && sYW > y && xW > sX && yW > sY;
+}
+
+function hitTest(x,y,w, sX,sY,sW){
+  return _collide(x, x+w, y, y+w,  sX, sX+sW, sY, sY+sW);
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(0,0,0,255);
+  background(0);
+  // frameRate(10);
 
 //Generate players
-  for (var i=0; i<1; i++) {
-	  playerColor = color(random(255),random(255),random(255));
-	  players.push(new bike(i,5,3,6,playerColor)); //playerID, spd, dir, bikeSz, color
+  for (var i=0; i<5; i++) {
+    playerColor = color(random(255),random(255),random(255));
+    players.push(new bike(i,5,3,playerSize,playerColor, 20)); //playerID, spd, dir, bikeSz, color
+     // players[i].setControls('w','s','a','d');
   }
+  players[0].setControls('w','s','a','d');
+  players[1].setControls('i','k','j','l');  
 }
 
 function draw() {
+  frames++;
 
-  fill(90,255,50,255);
-  rect(width/2,height/2, 100,100);
+  for(var i=0; i<players.length; i++){
+    if (players[i] == null) continue;
+    players[i].setDirection();
+    players[i].setDirection();
+  }
 
-  loadPixels(); //once per frame for collision detection based on alpha.
+
+  if (frames % drawFrame != 0) return;
+  background(0);
 
 	for (var i=0; i<players.length; i++) {
-		players[i].move('w','s','a','d');
+    if (players[i] == null) continue;
+    players[i].move()
 		players[i].display();
 		players[i].edgeDetection('horizLoop'); // loop,destroy,horizLoop,vertLoop
 		players[i].collision();
-	}
+
+  }
 
 }
 
-function bike(playerID, spd, dir, bikeSz, color){
+function bike(playerID, spd, dir, bikeSz, color, len){
  
  	this.color = color ;
 	this.x = round(random(width));
@@ -40,99 +63,107 @@ function bike(playerID, spd, dir, bikeSz, color){
 	this.speed = spd;
 	this.direction = dir ;
   this.playerID = playerID;
-  
+  this.len = len ;
 
-  this.move = function(up, down, left, right) {
 
-	if (keyIsPressed === true){ // determine direction //reimplement this using HFT for the controller
-    if (key === up){
-      this.direction = 1 ;
-    }
-    if (key === down){
-      this.direction = 2 ;
-    }
-    if (key === left){
-      this.direction = 3 ;
-    }
-    if (key ===right){
-      this.direction = 4 ;
-    }
-  } //close keyIsPressed
+  this.segment = [  ] ; //array of arrays!
+  for(i=0; i < this.len; i++){
+    this.segment[i] = [this.x+(i*this.bikeSize), this.y];
+  }
+
+  this.control = {};
+
+  this.setControls = function(up, down, left, right){
+    this.control.up = up;
+    this.control.down = down;
+    this.control.left = left;
+    this.control.right = right;
+  };
+
+  this.setDirection = function(){
+    if (keyIsPressed === true){ // determine direction //reimplement this using HFT for the controller
+      if (key === this.control.up){
+        this.direction = 1 ;
+      }
+      if (key === this.control.down){
+        this.direction = 2 ;
+      }
+      if (key === this.control.left){
+        this.direction = 3 ;
+      }
+      if (key === this.control.right){
+        this.direction = 4 ;
+      }
+    } //close keyIsPressed
+  }
+
+  this.move = function() {
 
     if (this.direction === 1){ //up
-  		this.y -= this.speed ; 
-      this.dirDetectY = -1; // -1Y = up
+  		this.y -= this.bikeSize ; 
   	}
   	if (this.direction === 2){ //down
-  		this.y += this.speed ; 
-      this.dirDetectY = 1; // +1Y = down
+  		this.y += this.bikeSize ; 
   	}
   	if (this.direction === 3){ //left
-  		this.x -= this.speed ; 
-      this.dirDetectX = -1; //-1X = left
+  		this.x -= this.bikeSize ; 
   	}
   	if (this.direction === 4){ //right
-  		this.x += this.speed ; 
-      this.dirDetectX = 1; //+1X = right
+  		this.x += this.bikeSize ; 
   	}
 
   };// close move class
 
   this.display = function() {
-  	rectMode(CENTER);
+  	//rectMode(CENTER);
   	noStroke();
+    // stroke(255);
   	fill(this.color);
-    rect(this.x, this.y, this.bikeSize, this.bikeSize);
+
+    // draw segments (but not the head)
+    for (var i = this.len-1; i > 0; i--) {
+
+      this.segment[i][0] = Number(this.segment[i-1][0]);
+      this.segment[i][1] = Number(this.segment[i-1][1]);
+
+      rect(this.segment[i][0], this.segment[i][1], this.bikeSize, this.bikeSize);
+     
+    }
+
+    fill(255,0,0);
+    // draw the head
+    this.segment[0][0] = this.x;
+    this.segment[0][1] = this.y;
+    rect(this.segment[0][0], this.segment[0][1], this.bikeSize, this.bikeSize);
+
   }; //close display
 
   this.collision = function(){
-    
-    fill(255,255,255);
+    var x = this.segment[0][0];
+    var y = this.segment[0][1];
+    var w = this.bikeSize;
+    var id = this.playerID;
 
-    //****** Need to figure out scalable offset
-    var szOffset = 3; //2 is about good for a bikesize of 6
-    //X
-    if(this.direction == 3 || this.direction == 4){
-      if(this.dirDetectX == 1){
-        //check for the color test
-        this.checkX = this.x+this.dirDetectX+szOffset ;
-        this.checkY = this.y ;
-        //visual proof
-        //rect(this.checkX,this.checkY,1,1);
-      } else if(this.dirDetectX == -1) {
-        //check for the color test 
-        this.checkX = this.x+this.dirDetectX-szOffset;
-        this.checkY = this.y;
-         //visual proof
-       // rect(this.checkX,this.checkY,1,1);
+    // loop through all players
+    dance:
+    for(var i=0; i<players.length; i++){
+      if (players[i] == null) continue;
+      var player = players[i];
+      // don't hit your own head
+      for(var j=0; j < player.segment.length; j++){
+      // loop through player segments
+      if (player.playerID == id && j == 0) continue;
+        var seg = player.segment[j];
+        var sX = seg[0];
+        var sY = seg[1];
+        var sW = player.bikeSize;
+        if ( hitTest(x,y,w, sX,sY,sW) ){
+          this.destroy();
+          break dance;
+        }
+        
       }
-    }// close X
-
-    //Y
-    if(this.direction == 1 || this.direction == 2){
-      if(this.dirDetectY == 1){
-        //check for the color test
-        this.checkX = this.x
-        this.checkY = this.y+this.dirDetectY+szOffset
-         //visual proof
-        //rect(this.checkX,this.checkY,1,1);
-      } else if(this.dirDetectY == -1){
-        //check for the color test
-        this.checkX = this.x ;
-        this.checkY = this.y+this.dirDetectY-szOffset ;
-         //visual proof
-        //rect(this.checkX,this.checkY,1,1);
-
-      }
-    } //close Y
-
-    //console.log(get(this.checkX,this.checkY));
-    //main collision check.
-
-      var check = get(this.checkX,this.checkY)
-      if( check[0] != 0 ){
-       this.destroy()
-     }
+    }
 
 
   }; //close collision
@@ -179,11 +210,17 @@ function bike(playerID, spd, dir, bikeSz, color){
 
   this.destroy = function(){
 
-    console.log("destroy player #" + this.playerID);
+    var id = this.playerID;
+    console.log('player', id);
+    players[id] = null;
 
   }
 
 
 } // close Bike
+
+
+
+
 
 
