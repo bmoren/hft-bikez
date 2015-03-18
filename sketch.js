@@ -1,9 +1,11 @@
-var drawFrame = 5; //lower is faster frameRate
+var drawFrame = 2; //lower is faster frameRate
 var frames = 0;
 var playerColor;
 var playerSize = 40;
 var players = [];
 function preload(){
+  destroySound = loadSound('boom.mp3');
+  music = loadSound('bkg.mp3');
 
 }
 
@@ -20,10 +22,16 @@ function setup() {
   background(0);
   // frameRate(10);
 
+  music.play();
+  music.loop();
+
+  
+
 //Generate players
-  for (var i=0; i<5; i++) {
+  for (var i=0; i<2; i++) {
+    playerSize = round(random(5,20));
     playerColor = color(random(255),random(255),random(255));
-    players.push(new bike(i,5,3,playerSize,playerColor, 20)); //playerID, spd, dir, bikeSz, color
+    players.push(new bike(i,15,3,playerSize,playerColor, 200)); //playerID, spd, dir, bikeSz, color
      // players[i].setControls('w','s','a','d');
   }
   players[0].setControls('w','s','a','d');
@@ -48,6 +56,7 @@ function draw() {
     players[i].move()
 		players[i].display();
 		players[i].edgeDetection('horizLoop'); // loop,destroy,horizLoop,vertLoop
+    if (players[i] == null) continue;
 		players[i].collision();
 
   }
@@ -171,6 +180,8 @@ function bike(playerID, spd, dir, bikeSz, color, len){
   this.edgeDetection = function(mode){ // enable edge detection for top,right,bottom,left
   	//modes: loop, destroy, horizLoop, vertLoop
 
+    //if( this == null) return;
+
   	if (this.x > width){ // off the right side
   		if (mode === 'loop' || mode === 'horizLoop'){
   			this.x = 0; //loop to left side
@@ -213,6 +224,7 @@ function bike(playerID, spd, dir, bikeSz, color, len){
     var id = this.playerID;
     console.log('player', id);
     players[id] = null;
+    destroySound.play();
 
   }
 
