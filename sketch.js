@@ -5,7 +5,9 @@ var playerSize = 40;
 var players = [];
 function preload(){
   destroySound = loadSound('boom.mp3');
+  // @timgormly freesound.org
   music = loadSound('bkg.mp3');
+
 
 }
 
@@ -31,7 +33,7 @@ function setup() {
   for (var i=0; i<2; i++) {
     playerSize = round(random(5,20));
     playerColor = color(random(255),random(255),random(255));
-    players.push(new bike(i,15,3,playerSize,playerColor, 200)); //playerID, spd, dir, bikeSz, color
+    players.push(new bike(i,3,playerSize,playerColor, 200)); //playerID,  dir, bikeSz, color
      // players[i].setControls('w','s','a','d');
   }
   players[0].setControls('w','s','a','d');
@@ -63,13 +65,12 @@ function draw() {
 
 }
 
-function bike(playerID, spd, dir, bikeSz, color, len){
+function bike(playerID,  dir, bikeSz, color, len){
  
  	this.color = color ;
 	this.x = round(random(width));
 	this.y = round(random(height)); //use whole numbers so getting values from the pixel array later is easier!
 	this.bikeSize = bikeSz;
-	this.speed = spd;
 	this.direction = dir ;
   this.playerID = playerID;
   this.len = len ;
@@ -229,7 +230,7 @@ function bike(playerID, spd, dir, bikeSz, color, len){
   }
 
 
-} // close Bike
+} // close Bike class/object
 
 
 
