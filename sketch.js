@@ -2,7 +2,7 @@ var drawFrame = 2; //lower is faster frameRate
 var frames = 0;
 var playerColor;
 var playerLength = 40;
-var playerSize = 15;
+var playerSize = 25;
 var numPlayers = 20;
 var players = [];
 
@@ -51,11 +51,11 @@ function initGame(){
   players[1].setControls('i','k','j','l');
 
   // player1 is hot pink human 
-  players[0].ai = false;
+  players[0].ai = true;
   players[0].color = color(255,0,255);
 
   // player2 is white human 
-  players[1].ai = false;
+  players[1].ai = true;
   players[1].color = color(255,255,255);
 
   console.log('Game starts in 5 seconds...');
@@ -168,7 +168,7 @@ function bike(playerID, dir, bikeSz, color, len){
     var next = round(random(1,4));
 
     // i'll move when I want to
-    var entropy = round(random(0, 20));
+    var entropy = round(random(0, 80));
     if (entropy == 5) this.direction = next;
     
     // try to avoid the top
@@ -186,7 +186,10 @@ function bike(playerID, dir, bikeSz, color, len){
     while( this.hitTestAI()){
       attempt--;
       if (attempt < 0) break;
-      this.direction = round(random(1,4));
+      var d = this.direction;
+      if (d == _UP || d == _DOWN) n = round(random(3,4));
+      if (d == _LEFT || d == _RIGHT) n = round(random(1,2));
+      this.direction = n;
     }
 
   };
