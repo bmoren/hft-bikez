@@ -1,4 +1,3 @@
-
 /////////////////////
 /////GAME OPTIONS////
 /////////////////////
@@ -70,7 +69,9 @@ function initGame(){
 
   // player2 is white human 
   //aplayers[1].ai = false;
-  players[1].color = color(255,255,255);
+  players[0].ai = true;
+  players[0].color = color(255,0,255);
+
 
   console.log('Game starts in 5 seconds...');
   loop();
@@ -214,10 +215,6 @@ function bike(playerID, dir, bikeSz, color, len){
     if (!this.ai) return; // i'm human, i swear...
     var dir = this.direction;
     var next = round(random(1,4));
-
-    // i'll move when I want to
-    var entropy = round(random(0, 20));
-    if (entropy == 5) this.direction = next;
     
     // try to avoid the top
     if (this.direction == _UP && (this.y-this.bikeSize) <= this.bikeSize*2){
@@ -229,8 +226,13 @@ function bike(playerID, dir, bikeSz, color, len){
       this.direction = round(random(3,4));
       return;
     }
+
+    // i'll move when I want to
+    var entropy = round(random(0, 75));
+    if (entropy == 5) this.direction = next;
+
     // try to avoid hitting myself and others?
-    var attempt = 20;
+    var attempt = 30;
     while( this.hitTestAI()){
       attempt--;
       if (attempt < 0) break;
@@ -242,11 +244,13 @@ function bike(playerID, dir, bikeSz, color, len){
   this.hitTestAI = function(){
     var o = this.move(true);
     var hit = false;
+    var id = this.playerID;
     theLaw:
     for(var j=0; j<players.length; j++){
       var player = players[j];
       if (player == null) continue;
       var seg = player.segment;
+      // loop through player segments
       for(var i=1; i<seg.length; i++){
         var s = seg[i];
         if ( hitTest(o.x, o.y, this.bikeSize, s[0],s[1],this.bikeSize) ){
@@ -340,8 +344,8 @@ function bike(playerID, dir, bikeSz, color, len){
       var player = players[i];
       // don't hit your own head
       for(var j=0; j < player.segment.length; j++){
-      // loop through player segments
-      if (player.playerID == id && j == 0) continue;
+        // loop through player segments
+        if (player.playerID == id && j < 2) continue;
         var seg = player.segment[j];
         var sX = seg[0];
         var sY = seg[1];
