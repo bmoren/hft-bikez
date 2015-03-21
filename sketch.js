@@ -1,20 +1,32 @@
-var drawFrame = 2; //lower is faster frameRate
-var frames = 0;
-var playerColor;
-var playerLength = 40;
-var playerSize = 15;
-var numPlayers = 20;
-var players = [];
 
-// constants
+/////////////////////
+/////GAME OPTIONS////
+/////////////////////
+//PLAYERS
+var numPlayers = 4;     //how many players
+var playerLength = 30;  //length of the players, length also effects speed
+var playerSize = 6;     //how big are the players
+var drawFrame = 2;      //speed to render the players, lower is faster 
+//POWERUPS
+var drawPowerup = 60;   //how often to refresh the powerups, lower is faster
+var numPU = 4;        //how many powerups to display at any one time?
+var powerupMode = true; //turn powerups on/off completely
+//BRICKS
+var brickMode = true;   //turn bricks on/off completely
+var numBricks = 20    //how many bricks for players to hit/avoid?
+
+//Constants
 var _UP    = 1;
 var _DOWN  = 2;
 var _LEFT  = 3;
 var _RIGHT = 4;
+var frames = 0;
+var playerColor;
+var players = [];
+var powerups = [];
 
 function preload(){
-  destroySound = loadSound('boom.mp3');
-  // @timgormly freesound.org
+  destroySound = loadSound('boom.mp3');  // @timgormly freesound.org
   music = loadSound('bkg.mp3');
   gameOverSound = loadSound('gameover.mp3');
 
@@ -31,19 +43,21 @@ function hitTest(x,y,w, sX,sY,sW){
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0);
-  // frameRate(10);
 
   initGame();
 
-}
+} //close setup
 
 function initGame(){
 
   players = []; // reset players array
+  powerups = [];
+  background(0);
   //Generate players
   for (var i=0; i<numPlayers; i++) {
     // playerSize = round(random(2,40));
     playerColor = color(random(255),random(255),random(255));
+    //playerSize = random(5,30);
     players.push(new bike(i, _LEFT, playerSize, playerColor, playerLength)); //playerID, dir, bikeSz, color, num segments
      // players[i].setControls('w','s','a','d');
   }
@@ -51,11 +65,11 @@ function initGame(){
   players[1].setControls('i','k','j','l');
 
   // player1 is hot pink human 
-  players[0].ai = false;
+  //players[0].ai = false;
   players[0].color = color(255,0,255);
 
   // player2 is white human 
-  players[1].ai = false;
+  //aplayers[1].ai = false;
   players[1].color = color(255,255,255);
 
   console.log('Game starts in 5 seconds...');
@@ -67,15 +81,24 @@ function initGame(){
     music.loop();
   }, 5000);
 
-};
+}; // close initGame
 
 function gameOver(){
   var alive = [];
   for(var i=0; i<players.length; i++){
     if (players[i] != null) alive.push(players[i]);
   }
+  //console.log(alive);
+
+  //look at the last player standing and get player ID for a winner popup and set background color to thier color.
+  // if(alive.length < 1){
+  //   console.log(alive[0].color);
+  // }
+
   return (alive.length > 1) ? false : true;
-};
+
+
+}; //close gameOver
 
 function draw() {
 
@@ -83,12 +106,24 @@ function draw() {
 
   frames++;
 
+  //handle game over
+  if (gameOver()) {
+    noLoop();
+    music.stop();
+    gameOverSound.play();
+    setTimeout(function(){
+      loop();
+    }, 3000);
+  }
+
+  //handle movement at the normal framerate
   for(var i=0; i<players.length; i++){
     if (players[i] == null) continue;
     players[i].setDirection();
     players[i].setDirection();
   }
 
+  //render bikes to screen
   if (frames % drawFrame != 0) return;
   background(0);
 
@@ -102,20 +137,41 @@ function draw() {
 
   }
 
-  if (gameOver()) {
-    noLoop();
-    music.stop();
-    gameOverSound.play();
-    setTimeout(function(){
-      loop();
-    }, 3000);
+  //render powerups to screen
+  if(powerupMode == true){
+    for (var i=0;i<powerups.length;i++){
+      powerups[i].display();
+    }
   }
 
-}
+  //write powerups to array!
+  if(powerupMode == true){
+    if(frames % drawPowerup != 0) return;            
+      // var poweruplist = [ sizePU,invinciblePU,freezePU ]; //add powerup fuctions to this list to call a random one every so often
+      // var choosePU = floor(random(poweruplist.length));
+      // powerups.push(new poweruplist[choosePU]);
+      var poweruplist = [ 'size','invincible','freeze' ]; //powerup types defined in the powerUp function below
+      var choosePU = floor(random(poweruplist.length));
+      powerups.push(new powerUp(poweruplist[choosePU]));
+      //console.log(powerups);
+      //trim back to the total allowable amount of powerups
+      if(powerups.length >= numPU+1){
+        powerups.shift();
+        //powerups.pop();
+      }
+  }
+
+} // close Draw
+
 
 function bike(playerID, dir, bikeSz, color, len){
  
  	this.color = color ;
+  this.bikeSize = bikeSz;
+  this.direction = dir ;
+  this.playerID = playerID;
+  this.len = len ;
+  this.ai = true;
 	
   var yOffset = (height / numPlayers) * 2;
 
@@ -140,15 +196,7 @@ function bike(playerID, dir, bikeSz, color, len){
   // this.x = round(random(width));
   // this.y = round(random(height));
 
-  this.bikeSize = bikeSz;
-  this.direction = dir ;
-  this.playerID = playerID;
-  this.len = len ;
-  this.ai = true;
-
-
-
-  this.segment = [  ] ; //array of arrays!
+  this.segment = [  ] ; //keep track of each segment, how long is the bike?
   for(i=0; i < this.len; i++){
     this.segment[i] = [this.x+(i*this.bikeSize), this.y];
   }
@@ -302,21 +350,17 @@ function bike(playerID, dir, bikeSz, color, len){
           this.destroy();
           break dance;
         }
-        
       }
     }
-
-
   }; //close collision
 
   this.edgeDetection = function(mode){ // enable edge detection for top,right,bottom,left
   	//modes: loop, destroy, horizLoop, vertLoop
 
-    //if( this == null) return;
-
   	if (this.x > width){ // off the right side
   		if (mode === 'loop' || mode === 'horizLoop'){
   			this.x = 0; //loop to left side
+        //If i do this.x = 0-this.bikeSize, it results in a crash, how to eliminate the gap in the loop from right to left?
   		}
   		if (mode === 'destroy' || mode === 'vertLoop'){
   			return this.destroy();
@@ -361,8 +405,79 @@ function bike(playerID, dir, bikeSz, color, len){
   };
 
 
-} // close Bike class/object
+} // close Bike class
 
+
+
+//Should each PU be its own class or should we make one class called powerup and have the varability contained within that? Im leaning towards that since we would only need to have one hit detection its less replecation of code/more efficent on the page so to speak.
+
+function powerUp(type){
+  //types: size, invincible, freeze
+  var xpos = random(width);
+  var ypos = random(height);
+  this.type = type;
+
+  this.display = function(){
+    if(this.type == 'size'){
+      fill(255,255,255); // replace with flickering powerup icons!
+    }else if(this.type == 'invincible'){
+      fill(255,0,255);
+    }else if(this.type == 'freeze'){
+      fill(0,0,255);
+    }
+    ellipse(xpos,ypos,playerSize*4,playerSize*4); // replace with flickering powerup icons!
+  }
+
+  this.collision = function(){
+
+    //Im shaky on this, but generally we need to identify which player hit the PU, track the hit, remove the PU and then apply the proper effect to the player. 
+    //another question, How do we/should we deal with the 'decay' of the effect, meaning...how do we turn it off after a little bit?
+    //are there some powerups that last forever?
+  }
+ 
+}
+
+
+
+
+
+// function sizePU(){
+//   var xpos = random(width);
+//   var ypos = random(height);
+
+//   this.display = function(){
+//     fill(255,255,255);
+//     ellipse(xpos,ypos,playerSize*4,playerSize*4);
+//     //console.log('sizePU', xpos,ypos);
+//   }
+
+//   this.collision = function(){
+//     //look at which player hit the PU thed offect that palyers size. 
+//   }
+
+// } // close sizePU
+
+// function invinciblePU(){
+//     var xpos = random(width);
+//   var ypos = random(height);
+
+//     this.display = function(){
+//     fill(255,255,0);
+//     ellipse(xpos,ypos,playerSize*4,playerSize*4);
+//     //console.log('sizePU', xpos,ypos);
+//   }
+// } //close invinciblePU
+
+// function freezePU(){
+//     var xpos = random(width);
+//     var ypos = random(height);
+
+//     this.display = function(){
+//     fill(0,0,255);
+//     ellipse(xpos,ypos,playerSize*4,playerSize*4);
+//     //console.log('freezePU', xpos,ypos);
+//   }
+//} //close freezePU
 
 
 
