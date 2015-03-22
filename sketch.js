@@ -14,6 +14,8 @@ var powerupMode = true; //turn powerups on/off completely
 var brickMode = true;   //turn bricks on/off completely
 var numBricks = 20    //how many bricks for players to hit/avoid?
 
+var sound_on = false; // true: play sounds. false: no sounds
+
 //Constants
 var _UP    = 1;
 var _DOWN  = 2;
@@ -28,6 +30,12 @@ function preload(){
   destroySound = loadSound('boom.mp3');  // @timgormly freesound.org
   music = loadSound('bkg.mp3');
   gameOverSound = loadSound('gameover.mp3');
+
+  if (sound_on == false){
+    destroySound = {};
+    music = {};
+    gameOverSound = {};
+  }
 
 }
 
@@ -64,13 +72,12 @@ function initGame(){
   players[1].setControls('i','k','j','l');
 
   // player1 is hot pink human 
-  //players[0].ai = false;
+  players[0].ai = false;
   players[0].color = color(255,0,255);
 
   // player2 is white human 
-  //aplayers[1].ai = false;
-  players[0].ai = true;
-  players[0].color = color(255,0,255);
+  players[1].ai = false;
+  players[1].color = color(255,255,255);
 
 
   console.log('Game starts in 5 seconds...');
