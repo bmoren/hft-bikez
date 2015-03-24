@@ -2,19 +2,20 @@
 /////GAME OPTIONS////
 /////////////////////
 //PLAYERS
-var numPlayers = 4;     //how many players
-var playerLength = 30;  //length of the players, length also effects speed
-var playerSize = 6;     //how big are the players
+var numPlayers = 2;    //how many players
+var playerLength = 25;  //length of the players, length also effects speed (length greatly affects framerate capability)
+var playerSize =15;     //how big are the players
 var drawFrame = 2;      //speed to render the players, lower is faster 
-//POWERUPS
+//POWERUPS              //size,invincible,freeze,psyMode
+var poweruplist = [ 'size','invincible','freeze','psyMode' ]; //powerup types defined in the powerUp function below
 var drawPowerup = 60;   //how often to refresh the powerups, lower is faster
-var numPU = 4;        //how many powerups to display at any one time?
-var powerupMode = true; //turn powerups on/off completely
+var numPU = 4;          //how many powerups to display at any one time?
 //BRICKS
 var brickMode = true;   //turn bricks on/off completely
-var numBricks = 20    //how many bricks for players to hit/avoid?
+var numBricks = 20      //how many bricks for players to hit/avoid?
 
-var sound_on = false; // true: play sounds. false: no sounds
+var sound_on = false;   // true: play sounds. false: no sounds
+var clearBG = true;     //clear the background? leave trails?
 
 //Constants
 var _UP    = 1;
@@ -32,9 +33,7 @@ function preload(){
   gameOverSound = loadSound('gameover.mp3');
 
   if (sound_on == false){
-    destroySound = {};
-    music = {};
-    gameOverSound = {};
+    masterVolume(0);
   }
 
 }
@@ -133,32 +132,35 @@ function draw() {
 
   //render bikes to screen
   if (frames % drawFrame != 0) return;
-  background(0);
+
+  if (clearBG == true){
+    background(0);
+  }
 
 	for (var i=0; i<players.length; i++) {
     if (players[i] == null) continue;
-    players[i].move()
-		players[i].display();
-		players[i].edgeDetection('horizLoop'); // loop,destroy,horizLoop,vertLoop
-    if (players[i] == null) continue;
-		players[i].collision();
+    if (players[i].frozen == true){
+      players[i].display();
+    } else {
+      players[i].move();
+  		players[i].display();
+  		players[i].edgeDetection('horizLoop'); // loop,destroy,horizLoop,vertLoop
+      if (players[i] == null) continue;
+      players[i].getPoweredUp(); //pump some iron
+  		players[i].collision();
+    }
 
   }
 
   //render powerups to screen
-  if(powerupMode == true){
+
     for (var i=0;i<powerups.length;i++){
+      if (powerups[i] == null) continue;
       powerups[i].display();
     }
-  }
 
   //write powerups to array!
-  if(powerupMode == true){
     if(frames % drawPowerup != 0) return;            
-      // var poweruplist = [ sizePU,invinciblePU,freezePU ]; //add powerup fuctions to this list to call a random one every so often
-      // var choosePU = floor(random(poweruplist.length));
-      // powerups.push(new poweruplist[choosePU]);
-      var poweruplist = [ 'size','invincible','freeze' ]; //powerup types defined in the powerUp function below
       var choosePU = floor(random(poweruplist.length));
       powerups.push(new powerUp(poweruplist[choosePU]));
       //console.log(powerups);
@@ -167,8 +169,6 @@ function draw() {
         powerups.shift();
         //powerups.pop();
       }
-  }
-
 } // close Draw
 
 
@@ -180,31 +180,49 @@ function bike(playerID, dir, bikeSz, color, len){
   this.playerID = playerID;
   this.len = len ;
   this.ai = true;
-	
-  var yOffset = (height / numPlayers) * 2;
+  this.segment = [  ] ; //keep track of each segment, how long is the bike?
+  this.frozen = false;  //is there a frozen powerup?
+  this.invincible = false;
 
-  // set initial x/y coords of bike
-  this.x = (width - (bikeSz*6)) - round(random(0, bikeSz*4));
-  this.x = this.x - (playerID * bikeSz);
-  this.y = (playerID * yOffset) + (height / numPlayers);
 
-  if (playerID >= numPlayers/2){
-    var nf = numPlayers/2;
-    this.x = bikeSz*2 + round(random(0,bikeSz*5));
-    this.x = this.x + ((playerID-nf) * bikeSz);
-    this.y = (playerID-nf) * yOffset;
-    this.y += bikeSz*2;
-    this.direction = _RIGHT;
+  //starting positions
+  var panelWidth = width/3;
+  var groupOffset = ceil(numPlayers/3);
+  var yOffset = (height / groupOffset);
+
+
+  if(playerID < groupOffset){
+    console.log('group1:', playerID);
+    //group1
+    this.x = panelWidth/2;
+    this.y = playerID * yOffset // disperse players horizontally 
+    this.y += yOffset / 2 //offset so there is no one huggin the top.
   }
 
+  if(playerID >= groupOffset && playerID < (groupOffset*2)){
+    console.log('group2:', playerID);
+    // group2
+    this.x = panelWidth+(panelWidth/2);
+    this.y = (playerID - groupOffset) * yOffset // disperse players horizontally, - group offset so it resets to 0
+    this.y += yOffset / 2 //offset so there is no one huggin the top.
+    this.y += bikeSz*2;
+  }
+
+  if(playerID >= (groupOffset*2)){
+    console.log('group3:', playerID);
+    //group 3
+    this.x = width-(panelWidth/2);
+    this.y = (playerID - (groupOffset*2)) * yOffset // disperse players horizontally -groupoffset*2 to reset to 0
+    this.y += yOffset / 2 //offset so there is no one huggin the top.
+  }
+
+  //keep it on the whole number grid
   this.x = round(this.x);
   this.y = round(this.y);
 
   // - or, set random x/y coords
   // this.x = round(random(width));
   // this.y = round(random(height));
-
-  this.segment = [  ] ; //keep track of each segment, how long is the bike?
   for(i=0; i < this.len; i++){
     this.segment[i] = [this.x+(i*this.bikeSize), this.y];
   }
@@ -316,21 +334,24 @@ function bike(playerID, dir, bikeSz, color, len){
 
   this.display = function() {
   	//rectMode(CENTER);
-  	noStroke();
-    // stroke(255);
-  	fill(this.color);
+  	 noStroke();
+    // stroke(this.color);
+    //noFill();
+  	 fill(this.color);
 
     // draw segments (but not the head)
     for (var i = this.len-1; i > 0; i--) {
 
-      this.segment[i][0] = Number(this.segment[i-1][0]);
-      this.segment[i][1] = Number(this.segment[i-1][1]);
+      if (this.frozen == false){
+        this.segment[i][0] = Number(this.segment[i-1][0]);
+        this.segment[i][1] = Number(this.segment[i-1][1]);
+      }
 
       rect(this.segment[i][0], this.segment[i][1], this.bikeSize, this.bikeSize);
      
     }
 
-    fill(255,0,0);
+     fill(255,0,0);
     // draw the head
     this.segment[0][0] = this.x;
     this.segment[0][1] = this.y;
@@ -338,17 +359,66 @@ function bike(playerID, dir, bikeSz, color, len){
 
   }; //close display
 
+  this.getPoweredUp = function(){
+    var x = this.segment[0][0];
+    var y = this.segment[0][1];
+    var w = this.bikeSize;
+    for(var i=0; i<powerups.length; i++){
+      var p = powerups[i];
+      if (p == null) continue;
+      if( hitTest(x,y,w,  p.x, p.y, p.size)){
+        // we are eating something powerful
+        this.usePowerup( p.type );
+        // remove the powerup (if not already removed)
+        if (powerups[i]) p.remove();
+      }
+    }
+  };
+
+  this.usePowerup = function(type){
+    if(type == "size"){
+      //when getting smaller square seperation is a bit awkward....maybe fix it?
+      this.bikeSize = round(random(this.bikeSize/2,this.bikeSize*2));
+    }else 
+    if(type == "invincible"){ 
+      //right now this is ghost mode, you cant kill or be killed.... maybe you should be able to kill...
+      this.invincible = true;
+      var that = this; // store the this so that we can see it in the anon function in the timeout
+      setTimeout(function(){
+        that.invincible = false ;
+      }, 20000); // should this be a rand value set by the poweUp object?
+    }else 
+    if(type == "freeze"){
+      this.frozen = true;
+      var that = this; // store the this so that we can see it in the anon function in the timeout
+      setTimeout(function(){
+        that.frozen = false ;
+      }, 2000); // should this be a rand value set by the poweUp object?
+    }else 
+    if(type == "psyMode"){
+      clearBG = false; 
+      setTimeout(function(){
+        clearBG = true ;
+      }, 5000); 
+
+
+    }
+  };
+
   this.collision = function(){
     var x = this.segment[0][0];
     var y = this.segment[0][1];
     var w = this.bikeSize;
     var id = this.playerID;
 
+    if(this.invincible == true) return;
+
     // loop through all players
     dance:
     for(var i=0; i<players.length; i++){
       if (players[i] == null) continue;
       var player = players[i];
+      if(player.invincible == true) continue;
       // don't hit your own head
       for(var j=0; j < player.segment.length; j++){
         // loop through player segments
@@ -423,9 +493,13 @@ function bike(playerID, dir, bikeSz, color, len){
 //Should each PU be its own class or should we make one class called powerup and have the varability contained within that? Im leaning towards that since we would only need to have one hit detection its less replecation of code/more efficent on the page so to speak.
 
 function powerUp(type){
+  this.id = Date.now();
+  this.x = random(width);
+  this.y = random(height);
+  // square power UPS, fool
+  this.size = playerSize*3;
+
   //types: size, invincible, freeze
-  var xpos = random(width);
-  var ypos = random(height);
   this.type = type;
 
   this.display = function(){
@@ -435,60 +509,30 @@ function powerUp(type){
       fill(255,0,255);
     }else if(this.type == 'freeze'){
       fill(0,0,255);
+    }else if( this.type == 'psyMode'){
+      fill(random(255),random(255),random(255));
     }
-    ellipse(xpos,ypos,playerSize*4,playerSize*4); // replace with flickering powerup icons!
+    rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
   }
 
-  this.collision = function(){
+  this.remove = function(){
+    //powerup gets hit, animation?
+    for(var i=0; i<powerups.length; i++){
+      if (powerups[i] == null) continue;
+      if (powerups[i].id == this.id){
+        powerups[i] = null;
+      }
+    }
+  }
+
+  // this.collision = function(){
 
     //Im shaky on this, but generally we need to identify which player hit the PU, track the hit, remove the PU and then apply the proper effect to the player. 
     //another question, How do we/should we deal with the 'decay' of the effect, meaning...how do we turn it off after a little bit?
     //are there some powerups that last forever?
-  }
+  // }
  
 }
-
-
-
-
-
-// function sizePU(){
-//   var xpos = random(width);
-//   var ypos = random(height);
-
-//   this.display = function(){
-//     fill(255,255,255);
-//     ellipse(xpos,ypos,playerSize*4,playerSize*4);
-//     //console.log('sizePU', xpos,ypos);
-//   }
-
-//   this.collision = function(){
-//     //look at which player hit the PU thed offect that palyers size. 
-//   }
-
-// } // close sizePU
-
-// function invinciblePU(){
-//     var xpos = random(width);
-//   var ypos = random(height);
-
-//     this.display = function(){
-//     fill(255,255,0);
-//     ellipse(xpos,ypos,playerSize*4,playerSize*4);
-//     //console.log('sizePU', xpos,ypos);
-//   }
-// } //close invinciblePU
-
-// function freezePU(){
-//     var xpos = random(width);
-//     var ypos = random(height);
-
-//     this.display = function(){
-//     fill(0,0,255);
-//     ellipse(xpos,ypos,playerSize*4,playerSize*4);
-//     //console.log('freezePU', xpos,ypos);
-//   }
-//} //close freezePU
 
 
 
