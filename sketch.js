@@ -16,6 +16,7 @@ var numBricks = 20      //how many bricks for players to hit/avoid?
 
 var sound_on = false;   // true: play sounds. false: no sounds
 var clearBG = true;     //clear the background? leave trails?
+var bgColor = 0;        //bgColor gets set in the setup() for access to p5 color() method.
 
 //Constants
 var _UP    = 1;
@@ -48,7 +49,8 @@ function hitTest(x,y,w, sX,sY,sW){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(0);
+  bgColor = color(255,200,100); // set bg color, Has to happen here so we have access to p5.js methods
+  background(bgColor);
 
   initGame();
 
@@ -58,7 +60,7 @@ function initGame(){
 
   players = []; // reset players array
   powerups = [];
-  background(0);
+  background(bgColor);
   //Generate players
   for (var i=0; i<numPlayers; i++) {
     // playerSize = round(random(2,40));
@@ -134,7 +136,7 @@ function draw() {
   if (frames % drawFrame != 0) return;
 
   if (clearBG == true){
-    background(0);
+    background(bgColor);
   }
 
 	for (var i=0; i<players.length; i++) {
