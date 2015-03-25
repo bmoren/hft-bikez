@@ -7,16 +7,21 @@ var playerLength = 25;  //length of the players, length also effects speed (leng
 var playerSize =15;     //how big are the players
 var drawFrame = 2;      //speed to render the players, lower is faster 
 //POWERUPS              //size,invincible,freeze,psyMode
-var poweruplist = [ 'size','invincible','freeze','psyMode' ]; //powerup types defined in the powerUp function below
+var poweruplist = [ 'size','invincible','freeze','psyMode' ]; 
 var drawPowerup = 60;   //how often to refresh the powerups, lower is faster
 var numPU = 4;          //how many powerups to display at any one time?
 //BRICKS
 var brickMode = true;   //turn bricks on/off completely
 var numBricks = 20      //how many bricks for players to hit/avoid?
-
+//WORLD PARAMS
 var sound_on = false;   // true: play sounds. false: no sounds
-var clearBG = true;     //clear the background? leave trails?
+var clearBG = true;     //clear the background? leave trails? (does not change hit detection)
+
+//storage
 var bgColor = 0;        //bgColor gets set in the setup() for access to p5 color() method.
+var tempBGColor;
+var winMessage; 
+var gameOverMessage = false;
 
 //Constants
 var _UP    = 1;
@@ -49,10 +54,11 @@ function hitTest(x,y,w, sX,sY,sW){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  bgColor = color(255,200,100); // set bg color, Has to happen here so we have access to p5.js methods
-  background(bgColor);
+  bgColor = color(0,0,0); // set bg color, has to happen here so we have access to p5.js methods
+  tempBGColor = bgColor; //setup the storage fo the background color
+  background(bgColor); //incase the bg refresh is turned off
 
-  initGame();
+  initGame(); //lets get going!
 
 } //close setup
 
@@ -60,7 +66,7 @@ function initGame(){
 
   players = []; // reset players array
   powerups = [];
-  background(bgColor);
+
   //Generate players
   for (var i=0; i<numPlayers; i++) {
     // playerSize = round(random(2,40));
@@ -85,9 +91,12 @@ function initGame(){
   loop();
   noLoop();
   setTimeout(function(){
+    gameOverMessage = false; 
     loop();
     music.play();
     music.loop();
+    bgColor = tempBGColor; //reset the bgColor after a player has won and shifted the bgColor to thiers
+    background(bgColor); //reset the background color back to the original
   }, 5000);
 
 }; // close initGame
@@ -100,9 +109,12 @@ function gameOver(){
   //console.log(alive);
 
   //look at the last player standing and get player ID for a winner popup and set background color to thier color.
-  // if(alive.length < 1){
-  //   console.log(alive[0].color);
-  // }
+  if(alive.length == 1){
+    bgColor = alive[0].color //grab the winning players color to reset the background
+
+    winMessage = "Player " + alive[0].playerID + " Wins!"
+    gameOverMessage = true;
+   }
 
   return (alive.length > 1) ? false : true;
 
@@ -120,10 +132,12 @@ function draw() {
     noLoop();
     music.stop();
     gameOverSound.play();
+
     setTimeout(function(){
       loop();
     }, 3000);
   }
+
 
   //handle movement at the normal framerate
   for(var i=0; i<players.length; i++){
@@ -135,8 +149,15 @@ function draw() {
   //render bikes to screen
   if (frames % drawFrame != 0) return;
 
+  //refresh bkg at same rate as bikes
   if (clearBG == true){
     background(bgColor);
+  }
+
+  if(gameOverMessage){
+    //invert the color of the winner
+    var messageColor = color(255-red(bgColor), 255-green(bgColor), 255-blue(bgColor)); 
+    textPopUp(winMessage,messageColor);
   }
 
 	for (var i=0; i<players.length; i++) {
@@ -155,7 +176,6 @@ function draw() {
   }
 
   //render powerups to screen
-
     for (var i=0;i<powerups.length;i++){
       if (powerups[i] == null) continue;
       powerups[i].display();
@@ -380,7 +400,7 @@ function bike(playerID, dir, bikeSz, color, len){
   this.usePowerup = function(type){
     if(type == "size"){
       //when getting smaller square seperation is a bit awkward....maybe fix it?
-      this.bikeSize = round(random(this.bikeSize/2,this.bikeSize*2));
+      this.bikeSize = round(random(this.bikeSize/4,this.bikeSize*2));
     }else 
     if(type == "invincible"){ 
       //right now this is ghost mode, you cant kill or be killed.... maybe you should be able to kill...
@@ -501,7 +521,7 @@ function powerUp(type){
   // square power UPS, fool
   this.size = playerSize*3;
 
-  //types: size, invincible, freeze
+  //types: size, invincible, freeze, psyMode, 
   this.type = type;
 
   this.display = function(){
@@ -526,16 +546,18 @@ function powerUp(type){
       }
     }
   }
-
-  // this.collision = function(){
-
-    //Im shaky on this, but generally we need to identify which player hit the PU, track the hit, remove the PU and then apply the proper effect to the player. 
-    //another question, How do we/should we deal with the 'decay' of the effect, meaning...how do we turn it off after a little bit?
-    //are there some powerups that last forever?
-  // }
  
 }
 
+
+function textPopUp(message, color){
+    //this needs to happen on all 3 screens
+    noStroke();
+    fill(color);
+    textAlign(CENTER);
+    textSize(width/15);
+    text(message, width/2, height/2);
+}
 
 
 
