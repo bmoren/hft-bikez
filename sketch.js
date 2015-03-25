@@ -4,10 +4,10 @@
 //PLAYERS
 var numPlayers = 2;    //how many players
 var playerLength = 25;  //length of the players, length also effects speed (length greatly affects framerate capability)
-var playerSize =15;     //how big are the players
+var playerSize =10;     //how big are the players
 var drawFrame = 2;      //speed to render the players, lower is faster 
 //POWERUPS              //size,invincible,freeze,psyMode
-var poweruplist = [ 'size','invincible','freeze','psyMode' ]; 
+var poweruplist = [ 'size','invincible','freeze', 'psyMode']; 
 var drawPowerup = 60;   //how often to refresh the powerups, lower is faster
 var numPU = 4;          //how many powerups to display at any one time?
 //BRICKS
@@ -525,16 +525,30 @@ function powerUp(type){
   this.type = type;
 
   this.display = function(){
+
+    textSize(this.size - 5);
+
     if(this.type == 'size'){
-      fill(255,255,255); // replace with flickering powerup icons!
+      fill(255); // replace with flickering powerup icons!
+      rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
+      fill(0);
+      text("Sz",this.x,this.y+(this.size-3));
     }else if(this.type == 'invincible'){
       fill(255,0,255);
+      rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
+      fill(0,255,0);
+      text("In",this.x,this.y+(this.size-3));
     }else if(this.type == 'freeze'){
       fill(0,0,255);
+      rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
+      fill(255,255,0);
+      text("Fz",this.x,this.y+(this.size-3));
     }else if( this.type == 'psyMode'){
       fill(random(255),random(255),random(255));
+      rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
+      fill(255);
+      text("P",this.x,this.y+(this.size-3));
     }
-    rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
   }
 
   this.remove = function(){
