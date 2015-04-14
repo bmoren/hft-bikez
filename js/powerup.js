@@ -7,7 +7,7 @@
 function powerUp(type){
   this.id = Date.now();
   // square power UPS, fool
-  this.size = playerSize*3;
+  this.size = S.playerSize*3;
 
   this.x = random(width - this.size);
   this.y = random(height - this.size);

@@ -18,7 +18,7 @@ function bike(playerID, dir, bikeSz, color, len){
 
   //starting positions
   var panelWidth = width/3;
-  var groupOffset = ceil(numPlayers/3);
+  var groupOffset = ceil(S.numPlayers/3);
   var yOffset = (height / groupOffset);
 
 
@@ -248,9 +248,9 @@ function bike(playerID, dir, bikeSz, color, len){
       }, 2000); // should this be a rand value set by the poweUp object?
     }else 
     if(type == "psyMode"){
-      clearBG = false; 
+      S.clearBG = false; 
       setTimeout(function(){
-        clearBG = true ;
+        S.clearBG = true ;
       }, 5000); 
 
 

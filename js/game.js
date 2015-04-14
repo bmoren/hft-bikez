@@ -1,26 +1,12 @@
-/////////////////////
-/////GAME OPTIONS////
-/////////////////////
-//PLAYERS
-var numPlayers = 2;    //how many players
-var playerLength = 30;  //length of the players, length also effects speed (length greatly affects framerate capability)
-var playerSize = 15;     //how big are the players
-var drawFrame = 2;      //speed to render the players, lower is faster 
-//POWERUPS              //size,ghost,freeze,psyMode
-var poweruplist = ['freeze']//[ 'size','ghost','freeze', 'psyMode']; 
-var drawPowerup = 60;   //how often to refresh the powerups, lower is faster
-var numPU = 4;          //how many powerups to display at any one time?
-//BRICKS
-var brickMode = true;   //turn bricks on/off completely
-var numBricks = 20      //how many bricks for players to hit/avoid?
-//WORLD PARAMS
-var sound_on = true;   // true: play sounds. false: no sounds
-var clearBG = true;     //clear the background? leave trails? (does not change hit detection)
-var loopMode = 'horizLoop';  //loop, destroy, horizLoop, vertLoop
-var gameStarted = false; // true: the game is being played. false: not playing
-var bgColor = 0;
+//
+// Game.js
+// useful description here
+//
 
-//Constants
+
+// 
+// Global Variables
+// 
 var _UP    = 1;
 var _DOWN  = 2;
 var _LEFT  = 3;
@@ -31,25 +17,36 @@ var players = [];
 var powerups = [];
 
 
+//
+// Preload
+//
 function preload(){
-  destroySound = loadSound('boom.mp3');  // @timgormly freesound.org
-  music = loadSound('bkg.mp3');
-  gameOverSound = loadSound('gameover.mp3');
+  destroySound = loadSound('assets/boom.mp3');  // @timgormly freesound.org
+  music = loadSound('assets/bkg.mp3');
+  gameOverSound = loadSound('assets/gameover.mp3');
 
-  if (sound_on == false){
+  if (S.soundOn == false){
     masterVolume(0);
   }
-}
+};
 
 
+//
+// Setup
+//
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  bgColor = color(0,0,0);
-  background(bgColor);
+  S.bgColor = color(0,0,0);
+  background(S.bgColor);
   initGame(); //lets get going!
 
-} //close setup
+};
 
+
+
+//
+// initGame
+//
 function initGame(){
 
   players = []; // reset players array
@@ -58,11 +55,11 @@ function initGame(){
   music.loop();
 
   //Generate players
-  for (var i=0; i<numPlayers; i++) {
-    // playerSize = round(random(2,40));
+  for (var i=0; i<S.numPlayers; i++) {
+    // S.playerSize = round(random(2,40));
     playerColor = color(random(255),random(255),random(255));
-    //playerSize = random(5,30);
-    players.push(new bike(i, _LEFT, playerSize, playerColor, playerLength)); //playerID, dir, bikeSz, color, num segments
+    //S.playerSize = random(5,30);
+    players.push(new bike(i, _LEFT, S.playerSize, playerColor, S.playerLength)); //playerID, dir, bikeSz, color, num segments
      // players[i].setControls('w','s','a','d');
   }
   players[0].setControls('w','s','a','d');
@@ -81,14 +78,18 @@ function initGame(){
 
   console.log('Game starts in 5 seconds...');
   setTimeout(function(){
-    gameStarted = true;
+    S.gameStarted = true;
   }, 5000);
 
-}; // close initGame
+};
 
+
+//
+// drawBackground
+//
 function drawBackground(c, message){
-  c = c || bgColor;
-  if (clearBG == true){
+  c = c || S.bgColor;
+  if (S.clearBG == true){
     background(c);
   }
   if (message){
@@ -99,9 +100,12 @@ function drawBackground(c, message){
     textPopUp(message, messageColor);
   }
 
-}; //close drawBackground
+};
 
 
+//
+// gameOver
+//
 function gameOver(){
   var alive = [];
   for(var i=0; i<players.length; i++){
@@ -119,22 +123,25 @@ function gameOver(){
       var msg = "Player " + player.playerID + " Wins!";
       drawBackground(player.color, msg);
     } else {
-      drawBackground(bgColor, "Draw!");
+      drawBackground(S.bgColor, "Draw!");
     }
   }
 
   return isGameOver;
 
+};
 
-}; //close gameOver
 
+//
+// Draw
+//
 function draw(init) {
 
-  if (gameStarted == false && !init) return;
+  if (S.gameStarted == false && !init) return;
 
   //handle game over
   if (gameOver()) {
-    gameStarted = false;
+    S.gameStarted = false;
     gameOverSound.play();
     setTimeout(function(){
       initGame();
@@ -151,7 +158,7 @@ function draw(init) {
   }
 
   //render bikes to screen
-  if (frames % drawFrame != 0) return;
+  if (frames % S.drawFrame != 0) return;
 
   drawBackground();
 
@@ -162,7 +169,7 @@ function draw(init) {
     } else {
       players[i].move();
   		players[i].display();
-  		players[i].edgeDetection(loopMode); // loop,destroy,horizLoop,vertLoop
+  		players[i].edgeDetection(S.loopMode); // loop,destroy,horizLoop,vertLoop
       if (players[i] == null) continue;
       players[i].getPoweredUp(); //pump some iron
   		players[i].collision();
@@ -177,17 +184,13 @@ function draw(init) {
     }
 
   //write powerups to array!
-    if(frames % drawPowerup != 0) return;            
-      var choosePU = floor(random(poweruplist.length));
-      powerups.push(new powerUp(poweruplist[choosePU]));
+    if(frames % S.drawPowerup != 0) return;            
+      var choosePU = floor(random(S.poweruplist.length));
+      powerups.push(new powerUp(S.poweruplist[choosePU]));
       //console.log(powerups);
       //trim back to the total allowable amount of powerups
-      if(powerups.length >= numPU+1){
+      if(powerups.length >= S.numPU+1){
         powerups.shift();
         //powerups.pop();
       }
-} // close Draw
-
-
-
-
+};
