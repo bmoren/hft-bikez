@@ -5,24 +5,20 @@
 var numPlayers = 2;    //how many players
 var playerLength = 30;  //length of the players, length also effects speed (length greatly affects framerate capability)
 var playerSize = 15;     //how big are the players
-var drawFrame = 3;      //speed to render the players, lower is faster 
+var drawFrame = 2;      //speed to render the players, lower is faster 
 //POWERUPS              //size,ghost,freeze,psyMode
-var poweruplist = ['size']//[ 'size','ghost','freeze', 'psyMode']; 
+var poweruplist = ['freeze']//[ 'size','ghost','freeze', 'psyMode']; 
 var drawPowerup = 60;   //how often to refresh the powerups, lower is faster
 var numPU = 4;          //how many powerups to display at any one time?
 //BRICKS
 var brickMode = true;   //turn bricks on/off completely
 var numBricks = 20      //how many bricks for players to hit/avoid?
 //WORLD PARAMS
-var sound_on = false;   // true: play sounds. false: no sounds
+var sound_on = true;   // true: play sounds. false: no sounds
 var clearBG = true;     //clear the background? leave trails? (does not change hit detection)
 var loopMode = 'horizLoop';  //loop, destroy, horizLoop, vertLoop
-
-//storage
-var bgColor = 0;        //bgColor gets set in the setup() for access to p5 color() method.
-var tempBGColor;
-var winMessage; 
-var gameOverMessage = false;
+var gameStarted = false; // true: the game is being played. false: not playing
+var bgColor = 0;
 
 //Constants
 var _UP    = 1;
@@ -43,16 +39,13 @@ function preload(){
   if (sound_on == false){
     masterVolume(0);
   }
-
 }
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  bgColor = color(0,0,0); // set bg color, has to happen here so we have access to p5.js methods
-  tempBGColor = bgColor; //setup the storage fo the background color
-  background(bgColor); //incase the bg refresh is turned off
-
+  bgColor = color(0,0,0);
+  background(bgColor);
   initGame(); //lets get going!
 
 } //close setup
@@ -61,6 +54,8 @@ function initGame(){
 
   players = []; // reset players array
   powerups = [];
+  drawBackground();
+  music.loop();
 
   //Generate players
   for (var i=0; i<numPlayers; i++) {
@@ -81,58 +76,72 @@ function initGame(){
   players[1].ai = false;
   players[1].color = color(255,255,255);
 
+  draw(true);
+  draw(true);
 
   console.log('Game starts in 5 seconds...');
-  loop();
-  noLoop();
   setTimeout(function(){
-    gameOverMessage = false; 
-    loop();
-    music.play();
-    music.loop();
-    bgColor = tempBGColor; //reset the bgColor after a player has won and shifted the bgColor to thiers
-    background(bgColor); //reset the background color back to the original
+    gameStarted = true;
   }, 5000);
 
 }; // close initGame
+
+function drawBackground(c, message){
+  c = c || bgColor;
+  if (clearBG == true){
+    background(c);
+  }
+  if (message){
+    console.log('message:', message );
+    background(c);
+    //invert the color of the winner
+    var messageColor = color(255-red(c), 255-green(c), 255-blue(c)); 
+    textPopUp(message, messageColor);
+  }
+
+}; //close drawBackground
+
 
 function gameOver(){
   var alive = [];
   for(var i=0; i<players.length; i++){
     if (players[i] != null) alive.push(players[i]);
   }
-  //console.log(alive);
+  
+  var player = alive[0];
+  var isGameOver = (alive.length > 1) ? false : true;
 
   //look at the last player standing and get player ID for a winner popup and set background color to thier color.
-  if(alive.length == 1){
+  if(isGameOver){
+    console.log('Game Over');
     music.stop(); //stop the music when everyone dies.
-    bgColor = alive[0].color //grab the winning players color to reset the background
-    winMessage = "Player " + alive[0].playerID + " Wins!"
-    gameOverMessage = true;
-   }
+    if (player){
+      var msg = "Player " + player.playerID + " Wins!";
+      drawBackground(player.color, msg);
+    } else {
+      drawBackground(bgColor, "Draw!");
+    }
+  }
 
-  return (alive.length > 1) ? false : true;
+  return isGameOver;
 
 
 }; //close gameOver
 
-function draw() {
+function draw(init) {
 
-  if (gameOver()) initGame();
-
-  frames++;
+  if (gameStarted == false && !init) return;
 
   //handle game over
   if (gameOver()) {
-    noLoop();
-    music.stop();
+    gameStarted = false;
     gameOverSound.play();
-
     setTimeout(function(){
-      loop();
-    }, 3000);
+      initGame();
+    }, 2000);
   }
 
+  frames++;
 
   //handle movement at the normal framerate
   for(var i=0; i<players.length; i++){
@@ -144,16 +153,7 @@ function draw() {
   //render bikes to screen
   if (frames % drawFrame != 0) return;
 
-  //refresh bkg at same rate as bikes
-  if (clearBG == true){
-    background(bgColor);
-  }
-
-  if(gameOverMessage){
-    //invert the color of the winner
-    var messageColor = color(255-red(bgColor), 255-green(bgColor), 255-blue(bgColor)); 
-    textPopUp(winMessage,messageColor);
-  }
+  drawBackground();
 
 	for (var i=0; i<players.length; i++) {
     if (players[i] == null) continue;

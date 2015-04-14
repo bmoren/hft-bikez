@@ -23,7 +23,6 @@ function bike(playerID, dir, bikeSz, color, len){
 
 
   if(playerID < groupOffset){
-    console.log('group1:', playerID);
     //group1
     this.x = panelWidth/2;
     this.y = playerID * yOffset // disperse players horizontally 
@@ -31,7 +30,6 @@ function bike(playerID, dir, bikeSz, color, len){
   }
 
   if(playerID >= groupOffset && playerID < (groupOffset*2)){
-    console.log('group2:', playerID);
     // group2
     this.x = panelWidth+(panelWidth/2);
     this.y = (playerID - groupOffset) * yOffset // disperse players horizontally, - group offset so it resets to 0
@@ -40,7 +38,6 @@ function bike(playerID, dir, bikeSz, color, len){
   }
 
   if(playerID >= (groupOffset*2)){
-    console.log('group3:', playerID);
     //group 3
     this.x = width-(panelWidth/2);
     this.y = (playerID - (groupOffset*2)) * yOffset // disperse players horizontally -groupoffset*2 to reset to 0
