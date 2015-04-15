@@ -9,6 +9,8 @@ var _UP    = 1;
 var _DOWN  = 2;
 var _LEFT  = 3;
 var _RIGHT = 4;
+
+//Globals
 var frames = 0;
 var playerColor;
 var players = [];
@@ -95,11 +97,9 @@ function drawBackground(c, message){
     background(c);
   }
   if (message){
-    console.log('message:', message );
     background(c);
     //invert the color of the winner
-    var messageColor = color(255-red(c), 255-green(c), 255-blue(c)); 
-    textPopUp(message, messageColor);
+    textPopUp(message, inverseColor(c));
   }
 
 };
