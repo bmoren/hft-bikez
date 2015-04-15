@@ -166,49 +166,31 @@ function bike(playerID, dir, bikeSz, color, len){
   	this.bikeSize = size;
   	// are we going to become smaller or bigger?
   	var smaller = (oldSize > size) ? true : false;
-
-  	console.log( 'are we getting smaller?', smaller );
-
-  	for(var i=0; i<this.segment.length; i++){
-  		// color the body
-  		fill(this.color);
-  		// color the head
-  		if (i == 0) fill(255,0,0);
-
-  		if (smaller){
-  			this.segment[i][0] = this.segment[i][0]-size;
-  			this.segment[i][1] = this.segment[i][1]-size;
-  		} else {
-  			this.segment[i][0] = this.segment[i][0]+size;
-  			this.segment[i][1] = this.segment[i][1]+size;
-  		}
-  		rect(this.segment[i][0], this.segment[i][1], this.bikeSize, this.bikeSize);
-  	}
+    var diff = (size-oldSize);
+    // maybe help to prevent killing self when 'growing' ??
+    if (!smaller && diff > size) this.bikeSize = (oldSize*2)-3;
   };
 
   this.display = function() {
-  	 noStroke();
-  	 fill(this.color);
-
+    noStroke();
     // draw segments (but not the head)
+    fill(this.color);
     for (var i = this.len-1; i > 0; i--) {
-
       if (this.frozen == false){
         this.segment[i][0] = Number(this.segment[i-1][0]);
         this.segment[i][1] = Number(this.segment[i-1][1]);
       }
-
       rect(this.segment[i][0], this.segment[i][1], this.bikeSize, this.bikeSize);
-     
     }
 
-     fill(255,0,0);
     // draw the head
+    fill(255,0,0);
     this.segment[0][0] = this.x;
     this.segment[0][1] = this.y;
     rect(this.segment[0][0], this.segment[0][1], this.bikeSize, this.bikeSize);
 
   }; //close display
+
 
   this.getPoweredUp = function(){
     var x = this.segment[0][0];
@@ -228,8 +210,7 @@ function bike(playerID, dir, bikeSz, color, len){
 
   this.usePowerup = function(type){
     if(type == "size"){
-      // this.bikeSize = this.origBikeSize;
-      var size = round(random(this.bikeSize/2,this.bikeSize*2));
+      var size = round(random(S.playerSize/2, S.playerSize*2));
       this.resize(size);
     } else 
     if(type == "ghost"){ 
@@ -274,7 +255,7 @@ function bike(playerID, dir, bikeSz, color, len){
       // don't hit your own head
       for(var j=0; j < player.segment.length; j++){
         // loop through player segments
-        if (player.playerID == id && j < 2) continue;
+        if (player.playerID == id && j < 4) continue;
         var seg = player.segment[j];
         var sX = seg[0];
         var sY = seg[1];
