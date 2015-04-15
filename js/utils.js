@@ -19,4 +19,7 @@ function textPopUp(message, color){
     text(message, width/2, height/2);
 }
 
-
+//broken.....
+function inverseColor(color){
+	return color(255-red(color), 255-green(color), 255-blue(color));
+}

@@ -1,12 +1,10 @@
+
 //
 // Game.js
 // useful description here
 //
 
-
-// 
-// Global Variables
-// 
+//Constants
 var _UP    = 1;
 var _DOWN  = 2;
 var _LEFT  = 3;
@@ -43,7 +41,6 @@ function setup() {
 };
 
 
-
 //
 // initGame
 //
@@ -64,6 +61,7 @@ function initGame(){
   }
   players[0].setControls('w','s','a','d');
   players[1].setControls('i','k','j','l');
+  //players[2].setControls('&','(','%',"'");
 
   // player1 is hot pink human 
   players[0].ai = false;
@@ -72,6 +70,10 @@ function initGame(){
   // player2 is white human 
   players[1].ai = false;
   players[1].color = color(255,255,255);
+
+  // // player3 is blue human 
+  // players[2].ai = false;
+  // players[2].color = color(0,0,255);
 
   draw(true);
   draw(true);

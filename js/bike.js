@@ -118,6 +118,8 @@ function bike(playerID, dir, bikeSz, color, len){
   this.setDirection = function(){
     if (keyIsPressed === true || this.ai){ // determine direction //reimplement this using HFT for the controller
 
+      //console.log("key: ", key)
+
       // randomly choose direction, if we are an AI
       this.moveAI();
 
