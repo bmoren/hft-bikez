@@ -73,7 +73,14 @@ requirejs([
     };
 
     Player.prototype.movePlayer = function(dir) {
+      if (this.bike.direction == _LEFT && dir == _RIGHT) return;
+      if (this.bike.direction == _RIGHT && dir == _LEFT) return;
+
+      if (this.bike.direction == _UP && dir == _DOWN) return;
+      if (this.bike.direction == _DOWN && dir == _UP) return;
+
       this.bike.direction = dir;
+      
     };
     Player.prototype.setColor = function(cmd) {};
     Player.prototype.setName = function(cmd) {};
