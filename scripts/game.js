@@ -41,55 +41,53 @@ requirejs([
   ], function(GameServer, GameSupport, Misc) {
     
     var globals = {
-      itemSize: 15,
+      debug: true
     };
 
     Misc.applyUrlSettings(globals);
-
-    var bike = window.bike;
-    var players = window.players;
 
     var Player = function(netPlayer, name) {
       this.netPlayer = netPlayer;
       this.name = name;
       this.id = players.length;
       
+      console.log( 'creating a new bike object' );
       this.bike = new bike(netPlayer, name, this.id, S.playerSize, S.playerLength);
-      players.push( this.bike );
       this.color = this.bike.color;
+      
+      players.push( this.bike );
+
+      // set the controller background color
+      netPlayer.sendCmd('setColor', this.color);
 
       netPlayer.addEventListener('disconnect', Player.prototype.disconnect.bind(this));
       netPlayer.addEventListener('move', Player.prototype.movePlayer.bind(this));
       netPlayer.addEventListener('color', Player.prototype.setColor.bind(this));
+      netPlayer.addEventListener('setName', Player.prototype.setName.bind(this));
+      netPlayer.addEventListener('busy', Player.prototype.busy.bind(this));
     };
 
     // The player disconnected.
     Player.prototype.disconnect = function() {
-      for (var i = 0; i < players.length; ++i) {
-        var player = players[i];
-        if (player.id === this.id) {
-          this.bike.destroy();
-        }
-      }
+      this.bike.destroy();
     };
 
-    Player.prototype.movePlayer = function(cmd) {
-
+    Player.prototype.movePlayer = function(dir) {
+      this.bike.direction = dir;
     };
-
-    Player.prototype.setColor = function(cmd) {
-      
-    };
+    Player.prototype.setColor = function(cmd) {};
+    Player.prototype.setName = function(cmd) {};
+    Player.prototype.busy = function(cmd) {};
 
     var server = new GameServer();
     GameSupport.init(server, globals);
 
     // A new player has arrived.
     server.addEventListener('playerconnect', function(netPlayer, name) {
-      players.push(new Player(netPlayer, name));
+      new Player(netPlayer, name);
     });
 
-    GameSupport.run(globals, window.waitForPlayers);
+    GameSupport.run(globals, waitForPlayers);
 
 });
 

@@ -10,16 +10,16 @@ function hitTest(x,y,w, sX,sY,sW){
   return _collide(x, x+w, y, y+w,  sX, sX+sW, sY, sY+sW);
 }
 
-function textPopUp(message, color){
+function textPopUp(message, c){
     //this needs to happen on all 3 screens
     noStroke();
-    fill(color);
+    fill(c);
     textAlign(CENTER);
     textSize(width/15);
     text(message, width/2, height/2);
 }
 
 //broken.....
-function inverseColor(color){
-	return color(255-red(color), 255-green(color), 255-blue(color));
+function inverseColor(c){
+	return color(255-red(c), 255-green(c), 255-blue(c));
 }

@@ -12,11 +12,13 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.playerID = playerID;
   this.name = name;
   this.len = len ;
-  this.ai = true;
+  this.ai = false;
   this.segment = [  ] ; //keep track of each segment, how long is the bike?
   this.frozen = false;  //is there a frozen powerup?
   this.ghost = false;
 
+  console.log('creating player', this.playerID);
+  console.log( this );
 
   //starting positions
   var panelWidth = width/3;

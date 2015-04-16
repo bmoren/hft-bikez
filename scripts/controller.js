@@ -47,15 +47,36 @@ requirejs([
     Touch) {
 
   var globals = {
-    debug: false,
+    debug: true,
   };
+
+  // somehow these are not included in the controller app thing
+  var _UP    = 1;
+  var _DOWN  = 2;
+  var _LEFT  = 3;
+  var _RIGHT = 4;
+
   Misc.applyUrlSettings(globals);
   MobileHacks.fixHeightHack();
 
-  var score = 0;
-  var statusElem = document.getElementById("gamestatus");
-  var inputElem = document.getElementById("inputarea");
-  var colorElem = document.getElementById("display");
+  // fake jquery selectors
+  var $ = document.getElementById.bind(document);
+
+  // bind events to html buttons
+  Touch.setupButtons({
+    inputElement: $("buttons"),
+    buttons: [
+      { element: $("button-up"), callback: buttonUp, },
+      { element: $("button-down"), callback: buttonDown, },
+      { element: $("button-left"), callback: buttonLeft, },
+      { element: $("button-right"), callback: buttonRight, },
+    ],
+  });
+
+  // dom elements for status message and background color
+  var statusElem = $("gamestatus");
+  var colorElem = $("display");
+
   var client = new GameClient();
 
   // Note: CommonUI handles these events for almost all the samples.
@@ -67,53 +88,37 @@ requirejs([
     statusElem.innerHTML = "you were disconnected from happyFunTimes";
   }
 
-  // If I was going to handle this without CommonUI this is what I'd do
-  //client.addEventListener('connect', onConnect);
-  //client.addEventListener('disconnect', onDisconnect);
-
   // Because I want the CommonUI to work
   globals.disconnectFn = onDisconnect;
   globals.connectFn = onConnect;
 
   CommonUI.setupStandardControllerUI(client, globals);
 
-  var randInt = function(range) {
-    return Math.floor(Math.random() * range);
+
+  //
+  // the sickest shit you ever seen bro
+  //
+  function buttonUp(){
+    client.sendCmd('move', _UP);
+  };
+  function buttonDown(){
+    client.sendCmd('move', _DOWN);
+  };
+  function buttonLeft(){
+    client.sendCmd('move', _LEFT);
+  };
+  function buttonRight(){
+    client.sendCmd('move', _RIGHT);
   };
 
-  // Sends a move command to the game.
   //
-  // This will generate a 'move' event in the corresponding
-  // NetPlayer object in the game.
-  var sendMoveCmd = function(position, target) {
-    client.sendCmd('move', {
-      x: position.x / target.clientWidth,
-      y: position.y / target.clientHeight,
-    });
-  };
-
-  // Pick a random color
-  var color =  'rgb(' + randInt(256) + "," + randInt(256) + "," + randInt(256) + ")";
-  // Send the color to the game.
+  // Set the controllers background color!
   //
-  // This will generate a 'color' event in the corresponding
-  // NetPlayer object in the game.
-  client.sendCmd('color', {
-    color: color,
-  });
-  colorElem.style.backgroundColor = color;
-
-  // Send a message to the game when the screen is touched
-  inputElem.addEventListener('pointermove', function(event) {
-    var position = Input.getRelativeCoordinates(event.target, event);
-    sendMoveCmd(position, event.target);
-    event.preventDefault();
+  client.addEventListener('setColor', function(c){
+    console.log('setting color to ', String(c))
+    colorElem.style.backgroundColor = c.colorString;
   });
 
-  // Update our score when the game tells us.
-  client.addEventListener('scored', function(cmd) {
-    score += cmd.points;
-    statusElem.innerHTML = "You scored: " + cmd.points + " total: " + score;
-  });
+
 });
 
