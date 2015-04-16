@@ -71,17 +71,30 @@
     opacity:0.8;
 
     border:2px solid #fff;
-    
+    /* center magic */
+    text-align:center;
+    white-space:nowrap;
 }
+/* center magic */
+#buttons .button:before {
+    content:'';
+    display:inline-block;
+    height:100%;
+    vertical-align:middle;
+}
+
 #buttons .button span {
-    position:absolute;
     font-size:60px;
-    color:#fff;
-    text-shadow:1px 1px 1px #555;
+    color:#000;
+    background:#fff;
     font-weight:bold;
-    /*font-family:"Helvetica", sans-serif;*/
-    top:38%;
-    left:34%;
+    width:80px;
+    height:80px;
+
+    /* center magic */
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
 }
 
 #button-up {
