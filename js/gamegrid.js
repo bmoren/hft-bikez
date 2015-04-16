@@ -13,6 +13,7 @@ var frames = 0;
 var playerColor;
 var players = [];
 var powerups = [];
+var waiting = true;
 
 
 //
@@ -36,10 +37,28 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   S.bgColor = color(0,0,0);
   background(S.bgColor);
-  initGame(); //lets get going!
 
+  waitForPlayers();
 };
 
+// 
+// Show waiting for players screen
+//
+function waitForPlayers(){
+
+  if (players.length == 2 && S.gameStarted == false) {
+    S.gameStarted = true;
+  }
+
+  if (S.gameStarted){
+    
+    hft_draw();
+
+  } else {
+
+  }
+
+};
 
 //
 // initGame
@@ -51,6 +70,7 @@ function initGame(){
   drawBackground();
   music.loop();
 
+  /*
   //Generate players
   for (var i=0; i<S.numPlayers; i++) {
     // S.playerSize = round(random(2,40));
@@ -74,14 +94,15 @@ function initGame(){
   // // player3 is blue human 
   // players[2].ai = false;
   // players[2].color = color(0,0,255);
+  */
 
-  draw(true);
-  draw(true);
+  // hft_draw(true); //hack to draw the players before the game really starts.
+  // hft_draw(true);
 
-  console.log('Game starts in 5 seconds...');
-  setTimeout(function(){
-    S.gameStarted = true;
-  }, 5000);
+  // console.log('Game starts in 5 seconds...');
+  // setTimeout(function(){
+  //   S.gameStarted = true;
+  // }, 5000);
 
 };
 
@@ -98,8 +119,8 @@ function drawBackground(c, message){
     console.log('message:', message );
     background(c);
     //invert the color of the winner
-    var messageColor = color(255-red(c), 255-green(c), 255-blue(c)); 
-    textPopUp(message, messageColor);
+    //var messageColor = color(255-red(c), 255-green(c), 255-blue(c)); 
+    textPopUp(message, inverseColor(c));
   }
 
 };
@@ -134,10 +155,16 @@ function gameOver(){
 };
 
 
+// this is dead space, p5 eats a boner here. 
+function draw(){
+
+}
+
+
 //
 // Draw
 //
-function draw(init) {
+function hft_draw(init) {
 
   if (S.gameStarted == false && !init) return;
 

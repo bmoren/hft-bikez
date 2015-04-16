@@ -2,13 +2,15 @@
 // Bike
 //
 
-function bike(playerID, dir, bikeSz, color, len){
+function bike(netPlayer, name, playerID, bikeSz, len){
  
-  this.color = color ;
+  this.netPlayer = netPlayer;
+  this.color = color(random(255),random(255),random(255));
   this.bikeSize = bikeSz;
   this.origBikeSize = bikeSz;
-  this.direction = dir ;
+  this.direction =  _LEFT;
   this.playerID = playerID;
+  this.name = name;
   this.len = len ;
   this.ai = true;
   this.segment = [  ] ; //keep track of each segment, how long is the bike?
