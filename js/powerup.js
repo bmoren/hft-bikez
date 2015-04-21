@@ -5,7 +5,7 @@
 // **USE POWERUP IS PART OF BIKE.JS
 
 function powerUp(type){
-  this.id = Date.now();
+  this.id = uuid();
   // square power UPS, fool
   this.size = S.playerSize*3;
 

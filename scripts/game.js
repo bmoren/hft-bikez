@@ -44,18 +44,21 @@ requirejs([
       debug: true
     };
 
+    window.queue = new Queue();
+
     Misc.applyUrlSettings(globals);
 
     var Player = function(netPlayer, name) {
       this.netPlayer = netPlayer;
       this.name = name;
-      this.id = players.length;
+      this.id = uuid();
       
       console.log( 'creating a new bike object' );
       this.bike = new bike(netPlayer, name, this.id, S.playerSize, S.playerLength);
       this.color = this.bike.color;
       
-      players.push( this.bike );
+      queue.add( this.bike );
+      
 
       // set the controller background color
       netPlayer.sendCmd('setColor', this.color);
@@ -94,7 +97,7 @@ requirejs([
       new Player(netPlayer, name);
     });
 
-    GameSupport.run(globals, waitForPlayers);
+    GameSupport.run(globals, hft_draw);
 
 });
 

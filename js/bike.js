@@ -12,135 +12,41 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.playerID = playerID;
   this.name = name;
   this.len = len ;
-  this.ai = false;
   this.segment = [  ] ; //keep track of each segment, how long is the bike?
   this.frozen = false;  //is there a frozen powerup?
   this.ghost = false;
 
-  console.log('creating player', this.playerID);
-  console.log( this );
+  this.score = 0; // how many people you've killed
+  this.time = Date.now();  // how long you've survived
 
-  //starting positions
-  var panelWidth = width/3;
-  var groupOffset = ceil(S.numPlayers/3);
-  var yOffset = (height / groupOffset);
+  this.control = {}; //a thing
+  this.started = false;
 
-
-  if(playerID < groupOffset){
-    //group1
-    this.x = panelWidth/2;
-    this.y = playerID * yOffset // disperse players horizontally 
-    this.y += yOffset / 2 //offset so there is no one huggin the top.
+  //
+  // removes frozen and ghost and starts the player moving
+  //
+  this.go = function(){
+    this.started = true;
+    this.frozen = false;
+    this.ghost = false;
   }
 
-  if(playerID >= groupOffset && playerID < (groupOffset*2)){
-    // group2
-    this.x = panelWidth+(panelWidth/2);
-    this.y = (playerID - groupOffset) * yOffset // disperse players horizontally, - group offset so it resets to 0
-    this.y += yOffset / 2 //offset so there is no one huggin the top.
-    this.y += bikeSz*2;
-  }
+  //
+  // adds frozen and ghost and sets player x/y position and builds segments
+  //
+  this.ready = function(){
+    //keep it on the whole number grid
+    this.x = floor(random(0, width-(this.bikeSize*2)));
+    this.y = floor(random(0, height-(this.bikeSize*2)));
 
-  if(playerID >= (groupOffset*2)){
-    //group 3
-    this.x = width-(panelWidth/2);
-    this.y = (playerID - (groupOffset*2)) * yOffset // disperse players horizontally -groupoffset*2 to reset to 0
-    this.y += yOffset / 2 //offset so there is no one huggin the top.
-  }
-
-  //keep it on the whole number grid
-  this.x = round(this.x);
-  this.y = round(this.y);
-
-  // - or, set random x/y coords
-  // this.x = round(random(width));
-  // this.y = round(random(height));
-  for(i=0; i < this.len; i++){
-    this.segment[i] = [this.x+(i*this.bikeSize), this.y];
-  }
-
-  this.control = {};
-
-  this.setControls = function(up, down, left, right){
-    this.control.up = up;
-    this.control.down = down;
-    this.control.left = left;
-    this.control.right = right;
-  };
-
-  this.moveAI = function(){
-    if (!this.ai) return; // i'm human, i swear...
-    var dir = this.direction;
-    var next = round(random(1,4));
-    
-    // try to avoid the top
-    if (this.direction == _UP && (this.y-this.bikeSize) <= this.bikeSize*2){
-      this.direction = round(random(3,4));
-      return;
-    }
-    // try to avoid the bottom
-    if (this.direction == _DOWN && (this.y+this.bikeSize) >= height-(this.bikeSize*2)){
-      this.direction = round(random(3,4));
-      return;
+    for(i=0; i < this.len; i++){
+      this.segment[i] = [this.x+(i*this.bikeSize), this.y];
     }
 
-    // i'll move when I want to
-    var entropy = round(random(0, 75));
-    if (entropy == 5) this.direction = next;
-
-    // try to avoid hitting myself and others?
-    var attempt = 30;
-    while( this.hitTestAI()){
-      attempt--;
-      if (attempt < 0) break;
-      this.direction = round(random(1,4));
-    }
+    this.frozen = true;
+    this.ghost = true;
 
   };
-
-  this.hitTestAI = function(){
-    var o = this.move(true);
-    var hit = false;
-    var id = this.playerID;
-    theLaw:
-    for(var j=0; j<players.length; j++){
-      var player = players[j];
-      if (player == null) continue;
-      var seg = player.segment;
-      // loop through player segments
-      for(var i=1; i<seg.length; i++){
-        var s = seg[i];
-        if ( hitTest(o.x, o.y, this.bikeSize, s[0],s[1],this.bikeSize) ){
-          hit = true;
-          break theLaw;
-        }
-      }
-    }
-    return hit;
-  };
-
-  this.setDirection = function(){
-    if (keyIsPressed === true || this.ai){ // determine direction //reimplement this using HFT for the controller
-
-      //console.log("key: ", key)
-
-      // randomly choose direction, if we are an AI
-      this.moveAI();
-
-      if (key === this.control.up && this.direction != _DOWN){
-        this.direction = _UP ;
-      }
-      if (key === this.control.down && this.direction != _UP){
-        this.direction = _DOWN ;
-      }
-      if (key === this.control.left && this.direction != _RIGHT){
-        this.direction = _LEFT ;
-      }
-      if (key === this.control.right && this.direction != _LEFT){
-        this.direction = _RIGHT ;
-      }
-    } //close keyIsPressed
-  }
 
   this.move = function(hTest) {
     var x = this.x;
@@ -177,10 +83,16 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     if (!smaller && diff > size) this.bikeSize = (oldSize*2)-3;
   };
 
-  this.display = function() {
+  this.display = function(frames) {
     noStroke();
     // draw segments (but not the head)
     fill(this.color);
+
+    //if your not started then blink!
+    if( frames % 5 == 0 && this.started == false){
+      fill(inverseColor(this.color));
+    }
+
     for (var i = this.len-1; i > 0; i--) {
       if (this.frozen == false){
         this.segment[i][0] = Number(this.segment[i-1][0]);
@@ -190,7 +102,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     }
 
     // draw the head
-    fill(255,0,0);
+    fill(inverseColor(this.color));
     this.segment[0][0] = this.x;
     this.segment[0][1] = this.y;
     rect(this.segment[0][0], this.segment[0][1], this.bikeSize, this.bikeSize);
@@ -271,6 +183,9 @@ function bike(netPlayer, name, playerID, bikeSz, len){
           if (j == 0){
             // destroy the other player
             player.destroy();
+            //this is not right, it should not only be for headons!
+            this.score++;
+            console.log(this.score);
           }
           // destroy yourself
           this.destroy();
@@ -324,8 +239,20 @@ function bike(netPlayer, name, playerID, bikeSz, len){
 
   this.destroy = function(){
 
+    // 1. find the player in players array with this.playerID
+    // 2. remove that player from the players array
+    // 3. add next player from the queue to the same index in the players array
     var id = this.playerID;
+    var index = null;
+
+    for (var i=0; i<players.length; i++){
+      var p = players[i];
+      if(p && p.playerID == id) index = i;
+    }
+
     players[id] = null;
+    queue.addToGame(index);
+
     destroySound.play();
 
   };
