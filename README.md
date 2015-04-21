@@ -6,8 +6,8 @@ by @bmoren @jkim5 and @mediaupstream
 ### installing and running the game
 
 1. clone or download this repo
-2. install (happyfuntimes)[http://superhappyfuntimes.net/install]
-3. install (nodejs)[https://nodejs.org]
+2. install [happyfuntimes](http://superhappyfuntimes.net/install)
+3. install [nodejs](https://nodejs.org)
 4. cd to the game directory and run `hft add`
 5. `hft start --app-mode`
 
