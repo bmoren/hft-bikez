@@ -99,6 +99,13 @@ requirejs([
 
     GameSupport.run(globals, hft_draw);
 
+    
+
+
 });
+
+
+// console.log("∆∆∆∆∆∆∆∆∆∆∆∆ GAME GRID ∆∆∆∆∆∆∆∆∆∆∆∆");
+// console.log("derek anderson, john kim, ben moren");
 
 

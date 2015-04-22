@@ -1,7 +1,7 @@
 
 //
 // Game.js
-// useful description here
+// SHOULD THIS BECOME PART OF GAME.JS?
 //
 
 //Constants
@@ -20,7 +20,6 @@ var powerups = [];
 //
 function preload(){
   destroySound = loadSound('assets/boom.mp3');  // @timgormly freesound.org
-
   if (S.soundOn == false){
     masterVolume(0);
   }
@@ -84,3 +83,59 @@ function hft_draw(init) {
         //powerups.pop();
       }
 };
+
+
+//I WASNT SURE THE BEST PLACE TO PUT THIS......
+// get an array of the scores of all players and sort by ascending. 
+function getKills(){
+  var scores = [];
+
+  for(i=0;i<players.length; i++){
+    if (players[i] == null) continue; 
+    var score = players[i].score ;
+    var name = players[i].name ;
+    scores[i] = [score,name];
+
+  }
+
+  //give the list in order from hightst to lowest 
+  scores.sort();
+  scores.reverse();
+  return scores; // sometimes this return one undefined for whatever reason.
+
+}
+
+
+function getSurvival(){
+  var survival = [];
+
+  for(i=0;i<players.length; i++){
+    if (players[i] == null) continue; 
+
+    var name = players[i].name ;
+    var now = Date.now();
+    var playerBirth = players[i].time;
+    var survivalTime = now - playerBirth
+
+    //console.log(readableMS(survivalTime));
+    survival[i] = [survivalTime,name];
+    }
+
+    survival.sort();
+    survival.reverse();
+    return survival;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

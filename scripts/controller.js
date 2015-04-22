@@ -81,11 +81,11 @@ requirejs([
 
   // Note: CommonUI handles these events for almost all the samples.
   var onConnect = function() {
-    statusElem.innerHTML = "you've connected to happyFunTimes";
+    statusElem.innerHTML = "you've connected to Game Grid";
   };
 
   var onDisconnect = function() {
-    statusElem.innerHTML = "you were disconnected from happyFunTimes";
+    statusElem.innerHTML = "you were disconnected from Game Grid";
   }
 
   // Because I want the CommonUI to work
@@ -118,6 +118,29 @@ requirejs([
     console.log('setting color to ', String(c))
     colorElem.style.backgroundColor = c.colorString;
   });
+
+  //generate the highscore list.
+  var scoreButton = $("hs-button");
+  scoreButton.addEventListener("touchend", genHighScores);
+
+  function genHighScores(event) {
+    console.log("genScores");
+    // HOW DO I GET OT THE getKills(); Function?!
+    
+
+  }
+
+  //generate the syrvival list.
+  var scoreButton = $("surv-button");
+  scoreButton.addEventListener("touchend", genSurvival);
+
+  function genSurvival(event) {
+    console.log("genSurvival");
+
+  }
+
+
+
 
 
 });

@@ -16,7 +16,9 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.frozen = false;  //is there a frozen powerup?
   this.ghost = false;
 
-  this.score = 0; // how many people you've killed
+  //for testing score before adding the scorekeeping functionality.
+  this.score = round(random(1,100));
+  //this.score = 0; // how many people you've killed
   this.time = Date.now();  // how long you've survived
 
   this.control = {}; //a thing
@@ -156,6 +158,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     }
   };
 
+  // this needs to be changes so it not chekcing if we his someone else, the desroy oursleves, it should be if someone else hit us destroy them and add a point.
   this.collision = function(){
     var x = this.segment[0][0];
     var y = this.segment[0][1];
@@ -183,9 +186,6 @@ function bike(netPlayer, name, playerID, bikeSz, len){
           if (j == 0){
             // destroy the other player
             player.destroy();
-            //this is not right, it should not only be for headons!
-            this.score++;
-            console.log(this.score);
           }
           // destroy yourself
           this.destroy();

@@ -29,6 +29,34 @@ function uuid(){
     return _uuid;
 };
 
+//this is for p5.js color method only
 function inverseColor(c){
 	return color(255-red(c), 255-green(c), 255-blue(c));
 }
+
+// this is for RGB css property
+function inverseRGB(r,g,b){
+	var iR = 255 - r;
+	var iG = 255 - g;
+	var iB = 255 - b;
+
+	return iR + "," + iG + "," + iB;
+
+}
+
+//human readable Miliseconds
+function readableMS(ms){
+   min = (ms/1000/60) << 0,
+   sec = (ms/1000) % 60;
+
+   	if( min <= 0){
+   		 message = Math.round(sec) + " seconds";
+	}else if(min ==1){ 
+		message = min + ' minute ' + Math.round(sec) + " seconds" ;
+	} else{
+		message = min + ' minutes ' + Math.round(sec) + " seconds" ;
+	}
+
+	return message;
+}
+

@@ -29,9 +29,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#playing, #waiting { display:none; }
+#playing, #waiting, #launch { display:none; }
 
-#playing.active, #waiting.active { display:block; }
+#playing.active, #waiting.active, #launch.active { display:block; }
+
+.scoreButton{
+    padding: 10px;
+    background-color: black;
+    color:white;
+    font-size: 20px;
+    width:180px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+
 
 #gamearea {
     width: 100%;
