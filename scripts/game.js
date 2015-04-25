@@ -102,7 +102,7 @@ requirejs([
 
     //send out the kills to all the controllers
     setInterval(function(){
-      server.broadcastCmd('recKillList', updateMasterScoreList());
+      server.broadcastCmd('recHighScores', updateMasterScoreList());
     }, 1500);
 
     GameSupport.run(globals, hft_draw);

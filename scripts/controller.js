@@ -108,22 +108,19 @@ requirejs([
   };
 
 
-  // dom elements for status message and background color
+  // dom elements for status message and colors
   var statusElem = $("gamestatus");
   var colorElem = $("buttons");
   var buttonBorder = document.getElementsByClassName('button');
   var buttonArrows = document.getElementsByTagName('span');
 
-  console.log(buttonArrows);
-
   //
   // Set the controllers colors!
   //
   client.addEventListener('setColor', function(c){
-    console.log('setting color to ', String(c.colorString))
+    //console.log('setting color to ', String(c.colorString))
     colorElem.style.backgroundColor = c.colorString;
-    console.log(c);
-    
+
     var r = c.rgba[0];
     var g = c.rgba[1];
     var b = c.rgba[2];
@@ -142,14 +139,14 @@ requirejs([
 
 
 
-  client.addEventListener('recKillList', function(kills){
+  client.addEventListener('recHighScores', function(scores){
       //order in ascending order
-      kills.sort(function(a,b){ 
+      scores.sort(function(a,b){ 
         if (!a) a = [0];
         if (!b) b = [0];
         return a[0] < b[0]
       });
-      console.log(kills);
+      console.log(scores);
   });
 
   //also do survival.
