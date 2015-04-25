@@ -108,11 +108,12 @@ requirejs([
   };
 
 
-  // dom elements for status message and colors
+  // Selecting DOM elements for variouse busisness below!
   var statusElem = $("gamestatus");
   var colorElem = $("buttons");
   var buttonBorder = document.getElementsByClassName('button');
   var buttonArrows = document.getElementsByTagName('span');
+  var killList = $("killList");
 
   //
   // Set the controllers colors!
@@ -140,13 +141,31 @@ requirejs([
 
 
   client.addEventListener('recHighScores', function(scores){
-      //order in ascending order
-      scores.sort(function(a,b){ 
-        if (!a) a = [0];
-        if (!b) b = [0];
-        return a[0] < b[0]
-      });
       console.log(scores);
+
+      // scores[0]; //kills list
+      var list = document.createElement('div');
+      // scores[1]; //survival list
+
+      //these loops could probubly be collapsed since their both 10 long....
+      for(var i =0; i < scores[0].length; i++){
+        var name = String(scores[0][i].name);
+        var points = scores[0][i].score;
+        // console.log(name,points);
+
+              // Create the list item:
+              var item = document.createElement('div');
+              // Set its contents:
+              item.appendChild(document.createTextNode(points + " " + name));
+              // Add it to the list:
+              list.appendChild(item);
+      }
+
+      //console.log(list);
+      killList.innerHTML = nodeToString(list);
+
+
+
   });
 
   //also do survival.

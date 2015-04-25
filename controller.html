@@ -1,7 +1,6 @@
   <script type="text/javascript" src="./js/utils.js"></script>
-  <script type="text/javascript" src="jquery-2.1.3.min.js"></script>
 
-  <div id="playing" class="active">
+  <div id="playing" >
       <!-- this is inserted into index.html by build.py -->
     <div id="gamearea" class="fixheight">
       <h1 id="gamestatus">status</h1>
@@ -16,32 +15,30 @@
     </div>
   </div>
 
-  <div id="waiting" >
-    <div id="hs-button" class="scoreButton">High Scores</div>
-    <div id="highscores">
-      <h3>HIGHSCORES</h3>
-      <ul>
-        <li>player 1</li>
-        <li>player 2</li>
-        <li>player 3</li>
-        <li>player 4</li>
-        <li>player 5</li>
-      </ul>
+  <div id="waiting" class="active" >
+
+    <div id="scores">
+
+      <div id="kills">
+        <h3>POINTS</h3>
+        <div id="killList">fill with scores</div>
+      </div>
+
+      <div id="survivals">
+        <h3>SURVIVAL</h3>
+        <div id="survivalList">fill with scores</div>
+
+      </div>
+
+    </div>
+
+    <div id="queuePos">
+      <p id="waitNum">597</p>
+      <p>people in front of you in the queue</p>
     </div>
 
 
-    <div id="surv-button" class="scoreButton" >Longest Survival </div>
-    <div id="survivals">
-      <h3>LONGEST SURVIVAL</h3>
-      <ul>
-        <li>player 1</li>
-        <li>player 2</li>
-        <li>player 3</li>
-        <li>player 4</li>
-        <li>player 5</li>
-      </ul>
 
-    </div>
   </div>
 
   <div id="launch">
