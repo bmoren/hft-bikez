@@ -44,14 +44,15 @@ function inverseRGB(r,g,b){
 
 }
 
+
 //human readable Miliseconds
 function readableMS(ms){
-   min = (ms/1000/60) << 0,
+   min = (ms/1000/60) << 0;
    sec = (ms/1000) % 60;
 
    	if( min <= 0){
    		 message = Math.round(sec) + " seconds";
-	}else if(min ==1){ 
+	}else if(min == 1){ 
 		message = min + ' minute ' + Math.round(sec) + " seconds" ;
 	} else{
 		message = min + ' minutes ' + Math.round(sec) + " seconds" ;
@@ -59,4 +60,8 @@ function readableMS(ms){
 
 	return message;
 }
+
+
+var MortalKombat={characters:["Goro","Johnny Cage","Kano","Liu Kang","Raiden","Reptile","Scorpion","Shang Tsung","Sonya Blade","Sub-Zero","Baraka","Jade","Jax","Kintaro","Kitana","Kung Lao","Mileena","Noob Saibot","Shao Kahn","Smoke","Chameleon","Cyrax","Ermac","Kabal","Khameleon","Motaro","Nightwolf","Rain","Sektor","Sheeva","Sindel","Stryker","Fujin","Quan Chi","Kia","Jataaka","Sareena","Shinnok","Jarek","Kai","Meat","Reiko","Tanya","Blaze","Bo Rai Cho","Drahmin","Frost","Hsu Hao","Kenshi","Li Mei","Mokap","Moloch","Nitara","Ashrah","Dairou","Darrius","Havik","Hotaru","Kira","Kobra","Monster","Onaga","Shujinko","Daegon","Taven","Dark Kahn","Cyber Sub-Zero","Kratos","Skarlet","Belokk","Hornbuckle","Nimbus Terrafaux"],get:function(){var a=this.characters.length-1;return this.characters[Math.floor(Math.random()*a)]}};
+
 

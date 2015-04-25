@@ -119,25 +119,17 @@ requirejs([
     colorElem.style.backgroundColor = c.colorString;
   });
 
-  //generate the highscore list.
-  var scoreButton = $("hs-button");
-  scoreButton.addEventListener("touchend", genHighScores);
+  client.addEventListener('recKillList', function(kills){
+      //order in ascending order
+      kills.sort(function(a,b){ 
+        if (!a) a = [0];
+        if (!b) b = [0];
+        return a[0] < b[0]
+      });
+      console.log(kills);
+  });
 
-  function genHighScores(event) {
-    console.log("genScores");
-    // HOW DO I GET OT THE getKills(); Function?!
-    
-
-  }
-
-  //generate the syrvival list.
-  var scoreButton = $("surv-button");
-  scoreButton.addEventListener("touchend", genSurvival);
-
-  function genSurvival(event) {
-    console.log("genSurvival");
-
-  }
+  //also do survival.
 
 
 

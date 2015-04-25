@@ -50,16 +50,14 @@ requirejs([
 
     var Player = function(netPlayer, name) {
       this.netPlayer = netPlayer;
-      this.name = name;
+      this.name = MortalKombat.get();
       this.id = uuid();
       
-      console.log( 'creating a new bike object' );
-      this.bike = new bike(netPlayer, name, this.id, S.playerSize, S.playerLength);
+      this.bike = new bike(netPlayer, this.name, this.id, S.playerSize, S.playerLength);
       this.color = this.bike.color;
       
       queue.add( this.bike );
       
-
       // set the controller background color
       netPlayer.sendCmd('setColor', this.color);
 
@@ -68,6 +66,7 @@ requirejs([
       netPlayer.addEventListener('color', Player.prototype.setColor.bind(this));
       netPlayer.addEventListener('setName', Player.prototype.setName.bind(this));
       netPlayer.addEventListener('busy', Player.prototype.busy.bind(this));
+
     };
 
     // The player disconnected.
@@ -86,7 +85,11 @@ requirejs([
       
     };
     Player.prototype.setColor = function(cmd) {};
-    Player.prototype.setName = function(cmd) {};
+    Player.prototype.setName = function(o) {
+      if(o.name === "") return;
+      this.name = o.name;
+      this.bike.name = o.name;
+    };
     Player.prototype.busy = function(cmd) {};
 
     var server = new GameServer();
@@ -97,9 +100,13 @@ requirejs([
       new Player(netPlayer, name);
     });
 
+    //send out the kills to all the controllers
+    setInterval(function(){
+      server.broadcastCmd('recKillList', updateMasterScoreList());
+    }, 1500);
+
     GameSupport.run(globals, hft_draw);
 
-    
 
 
 });

@@ -1,7 +1,7 @@
 
 //
 // Game.js
-// SHOULD THIS BECOME PART OF GAME.JS?
+// 
 //
 
 //Constants
@@ -13,6 +13,10 @@ var frames = 0;
 var playerColor;
 var players = [];
 var powerups = [];
+var postSetup = false ;
+
+var masterKillList = [];
+var masterSurvivalList = [];
 
 
 //
@@ -33,6 +37,14 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   S.bgColor = color(0,0,0);
   background(S.bgColor);
+
+  for(var i=0; i<10; i++){
+    masterKillList.push({score:0, name: '', id: 0 });
+    masterSurvivalList.push({time:0, name: '', id: 0 });
+  }
+
+  postSetup = true ; 
+
 };
 
 
@@ -45,7 +57,9 @@ function draw(){}
 // Draw
 //
 function hft_draw(init) {
+  if (! postSetup) return;
   frames++;
+
 
   //render bikes to screen
   if (frames % S.drawFrame != 0) return;
@@ -85,47 +99,140 @@ function hft_draw(init) {
 };
 
 
-//I WASNT SURE THE BEST PLACE TO PUT THIS......
-// get an array of the scores of all players and sort by ascending. 
-function getKills(){
-  var scores = [];
 
+function updateMasterScoreList(){
   for(i=0;i<players.length; i++){
     if (players[i] == null) continue; 
-    var score = players[i].score ;
-    var name = players[i].name ;
-    scores[i] = [score,name];
+    var player = players[i];
+    //get survival time
+    var survivalTime = Date.now() - player.time;
+    // the stats for this player
+    var playerStats = {
+      score: player.score,
+      time: survivalTime,
+      name: player.name,
+      id: player.playerID
+    };
 
+    masterKillList     = updateScoreList(playerStats, 'score', masterKillList);
+    masterSurvivalList = updateScoreList(playerStats, 'time', masterSurvivalList);
+
+  } 
+
+  return [masterKillList, masterSurvivalList];
+}
+
+
+/**
+ * util to update highscores list given the list to update and the type of list to update
+ * 
+ * @param  {object} player - the player object
+ * @param  {object} playerStats - the players stats object
+ * @param  {string} type - the type of list, either 'score', or 'time'
+ * @param  {array} list - the list to use, (masterKillList or masterSurvivalList)
+ * 
+ * @return {array}
+ */
+function updateScoreList(playerStats, type, list){
+  var results = list;
+  var onTheList = null;
+
+  for(var x = 0; x < results.length; x++){
+    var hsPlayer = results[x];
+    // Q: are we on the list?
+    if (playerStats.id == hsPlayer.id){
+      // A: yes we are on the list!
+      onTheList = x;
+      break;
+    }
   }
 
-  //give the list in order from hightst to lowest 
-  scores.sort();
-  scores.reverse();
-  return scores; // sometimes this return one undefined for whatever reason.
+  // Try to add us to the master kill list!@!@!@!@!@### X_X
+  outOfJail:
+  for(var x = 0; x < results.length; x++){
+    var hsPlayer = results[x];
+    
+    // Are we better than anyone on the list?
+    if (playerStats[type] > hsPlayer[type]){
 
-}
+      // we are not on the list yet, so add us
+      if (onTheList === null) {
+        results.splice(x,0, playerStats);
+        results.pop();
+        break;
+      }
 
+      // we're on the list: 
+      // are we the leader?
+      if (x == 0){
+        // we are the leader already, but we got a better score so update it!
+        results[x] = playerStats;
+        break;
+      }
 
-function getSurvival(){
-  var survival = [];
+      // We're on the list, but we're not the leader:
+      // Q: Are we better than our top score???
+      if (playerStats[type] > results[onTheList][type]){
+        // A: Yes
+        // remove ourself from the list
+        results.splice(onTheList, 1);
 
-  for(i=0;i<players.length; i++){
-    if (players[i] == null) continue; 
-
-    var name = players[i].name ;
-    var now = Date.now();
-    var playerBirth = players[i].time;
-    var survivalTime = now - playerBirth
-
-    //console.log(readableMS(survivalTime));
-    survival[i] = [survivalTime,name];
+        // then add ourself back into the list at the right spot
+        for(var y = 0; y < results.length; y++){
+          var hsPlayerY = results[y];
+          if (playerStats[type] >= hsPlayerY[type]){
+            results.splice(y, 0, playerStats);
+            break outOfJail;
+          }
+        }
+      }
     }
+  }
+  return results;
+}; // end of updateKillList
 
-    survival.sort();
-    survival.reverse();
-    return survival;
 
-}
+
+
+
+// //I WASNT SURE THE BEST PLACE TO PUT THIS......
+// // get an array of the scores of all players and sort by ascending. 
+// function getKills(){
+//   var scores = [];
+
+//   for(i=0;i<players.length; i++){
+//     if (players[i] == null) continue; 
+//     var score = players[i].score ;
+//     var name = players[i].name ;
+//     scores[i] = [score,name];
+
+//   }
+//   return scores; // sometimes this return one undefined for whatever reason.
+
+// }
+
+// //Combine with the function above. 
+// // get an array of the survival time of all players and sort by ascending. 
+// function getSurvival(){
+//   var survival = [];
+
+//   for(i=0;i<players.length; i++){
+//     if (players[i] == null) continue; 
+
+//     var name = players[i].name ;
+//     var now = Date.now();
+//     var playerBirth = players[i].time;
+//     var survivalTime = now - playerBirth
+
+//     //console.log(readableMS(survivalTime));
+//     survival[i] = [survivalTime,name];
+
+//     }
+//     //do this on the controller
+//     survival.sort(function(a,b){ return a[0] < b[0]});
+//     return survival;
+
+// }
 
 
 
