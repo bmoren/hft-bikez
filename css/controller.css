@@ -87,7 +87,7 @@
     position:absolute;
     opacity:0.8;
 
-    border:2px solid #fff;
+    border:10px solid #000;
     /* center magic */
     text-align:center;
     white-space:nowrap;
@@ -103,7 +103,7 @@
 #buttons .button span {
     font-size:60px;
     color:#000;
-    background:#fff;
+    /*background:#fff;*/
     font-weight:bold;
     width:80px;
     height:80px;
@@ -119,7 +119,7 @@
     bottom:50%;
     left:33.3%;
     /*border-bottom:5px solid #fff;*/
-    width:33.6% !important;
+    width:33.4% !important;
 }
 
 #button-up span, #button-down span { top:28% !important; }
@@ -129,7 +129,7 @@
     bottom:0;
     left:33.3%;
     /*border-top:5px solid #fff;*/
-    width:33.6% !important;
+    width:33.4% !important;
 }
 #button-left {
     top:0;

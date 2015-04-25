@@ -46,7 +46,7 @@ function inverseRGB(r,g,b){
 	var iG = 255 - g;
 	var iB = 255 - b;
 
-	return iR + "," + iG + "," + iB;
+	return "rgb(" + iR + "," + iG + "," + iB + ")";
 
 }
 

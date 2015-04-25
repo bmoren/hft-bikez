@@ -111,21 +111,36 @@ requirejs([
   // dom elements for status message and background color
   var statusElem = $("gamestatus");
   var colorElem = $("buttons");
-  var buttonBorder = $("button");
+  var buttonBorder = document.getElementsByClassName('button');
+  var buttonArrows = document.getElementsByTagName('span');
+
+  console.log(buttonArrows);
 
   //
-  // Set the controllers background color!
+  // Set the controllers colors!
   //
   client.addEventListener('setColor', function(c){
-    console.log('setting color to ', String(c))
+    console.log('setting color to ', String(c.colorString))
     colorElem.style.backgroundColor = c.colorString;
+    console.log(c);
     
-    // var r = c.rgba[0];
-    // var g = c.rgba[1];
-    // var b = c.rgba[2];
+    var r = c.rgba[0];
+    var g = c.rgba[1];
+    var b = c.rgba[2];
 
-    // buttonBorder.style.borderColor = "rgb("+String(inverseRGB(r,g,b))+")";
+    var inverseColor = inverseRGB(r,g,b)
+
+    for(var i = 0; i < buttonBorder.length; i++) {
+      buttonBorder[i].style.borderColor = inverseColor;
+    }
+
+    for(var i = 0; i < buttonArrows.length; i++) {
+      buttonArrows[i].style.color = inverseColor;
+    }
+
   });
+
+
 
   client.addEventListener('recKillList', function(kills){
       //order in ascending order
