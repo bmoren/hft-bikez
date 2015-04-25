@@ -73,10 +73,6 @@ requirejs([
     ],
   });
 
-  // dom elements for status message and background color
-  var statusElem = $("gamestatus");
-  var colorElem = $("display");
-
   var client = new GameClient();
 
   // Note: CommonUI handles these events for almost all the samples.
@@ -111,12 +107,24 @@ requirejs([
     client.sendCmd('move', _RIGHT);
   };
 
+
+  // dom elements for status message and background color
+  var statusElem = $("gamestatus");
+  var colorElem = $("buttons");
+  var buttonBorder = $("button");
+
   //
   // Set the controllers background color!
   //
   client.addEventListener('setColor', function(c){
     console.log('setting color to ', String(c))
     colorElem.style.backgroundColor = c.colorString;
+    
+    // var r = c.rgba[0];
+    // var g = c.rgba[1];
+    // var b = c.rgba[2];
+
+    // buttonBorder.style.borderColor = "rgb("+String(inverseRGB(r,g,b))+")";
   });
 
   client.addEventListener('recKillList', function(kills){

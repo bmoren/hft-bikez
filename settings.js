@@ -13,9 +13,9 @@ var S = {
   //POWERUPS
   poweruplist: [
     'size',              // Changes the players size and speed
-    'ghost',             // cannot kill or be killed
+    //'ghost',             // cannot kill or be killed
     'freeze',            // Stop in place for a short while
-    'psyMode',           // stop background refresh for a short while
+    //'psyMode',           // stop background refresh for a short while
   ],
   drawPowerup: 60,       // how often to refresh the powerups, lower is faster
   numPU: 4,              // how many powerups to display at any one time?

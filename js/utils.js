@@ -36,6 +36,12 @@ function inverseColor(c){
 
 // this is for RGB css property
 function inverseRGB(r,g,b){
+  // var rgb = color.split(',');
+
+  // var r = rgb[1];
+  // var g = rgb[2];
+  // var b = rgb[3];
+
 	var iR = 255 - r;
 	var iG = 255 - g;
 	var iB = 255 - b;

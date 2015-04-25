@@ -71,7 +71,7 @@
     bottom: 0px;
     left:   0px;
     right:  0px;
-    border:1px solid #fff;
+    /*border:1px solid #fff;*/
 
     -moz-user-select: none;
     -webkit-user-select: none;
