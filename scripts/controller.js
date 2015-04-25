@@ -113,7 +113,7 @@ requirejs([
   var colorElem = $("buttons");
   var buttonBorder = document.getElementsByClassName('button');
   var buttonArrows = document.getElementsByTagName('span');
-  var killList = $("killList");
+
 
   //
   // Set the controllers colors!
@@ -139,13 +139,16 @@ requirejs([
   });
 
 
+ var killList = $("killList");
+ var survivalList = $("survivalList");
 
   client.addEventListener('recHighScores', function(scores){
       console.log(scores);
 
       // scores[0]; //kills list
-      var list = document.createElement('div');
+      var tempKillList = document.createElement('div');
       // scores[1]; //survival list
+      var tempSurvivalList = document.createElement('div');
 
       //these loops could probubly be collapsed since their both 10 long....
       for(var i =0; i < scores[0].length; i++){
@@ -153,16 +156,37 @@ requirejs([
         var points = scores[0][i].score;
         // console.log(name,points);
 
-              // Create the list item:
+              // Create the tempKillList item:
               var item = document.createElement('div');
               // Set its contents:
               item.appendChild(document.createTextNode(points + " " + name));
+              // Add it to the tempKillList:
+              tempKillList.appendChild(item);
+      }
+
+      //console.log(tempKillList);
+      killList.innerHTML = nodeToString(tempKillList);
+
+
+      for(var i =0; i < scores[1].length; i++){
+        var name = String(scores[1][i].name);
+        var time = readableMS(scores[1][i].time);
+        // console.log(name,points);
+
+              // Create the list item:
+              var item = document.createElement('div');
+              // Set its contents:
+              item.appendChild(document.createTextNode(time + " " + name));
               // Add it to the list:
-              list.appendChild(item);
+              tempSurvivalList .appendChild(item);
       }
 
       //console.log(list);
-      killList.innerHTML = nodeToString(list);
+      survivalList.innerHTML = nodeToString(tempSurvivalList);
+
+
+
+
 
 
 

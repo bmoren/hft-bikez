@@ -183,16 +183,13 @@ body{
     width:50%;
     height:100%;
     float:left;
-    font-size: 12px
+    font-size: 12px;
+    line-height: 20px
 }
 
 
 #kills h3, #survivals h3{
  /*border-bottom: 3px solid red;*/
-}
-
-#killList{
-    line-height: 20px
 }
 
 
