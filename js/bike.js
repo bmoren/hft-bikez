@@ -96,7 +96,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     var newlen = this.len + length;
   
   // randomly add or subtract length
-    if (random()> 0) {
+    if (random()> .5) {
 
       // don't get longer than the screen width.
       if ((this.len + length) > (width/this.bikeSize - 1)) {
