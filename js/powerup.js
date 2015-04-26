@@ -12,7 +12,7 @@ function powerUp(type){
   this.x = random(width - this.size);
   this.y = random(height - this.size);
 
-  //types: size, ghost, freeze, psyMode, 
+  //types: size, ghost, freeze, psyMode, length
   this.type = type;
 
   this.display = function(){
@@ -50,6 +50,8 @@ function powerUp(type){
       rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
       fill(255);
       text("P",this.x,this.y+(this.size-3));
+    }else if(this.type == 'length'){
+      text("L",this.x,this.y+(this.size-5));
     }
   }
 

@@ -85,7 +85,58 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     if (!smaller && diff > size) this.bikeSize = (oldSize*2)-3;
   };
 
+
+  this.relength = function(length){
+
+    var origlen = this.len;
+    var newlen = this.len + length;
+  
+  // randomly add or subtract length
+    if (random()>.5) {
+
+      // don't get longer than the screen width
+      if (newlen > (width/this.bikeSize - 1)) {
+        this.len = round(width/this.bikeSize - 1);
+      } else {
+      this.len = this.len + length;
+      }
+    } else {
+
+      // don't get shorter than 0
+        if ((this.len - length) < 1) {
+          this.len = 0;
+           } else {
+            this.len = this.len - length;
+            }
+    }
+
+    //need to rebuild the segment array after length change, because length is only set once
+    //keep it on the whole number grid
+
+    for(i=0; i < this.len; i++){
+      this.segment[i] = this.segment[i]//[this.x+(i*this.bikeSize), this.y];
+    }
+
+    // if length grows then needs to add new segments to the end.
+    if (this.len > origlen) {
+
+      for(i=origlen; i < this.len; i++){
+
+        // use last segment as the starting point to grow extra length
+        var lastposx = this.segment[origlen-1][0]
+        var lastposy = this.segment[origlen-1][1]
+        
+        this.segment[i] = [lastposx+(i*this.bikeSize), lastposy];
+      }
+    }
+
+    this.display();
+
+  };
+
+
   this.display = function(frames) {
+
     noStroke();
     // draw segments (but not the head)
     fill(this.color);
@@ -153,8 +204,10 @@ function bike(netPlayer, name, playerID, bikeSz, len){
       setTimeout(function(){
         S.clearBG = true ;
       }, 5000); 
-
-
+    }else 
+    if(type == "length"){
+      var length = round(this.len/4);
+      this.relength(length);
     }
   };
 
