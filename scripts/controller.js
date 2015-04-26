@@ -146,7 +146,7 @@ requirejs([
   var survivalNames = $("survivalNames");
 
   client.addEventListener('recHighScores', function(scores){
-      // console.log(scores);
+      console.log(scores);
 
       // scores[0]; //kills list
       var tempKillList = document.createElement('div');
@@ -165,7 +165,7 @@ requirejs([
               var item = document.createElement('div');
               var item2 = document.createElement('div');
               // Set its contents:
-              item2.appendChild(document.createTextNode(name.substring(0, 10)));
+              item2.appendChild(document.createTextNode(name.substring(0, 8)));
               item.appendChild(document.createTextNode(points));
               // Add it to the tempKillList:
               tempKillListName.appendChild(item2);
@@ -187,7 +187,7 @@ requirejs([
               var item2 = document.createElement('div');
               // Set its contents:
               item.appendChild(document.createTextNode(time));
-              item2.appendChild(document.createTextNode(name.substring(0, 10)));
+              item2.appendChild(document.createTextNode(name.substring(0, 8)));
               // Add it to the list:
               tempSurvivalList.appendChild(item);
               tempSurvivalListName.appendChild(item2);
