@@ -162,6 +162,8 @@ body{
 
 #waiting{
     font-family: tron, sans-serif;
+    line-height: 4vw;
+    font-size: 2.5vw;
 }
 
 
@@ -170,7 +172,7 @@ body{
     top:0;
     left:0;
     height:100%;
-    width:65%;
+    width:70%;
     /*background-color: red;*/
     padding:20px;
     border-right: 3px solid white;
@@ -183,8 +185,7 @@ body{
     width:50%;
     height:100%;
     float:left;
-    font-size: 12px;
-    line-height: 20px
+    padding: 5px;
 }
 
 
@@ -192,26 +193,50 @@ body{
  /*border-bottom: 3px solid red;*/
 }
 
+#killNames, #survivalNames{
+    position: relative;
+    /*background-color: blue;*/
+    width:50%;
+    float: left;
+}
+
+#killList{
+    position: relative;
+    /*background-color: red;*/
+    width:50%;
+    float: left;
+    text-align: right;
+    border-right: 1px white solid;
+    padding-right:25px;
+}
+
+#survivalList{
+    position: relative;
+    /*background-color: red;*/
+    width:50%;
+    float: left;
+    /*padding-right:30px;*/
+    text-align: right;
+}
 
 #queuePos{
     position: absolute;
     top:0;
-    left:65%;
+    left:70%;
     /*background-color: blue;*/
     height: 100%;
-    width:35%;
+    width:30%;
     padding:20px;
-    font-size: 20px;
     text-align: center;
 
 }
 
 #waitNum{
-    font-size: 80px;
+    font-size: 10vw;
     line-height: 0px;
 }
 
-.clear{clear:both;}
+/*.clear{clear:both;}*/
 
 
 
