@@ -82,7 +82,11 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   	var smaller = (oldSize > size) ? true : false;
     var diff = (size-oldSize);
     // maybe help to prevent killing self when 'growing' ??
-    if (!smaller && diff > size) this.bikeSize = (oldSize*2)-3;
+    //if (!smaller && diff > size) this.bikeSize = (oldSize*2)-3;
+    if ((this.bikeSize*this.len) > width) {
+      this.bikeSize = oldSize;
+    }
+
   };
 
 
@@ -92,10 +96,10 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     var newlen = this.len + length;
   
   // randomly add or subtract length
-    if (random()> .5) {
+    if (random()> 0) {
 
       // don't get longer than the screen width.
-      if (newlen > (width/this.bikeSize - 1)) {
+      if ((this.len + length) > (width/this.bikeSize - 1)) {
         this.len = round(width/this.bikeSize - 1);
       } else {
       this.len = this.len + length;
@@ -119,7 +123,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
         this.segment[i] = [lastposx+(i*this.bikeSize), lastposy];
         }
       } else {
-        //need to rebuild the segment arrays after length shortens
+        //need to rebuild the segment array after length shortens
         this.segment = subset(this.segment,0,this.len);
       }
 
