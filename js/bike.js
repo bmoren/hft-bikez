@@ -92,9 +92,9 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     var newlen = this.len + length;
   
   // randomly add or subtract length
-    if (random()>.5) {
+    if (random()> .5) {
 
-      // don't get longer than the screen width
+      // don't get longer than the screen width.
       if (newlen > (width/this.bikeSize - 1)) {
         this.len = round(width/this.bikeSize - 1);
       } else {
@@ -110,26 +110,20 @@ function bike(netPlayer, name, playerID, bikeSz, len){
             }
     }
 
-    //need to rebuild the segment array after length change, because length is only set once
-    //keep it on the whole number grid
-
-    for(i=0; i < this.len; i++){
-      this.segment[i] = this.segment[i]//[this.x+(i*this.bikeSize), this.y];
-    }
-
     // if length grows then needs to add new segments to the end.
     if (this.len > origlen) {
-
       for(i=origlen; i < this.len; i++){
-
         // use last segment as the starting point to grow extra length
-        var lastposx = this.segment[origlen-1][0]
-        var lastposy = this.segment[origlen-1][1]
-        
+        var lastposx = this.segment[origlen-1][0];
+        var lastposy = this.segment[origlen-1][1];
         this.segment[i] = [lastposx+(i*this.bikeSize), lastposy];
+        }
+      } else {
+        //need to rebuild the segment arrays after length shortens
+        this.segment = subset(this.segment,0,this.len);
       }
-    }
 
+    // need to call display or crashes... unsure why right now.
     this.display();
 
   };
