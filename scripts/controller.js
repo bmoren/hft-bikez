@@ -139,13 +139,14 @@ requirejs([
   });
 
 
+  //Build and display highScore Lists..... (this seems overly complicated)
   var killList = $("killList");
   var killNames = $("killNames");
   var survivalList = $("survivalList");
   var survivalNames = $("survivalNames");
 
   client.addEventListener('recHighScores', function(scores){
-      console.log(scores);
+      // console.log(scores);
 
       // scores[0]; //kills list
       var tempKillList = document.createElement('div');
@@ -201,11 +202,7 @@ requirejs([
 
 
 
-  });
-
-  //also do survival.
-
-
+  }); //close recHighScores event listener
 
 
 

@@ -203,11 +203,11 @@ body{
 #killList{
     position: relative;
     /*background-color: red;*/
-    width:50%;
+    width:45%;
     float: left;
     text-align: right;
     border-right: 1px white solid;
-    padding-right:25px;
+    padding-right:20px;
 }
 
 #survivalList{
