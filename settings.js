@@ -16,7 +16,7 @@ var S = {
     'ghost',             // cannot kill or be killed
     //'freeze',            // (works) Stop in place for a short while
     //'psyMode',           // stop background refresh for a short while
-    //'length',            // (works) adds or subtracts length of tail
+    'length',            // (works) adds or subtracts length of tail
     'star'                // mario star invincibility
   ],
   drawPowerup: 60,       // how often to refresh the powerups, lower is faster
