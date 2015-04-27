@@ -248,7 +248,10 @@ function bike(netPlayer, name, playerID, bikeSz, len){
             // destroy the other player
             player.destroy();
           }
-          // destroy yourself
+          // destroy yourself, unless you are mario star
+          if(this.star == true) {
+              break dance;
+            }
           this.destroy();
           break dance;
         }
