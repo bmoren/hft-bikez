@@ -38,7 +38,8 @@ function powerUp(type){
       stroke(255);
       strokeWeight(6);
       strokeJoin(ROUND);
-      fill(255);
+      fill(0);
+      rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
     }else if(this.type == 'freeze'){
       stroke(12,181,247);
       strokeWeight(6);
@@ -52,6 +53,13 @@ function powerUp(type){
       text("P",this.x,this.y+(this.size-3));
     }else if(this.type == 'length'){
       text("L",this.x,this.y+(this.size-5));
+    }else if(this.type == 'star'){
+      fill(255,255,0);
+      strokeWeight(0);
+      // change from star of david to actual star eventually
+      var yoffset = round(this.size / 3); 
+      triangle(this.x + (this.size/2), this.y - yoffset, this.x, (this.y + this.size - yoffset), (this.x+this.size), (this.y+this.size-yoffset));
+      triangle(this.x, this.y, (this.x + this.size), this.y, this.x + (this.size/2), (this.y+this.size)); 
     }
   }
 

@@ -15,6 +15,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.segment = [  ] ; //keep track of each segment, how long is the bike?
   this.frozen = false;  //is there a frozen powerup?
   this.ghost = false;
+  this.star = false;
 
   //for testing score before adding the scorekeeping functionality.
   this.score = round(random(1,100));
@@ -206,6 +207,14 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     if(type == "length"){
       var length = round(this.len/4);
       this.relength(length);
+    }else   
+    if(type == "star"){
+      //right now this is star mode, you cant be killed BUT YOU CAN KILL!!!!
+      this.star = true;
+      var that = this; // store the this so that we can see it in the anon function in the timeout
+      setTimeout(function(){
+        that.star = false ;
+      }, 2000);
     }
   };
 
@@ -217,6 +226,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     var id = this.playerID;
 
     if(this.ghost == true) return;
+    if(this.star == true) return;
 
     // loop through all players
     dance:
