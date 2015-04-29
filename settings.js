@@ -35,4 +35,43 @@ var S = {
 
 };
 
+// master settings list for powerups. is this a good location for this? thoughts?
+// just a start.
+
+var powerup_name = {                     // name of powerup
+
+  this.freq = freq;           // how frequently to create this powerup. 1 = infrequent; 5 = frequent
+  this.appear = appear;   // how long should the powerup be displayed in millis
+  this.duration = duration;  // how long the powerup lasts
+
+};
+
+var mariostar = {
+
+  this.freq = 1;           // how frequently to create this powerup. 1 = infrequent; 5 = frequent
+  this.appear = 10000;   // how long should the powerup be displayed in millis
+  this.duration = 10000;  // how long the powerup lasts
+  this.accelerate = false; // accelerated game play. more powerups. maybe a future option?
+
+};
+
+var size = {
+
+  this.freq = 5;           // how frequently to create this powerup. 1 = infrequent; 5 = frequent
+  this.appear = 10000;   // how long should the powerup be displayed in millis
+  this.duration = 10000;  // how long the powerup lasts
+  this.accelerate = false; // accelerated game play. more powerups. maybe a future option?
+
+};
+
+var ghost = {
+
+  this.freq = 3;           // how frequently to create this powerup. 1 = infrequent; 5 = frequent
+  this.appear = 10000;   // how long should the powerup be displayed in millis
+  this.duration = 10000;  // how long the powerup lasts
+  this.accelerate = false; // accelerated game play. more powerups. maybe a future option?
+
+};
+
+
 
