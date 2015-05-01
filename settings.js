@@ -41,8 +41,19 @@ var S = {
 
 // name should probably change because of conflict with other powerup array
 
+var mariostar = {
+
+  this.freq = 1;
+  this.appear = 10000;
+  this.duration = 10000;
+  this.accelerate = false;
+
+}
+
+
 // var powerup = {                     
 
+// //   this.name_ = 'mariostar';
 // //   this.freq = freq;           // how frequently to create this powerup. 1 = infrequent; 5 = frequent
 // //   this.appear = appear;   // how long should the powerup be displayed in millis
 // //   this.duration = duration;  // how long the powerup lasts
@@ -50,19 +61,19 @@ var S = {
 
 // // the following is probably better
 
-//   powerup.name_[1] = "mariostar";
+//   powerup.name_[1] = 'mariostar';
 //   powerup.freq[1] = 1;            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
 //   powerup.appear = 10000;   // how long should the powerup be displayed in millis
 //   powerup.duration[1] = 10000;  // how long the powerup lasts
 //   powerup.accelerate[1] = false; // accelerated game play. more powerups. maybe a future option?
 
-//   powerup.name_[2] = "size";
+//   powerup.name_[2] = 'size';
 //   powerup.freq[2] = 5;            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
 //   powerup.appear = 10000;   // how long should the powerup be displayed in millis
 //   powerup.duration[2] = 10000;  // how long the powerup lasts
 //   powerup.accelerate[2] = false; // accelerated game play. more powerups. maybe a future option?
 
-//   powerup.name_[3] = "ghost";
+//   powerup.name_[3] = 'ghost';
 //   powerup.freq[3] = 3;            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
 //   powerup.appear = 10000;   // how long should the powerup be displayed in millis
 //   powerup.duration[3] = 10000;  // how long the powerup lasts
