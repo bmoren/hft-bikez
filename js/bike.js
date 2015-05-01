@@ -198,20 +198,20 @@ function bike(netPlayer, name, playerID, bikeSz, len){
       var that = this; // store the this so that we can see it in the anon function in the timeout
       setTimeout(function(){
         that.ghost = false ;
-      }, 2000); // should this be a rand value set by the poweUp object?
+      }, poweruplist[2].duration); // should this be a rand value set by the poweUp object?
     }else 
     if(type == "freeze"){
       this.frozen = true;
       var that = this; // store the this so that we can see it in the anon function in the timeout
       setTimeout(function(){
         that.frozen = false ;
-      }, 2000); // should this be a rand value set by the poweUp object?
+      }, poweruplist[4].duration); // should this be a rand value set by the poweUp object?
     }else 
     if(type == "psyMode"){
       S.clearBG = false; 
       setTimeout(function(){
         S.clearBG = true ;
-      }, 5000); 
+      }, poweruplist[5].duration); 
     }else 
     if(type == "length"){
       var length = round(this.len/4);
@@ -223,7 +223,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
       var that = this; // store the this so that we can see it in the anon function in the timeout
       setTimeout(function(){
         that.star = false ;
-      }, 10000);
+      }, poweruplist[0].duration); // settings.js
     }
   };
 

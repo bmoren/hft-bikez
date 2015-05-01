@@ -35,36 +35,52 @@ var S = {
 
 };
 
-
 // master settings list for powerups. is this a good location for this? thoughts?
-// just a start.
+// this should probably be moved into S, but can't think of a good way to do this.
 
 // name should probably change because of conflict with other powerup array
 
-var mariostar = {
+var poweruplist = [
+  {
+    'name': 'star', 
+    'freq': 3,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'appear': 10000,
+    'duration': 10000,
+    'accelerate': false},
 
-  freq: 1,            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
-  appear: 10000,      // how long should the powerup be displayed in millis
-  duration: 10000,    // how long the powerup lasts
-//  accelerate: false,  // accelerated game play. more powerups. maybe a future option?
+  {
+    'name': 'size',
+    'freq': 5,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'appear': 10000,    // how long should the powerup be displayed in millis
+    'duration': 10000,  //  how long the powerup lasts
+    'accelerate': false},   // accelerated game play. more powerups. maybe a future option?
 
-};
+  {
+    'name': 'ghost',
+    'freq': 3,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'appear': 10000,    // how long should the powerup be displayed in millis
+    'duration': 5000,  // how long the powerup lasts
+    'accelerate': false},   // accelerated game play. more powerups. maybe a future option?
 
-var size = {
+  {
+    'name': 'length',
+    'freq': 0,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'appear': 10000,    // how long should the powerup be displayed in millis
+    'duration': 10000,  // how long the powerup lasts
+    'accelerate': false},    // accelerated game play. more powerups. maybe a future option?
 
-  freq: 5,            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
-  appear: 10000,      // how long should the powerup be displayed in millis
-  duration: 10000,    // how long the powerup lasts
-//  accelerate: false,  // accelerated game play. more powerups. maybe a future option?
+  {
+    'name': 'freeze',
+    'freq': 0,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'appear': 10000,    // how long should the powerup be displayed in millis
+    'duration': 2000,  // how long the powerup lasts
+    'accelerate': false},    // accelerated game play. more powerups. maybe a future option?
 
-};
+  {
+    'name': 'psyMode',
+    'freq': 0,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'appear': 10000,    // how long should the powerup be displayed in millis
+    'duration': 2000,  // how long the powerup lasts
+    'accelerate': false}    // accelerated game play. more powerups. maybe a future option?
 
-var ghost = {
-
-  freq: 3,            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
-  appear: 10000,      // how long should the powerup be displayed in millis
-  duration: 10000,    // how long the powerup lasts
-//  accelerate: false,  // accelerated game play. more powerups. maybe a future option?
-
-};
-
+];

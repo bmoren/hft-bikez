@@ -87,15 +87,38 @@ function hft_draw(init) {
     }
 
   //write powerups to array!
-    if(frames % S.drawPowerup != 0) return;            
-      var choosePU = floor(random(S.poweruplist.length));
-      powerups.push(new powerUp(S.poweruplist[choosePU]));
-      //console.log(powerups);
-      //trim back to the total allowable amount of powerups
-      if(powerups.length >= S.numPU+1){
-        powerups.shift();
-        //powerups.pop();
+
+  if(frames % S.drawPowerup != 0) return;            
+    
+// choose which powerup to push on the basis of freq set in settings.js
+// still setting a max number of powerups via S.numPU
+
+      choose_powerup:
+      for (var i=0;i<poweruplist.length;i++){
+        for (var j=0;j<poweruplist[i].freq;j++){
+          if (Math.random() < .05) {
+            powerups.push(new powerUp(poweruplist[i].name));
+          //console.log(powerups);
+          //trim back to the total allowable amount of powerups
+          if(powerups.length >= S.numPU+1){
+              powerups.shift();
+              //powerups.pop();
+            }
+            break choose_powerup;
+          }
+        }
       }
+
+// see above for this choosePU
+  // if (choosePU != 10) {
+  //     powerups.push(new powerUp(poweruplist[choosePU].name));
+  //     //console.log(powerups);
+  //     //trim back to the total allowable amount of powerups
+  //     if(powerups.length >= S.numPU+1){
+  //       powerups.shift();
+  //       //powerups.pop();
+  //     }
+  //   }
 };
 
 
