@@ -36,3 +36,36 @@ var S = {
 };
 
 
+// master settings list for powerups. is this a good location for this? thoughts?
+// just a start.
+
+// name should probably change because of conflict with other powerup array
+
+// var powerup = {                     
+
+// //   this.freq = freq;           // how frequently to create this powerup. 1 = infrequent; 5 = frequent
+// //   this.appear = appear;   // how long should the powerup be displayed in millis
+// //   this.duration = duration;  // how long the powerup lasts
+// //   this.accelerate = false; // accelerated game play. more powerups. maybe a future option?
+
+// // the following is probably better
+
+//   powerup.name_[1] = "mariostar";
+//   powerup.freq[1] = 1;            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
+//   powerup.appear = 10000;   // how long should the powerup be displayed in millis
+//   powerup.duration[1] = 10000;  // how long the powerup lasts
+//   powerup.accelerate[1] = false; // accelerated game play. more powerups. maybe a future option?
+
+//   powerup.name_[2] = "size";
+//   powerup.freq[2] = 5;            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
+//   powerup.appear = 10000;   // how long should the powerup be displayed in millis
+//   powerup.duration[2] = 10000;  // how long the powerup lasts
+//   powerup.accelerate[2] = false; // accelerated game play. more powerups. maybe a future option?
+
+//   powerup.name_[3] = "ghost";
+//   powerup.freq[3] = 3;            // how frequently to create this powerup. 1 = infrequent; 5 = frequent
+//   powerup.appear = 10000;   // how long should the powerup be displayed in millis
+//   powerup.duration[3] = 10000;  // how long the powerup lasts
+//   powerup.accelerate[3] = false; // accelerated game play. more powerups. maybe a future option?
+
+// };

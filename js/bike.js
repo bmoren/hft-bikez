@@ -138,7 +138,12 @@ function bike(netPlayer, name, playerID, bikeSz, len){
 
     noStroke();
     // draw segments (but not the head)
-    fill(this.color);
+    // if mario stared make look blinky. like the star you are!
+    if (this.star == true){
+      fill(random(255),random(255),random(255));
+    } else {
+      fill(this.color);
+    }
 
     //if your not started then blink!
     if( frames % 5 == 0 && this.started == false){
