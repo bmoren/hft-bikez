@@ -18,8 +18,8 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.star = false;
 
   //for testing score before adding the scorekeeping functionality.
-  this.score = round(random(1,100));
-  //this.score = 0; // how many people you've killed
+  // this.score = round(random(1,100));
+  this.score = 0; // how many people you've killed
   this.time = Date.now();  // how long you've survived
 
   this.control = {}; //a thing
@@ -154,7 +154,11 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     }
 
     // draw the head
-    fill(inverseColor(this.color));
+    if (this.star == true){
+      fill(random(256),random(256),random(256));
+    }else{
+      fill(inverseColor(this.color));
+    }
     this.segment[0][0] = this.x;
     this.segment[0][1] = this.y;
     rect(this.segment[0][0], this.segment[0][1], this.bikeSize, this.bikeSize);
@@ -214,7 +218,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
       var that = this; // store the this so that we can see it in the anon function in the timeout
       setTimeout(function(){
         that.star = false ;
-      }, 2000);
+      }, 10000);
     }
   };
 
@@ -247,12 +251,15 @@ function bike(netPlayer, name, playerID, bikeSz, len){
           if (j == 0){
             // destroy the other player
             player.destroy();
+            // we killed the other player so we get a point
+            this.score++;
           }
           // destroy yourself, unless you are mario star
-          if(this.star == true) {
-              break dance;
-            }
-          this.destroy();
+          if(this.star != true) {
+            this.destroy();
+          }
+          // we died, so the player who killed us gets a point
+          player.score++;
           break dance;
         }
       }
