@@ -20,7 +20,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   //for testing score before adding the scorekeeping functionality.
   // this.score = round(random(1,100));
   this.score = 0; // how many people you've killed
-  this.time = Date.now();  // how long you've survived
+  this.time = 0; // how long you've survived, set this to Date.now() when the player presses "GO"
 
   this.control = {}; //a thing
   this.started = false;

@@ -38,173 +38,126 @@ requirejs([
     'hft/misc/misc',
     'hft/misc/mobilehacks',
     'hft/misc/touch',
+    '../jquery'
   ], function(
     CommonUI,
     GameClient,
     Input,
     Misc,
     MobileHacks,
-    Touch) {
+    Touch,
+    jq) {
 
-  var globals = {
-    debug: true,
-  };
+  $(function(){
 
-  // somehow these are not included in the controller app thing
-  var _UP    = 1;
-  var _DOWN  = 2;
-  var _LEFT  = 3;
-  var _RIGHT = 4;
+    var globals = {
+      debug: true,
+    };
 
-  Misc.applyUrlSettings(globals);
-  MobileHacks.fixHeightHack();
+    // somehow these are not included in the controller app thing
+    var _UP    = 1;
+    var _DOWN  = 2;
+    var _LEFT  = 3;
+    var _RIGHT = 4;
 
-  // fake jquery selectors
-  var $ = document.getElementById.bind(document);
+    Misc.applyUrlSettings(globals);
+    MobileHacks.fixHeightHack();
 
-  // bind events to html buttons
-  Touch.setupButtons({
-    inputElement: $("buttons"),
-    buttons: [
-      { element: $("button-up"), callback: buttonUp, },
-      { element: $("button-down"), callback: buttonDown, },
-      { element: $("button-left"), callback: buttonLeft, },
-      { element: $("button-right"), callback: buttonRight, },
-    ],
+    // fake jquery selectors
+    // var $ = document.getElementById.bind(document);
+
+    // bind events to html buttons
+    Touch.setupButtons({
+      inputElement: $("#buttons")[0],
+      buttons: [
+        { element: $("#button-up")[0], callback: buttonUp, },
+        { element: $("#button-down")[0], callback: buttonDown, },
+        { element: $("#button-left")[0], callback: buttonLeft, },
+        { element: $("#button-right")[0], callback: buttonRight, },
+      ],
+    });
+
+    var client = new GameClient();
+
+    // Note: CommonUI handles these events for almost all the samples.
+    var onConnect = function() {
+      $("#gamestatus").text("you've connected to Game Grid");
+    };
+
+    var onDisconnect = function() {
+      $("#gamestatus").text("you were disconnected from Game Grid");
+    }
+
+    // Because I want the CommonUI to work
+    globals.disconnectFn = onDisconnect;
+    globals.connectFn = onConnect;
+
+    CommonUI.setupStandardControllerUI(client, globals);
+
+
+    //
+    // the sickest shit you ever seen bro
+    //
+    function buttonUp(){
+      client.sendCmd('move', _UP);
+    };
+    function buttonDown(){
+      client.sendCmd('move', _DOWN);
+    };
+    function buttonLeft(){
+      client.sendCmd('move', _LEFT);
+    };
+    function buttonRight(){
+      client.sendCmd('move', _RIGHT);
+    };
+
+    //
+    // Set the controllers colors!
+    //
+    client.addEventListener('setColor', function(c){
+      //console.log('setting color to ', String(c.colorString))
+      $("#buttons").css("background-color", c.colorString) ;
+
+      var r = c.rgba[0];
+      var g = c.rgba[1];
+      var b = c.rgba[2];
+
+      var inverseColor = inverseRGB(r,g,b)
+
+      $('.button').css("border-color", inverseColor);
+      $('#buttons span').css("color", inverseColor);
+
+    });
+
+    client.addEventListener('recHighScores', function(scores){
+        //console.log(scores);
+
+        // add the names and score for the Kill List
+        $('#killNames div').each(function(i){
+          $(this).text( scores[0][i].name );
+        })
+
+        $('#killList div').each(function(i){
+          $(this).text( scores[0][i].score );
+        })
+
+        // add the names and score for the Survival List
+        $('#survivalNames div').each(function(i){
+          $(this).text( scores[1][i].name );
+        })
+
+        $('#survivalList div').each(function(i){
+          $(this).text( scores[1][i].time );
+        })
+
+    }); //close recHighScores event listener
+
   });
 
-  var client = new GameClient();
-
-  // Note: CommonUI handles these events for almost all the samples.
-  var onConnect = function() {
-    statusElem.innerHTML = "you've connected to Game Grid";
-  };
-
-  var onDisconnect = function() {
-    statusElem.innerHTML = "you were disconnected from Game Grid";
+  //for thesting the high score screen
+  window.display = function(){
+    $('#waiting, #playing').toggleClass('active')
   }
-
-  // Because I want the CommonUI to work
-  globals.disconnectFn = onDisconnect;
-  globals.connectFn = onConnect;
-
-  CommonUI.setupStandardControllerUI(client, globals);
-
-
-  //
-  // the sickest shit you ever seen bro
-  //
-  function buttonUp(){
-    client.sendCmd('move', _UP);
-  };
-  function buttonDown(){
-    client.sendCmd('move', _DOWN);
-  };
-  function buttonLeft(){
-    client.sendCmd('move', _LEFT);
-  };
-  function buttonRight(){
-    client.sendCmd('move', _RIGHT);
-  };
-
-
-  // Selecting DOM elements for variouse busisness below!
-  var statusElem = $("gamestatus");
-  var colorElem = $("buttons");
-  var buttonBorder = document.getElementsByClassName('button');
-  var buttonArrows = document.getElementsByTagName('span');
-
-
-  //
-  // Set the controllers colors!
-  //
-  client.addEventListener('setColor', function(c){
-    //console.log('setting color to ', String(c.colorString))
-    colorElem.style.backgroundColor = c.colorString;
-
-    var r = c.rgba[0];
-    var g = c.rgba[1];
-    var b = c.rgba[2];
-
-    var inverseColor = inverseRGB(r,g,b)
-
-    for(var i = 0; i < buttonBorder.length; i++) {
-      buttonBorder[i].style.borderColor = inverseColor;
-    }
-
-    for(var i = 0; i < buttonArrows.length; i++) {
-      buttonArrows[i].style.color = inverseColor;
-    }
-
-  });
-
-
-  //Build and display highScore Lists..... (this seems overly complicated)
-  var killList = $("killList");
-  var killNames = $("killNames");
-  var survivalList = $("survivalList");
-  var survivalNames = $("survivalNames");
-
-  client.addEventListener('recHighScores', function(scores){
-      console.log(scores);
-
-      // scores[0]; //kills list
-      var tempKillList = document.createElement('div');
-      var tempKillListName = document.createElement('div');
-      // scores[1]; //survival list
-      var tempSurvivalList = document.createElement('div');
-      var tempSurvivalListName = document.createElement('div');
-
-      //these loops could probubly be collapsed since their both 10 long....
-      for(var i =0; i < scores[0].length; i++){
-        var name = String(scores[0][i].name);
-        var points = scores[0][i].score;
-        // console.log(name,points);
-
-              // Create the tempKillList item:
-              var item = document.createElement('div');
-              var item2 = document.createElement('div');
-              // Set its contents:
-              item2.appendChild(document.createTextNode(name.substring(0, 8)));
-              item.appendChild(document.createTextNode(points));
-              // Add it to the tempKillList:
-              tempKillListName.appendChild(item2);
-              tempKillList.appendChild(item);
-      }
-
-      //console.log(tempKillList);
-      killList.innerHTML = nodeToString(tempKillList);
-      killNames.innerHTML = nodeToString(tempKillListName);
-
-
-      for(var i =0; i < scores[1].length; i++){
-        var name = String(scores[1][i].name);
-        var time = readableMS(scores[1][i].time);
-        // console.log(name,points);
-
-              // Create the list item:
-              var item = document.createElement('div');
-              var item2 = document.createElement('div');
-              // Set its contents:
-              item.appendChild(document.createTextNode(time));
-              item2.appendChild(document.createTextNode(name.substring(0, 8)));
-              // Add it to the list:
-              tempSurvivalList.appendChild(item);
-              tempSurvivalListName.appendChild(item2);
-      }
-
-      //console.log(list);
-      survivalList.innerHTML = nodeToString(tempSurvivalList);
-      survivalNames.innerHTML = nodeToString(tempSurvivalListName);
-
-
-
-
-
-
-  }); //close recHighScores event listener
-
-
 
 });
 

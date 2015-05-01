@@ -6,8 +6,8 @@
 var S = {
   //PLAYERS
   maxPlayers: 2,         // how many players
-  playerLength: 30,      // length of the players, length also effects speed (length greatly affects framerate capability)
-  playerSize: 15,        // how big are the players
+  playerLength: 40,      // length of the players, length also effects speed (length greatly affects framerate capability)
+  playerSize: 10,        // how big are the players
   drawFrame: 3,          // speed to render the players, lower is faster 
 
   //POWERUPS

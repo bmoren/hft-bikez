@@ -147,12 +147,12 @@ function updateScoreList(playerStats, type, list){
     }
   }
 
-  // Try to add us to the master kill list!@!@!@!@!@### X_X
+  // Try to add us to the master kill list!@!@!@!@!@### X_X_X
   outOfJail:
   for(var x = 0; x < results.length; x++){
     var hsPlayer = results[x];
     
-    // Are we better than anyone on the list?
+    // Are we better than (or equal to) anyone on the list?
     if (playerStats[type] > hsPlayer[type]){
 
       // we are not on the list yet, so add us
@@ -169,6 +169,11 @@ function updateScoreList(playerStats, type, list){
         results[x] = playerStats;
         break;
       }
+      // we have the same score, let's update it anyone (accounting for name changes)
+      // if (playerStats[type] == results[onTheList][type]){
+      //   results[onTheList] = playerStats;
+      //   break;
+      // }
 
       // We're on the list, but we're not the leader:
       // Q: Are we better than our top score???
@@ -190,59 +195,6 @@ function updateScoreList(playerStats, type, list){
   }
   return results;
 }; // end of updateKillList
-
-
-
-
-
-// //I WASNT SURE THE BEST PLACE TO PUT THIS......
-// // get an array of the scores of all players and sort by ascending. 
-// function getKills(){
-//   var scores = [];
-
-//   for(i=0;i<players.length; i++){
-//     if (players[i] == null) continue; 
-//     var score = players[i].score ;
-//     var name = players[i].name ;
-//     scores[i] = [score,name];
-
-//   }
-//   return scores; // sometimes this return one undefined for whatever reason.
-
-// }
-
-// //Combine with the function above. 
-// // get an array of the survival time of all players and sort by ascending. 
-// function getSurvival(){
-//   var survival = [];
-
-//   for(i=0;i<players.length; i++){
-//     if (players[i] == null) continue; 
-
-//     var name = players[i].name ;
-//     var now = Date.now();
-//     var playerBirth = players[i].time;
-//     var survivalTime = now - playerBirth
-
-//     //console.log(readableMS(survivalTime));
-//     survival[i] = [survivalTime,name];
-
-//     }
-//     //do this on the controller
-//     survival.sort(function(a,b){ return a[0] < b[0]});
-//     return survival;
-
-// }
-
-
-
-
-
-
-
-
-
-
 
 
 
