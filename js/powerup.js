@@ -1,7 +1,7 @@
 //
 // Powerups
 //
-
+//
 // **USE POWERUP IS PART OF BIKE.JS
 
 function powerUp(type){
@@ -45,10 +45,10 @@ function powerUp(type){
       strokeWeight(6);
       strokeJoin(ROUND);
       fill(0);
-      rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
+      rect(this.x, this.y, this.size, this.size); 
     }else if( this.type == 'psyMode'){
       fill(random(255),random(255),random(255));
-      rect(this.x, this.y, this.size, this.size); // replace with flickering powerup icons!
+      rect(this.x, this.y, this.size, this.size);
       fill(255);
       text("P",this.x,this.y+(this.size-3));
     }else if(this.type == 'length'){
@@ -77,9 +77,3 @@ function powerUp(type){
  
 } //Close Powerup class
 
-function calculate_powerup_frequency(){
-    for (var i=0;i<poweruplist.length;i++){
-      S.total_freqPU = S.total_freqPU + poweruplist[i].freq;
-    }
-    S.total_freqPU = S.total_freqPU + S.rand_freqPU; 
-  }

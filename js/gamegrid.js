@@ -14,10 +14,10 @@ var playerColor;
 var players = [];
 var powerups = [];
 var postSetup = false ;
+var total_freqPU = 0;      // calculates frequencies of powerups 
 
 var masterKillList = [];
 var masterSurvivalList = [];
-
 
 //
 // Preload
@@ -28,7 +28,6 @@ function preload(){
     masterVolume(0);
   }
 };
-
 
 //
 // Setup
@@ -48,11 +47,8 @@ function setup() {
 
 };
 
-
-
-// this is dead space, p5 eats a chilidog here. 
+// using the HFT render instead of the p5.js draw method. 
 function draw(){}
-
 
 //
 // Draw
@@ -100,7 +96,7 @@ function hft_draw(init) {
       choose_powerup:
       for (var i=0;i<poweruplist.length;i++){
         running_freqcount = running_freqcount + poweruplist[i].freq;
-        if (seed_num <= (running_freqcount/S.total_freqPU)) {
+        if (seed_num <= (running_freqcount/total_freqPU)) {
           powerups.push(new powerUp(poweruplist[i].name));
           //console.log(powerups);
           //trim back to the total allowable amount of powerups
@@ -124,8 +120,6 @@ function hft_draw(init) {
   //   }
 };
 
-
-
 function updateMasterScoreList(){
   for(i=0;i<players.length; i++){
     if (players[i] == null) continue; 
@@ -147,6 +141,14 @@ function updateMasterScoreList(){
 
   return [masterKillList, masterSurvivalList];
 }
+
+
+function calculate_powerup_frequency(){
+    for (var i=0;i<poweruplist.length;i++){
+      total_freqPU = total_freqPU + poweruplist[i].freq;
+    }
+    total_freqPU = total_freqPU + S.rand_freqPU; 
+  }
 
 
 /**

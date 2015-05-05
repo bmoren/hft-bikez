@@ -10,20 +10,9 @@ var S = {
   playerSize: 10,        // how big are the players
   drawFrame: 3,          // speed to render the players, lower is faster 
 
-  //POWERUPS
-  poweruplist: [
-      'size',              // (works) Changes the players size and speed
-      'ghost',             // cannot kill or be killed
-      'freeze',            // (works) Stop in place for a short while
-      'psyMode',           // stop background refresh for a short while
-      'length',            // (works) adds or subtracts length of tail
-      'star'                // mario star invincibility
-  ],
-  
   drawPowerup: 60,       // how often to refresh the powerups, lower is faster
-  numPU: 10,              // how many powerups to display at any one time?
-  total_freqPU: 0,      // calculates frequencies of powerups  
-  rand_freqPU: 1,       // adds randomness of powerup refresh. 0 = inactive; 1 = infrequent; 5 = frequent 
+  numPU: 10,             // how many powerups to display at any one time?
+  rand_freqPU: 1,       // adds randomness of powerup refresh to the total # onscreen. 0 = inactive; 1 = infrequent; 5 = frequent 
 
   //WORLD PARAMS
   soundOn: true,        // true: play sounds. false: no sounds
@@ -43,43 +32,29 @@ var poweruplist = [
   {
     'name': 'star', 
     'freq': 1,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
-    'appear': 10000,    // how long should the powerup be displayed in millis
-    'duration': 10000,  // how long the powerup lasts in millis
-    'accelerate': false}, // accelerated game play. more powerups. maybe a future option?
+    'duration': 10000 },  // how long the powerup efects the player in millis
 
   {
     'name': 'size',
-    'freq': 5,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
-    'appear': 10000,    // how long should the powerup be displayed in millis
-    'duration': 10000,  // permanent?
-    'accelerate': false},   // accelerated game play. more powerups. maybe a future option?
+    'freq': 5,            // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'scale': 2 },         //the size multiplier ex. 2 == 2x bigger or smaller than bikesize
 
   {
     'name': 'ghost',
-    'freq': 1,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
-    'appear': 10000,    // how long should the powerup be displayed in millis
-    'duration': 5000,  // how long the powerup lasts
-    'accelerate': false},   // accelerated game play. more powerups. maybe a future option?
+    'freq': 0,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'duration': 5000 },  // how long the powerup efects the player in millis
 
   {
     'name': 'length',
-    'freq': 1,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
-    'appear': 10000,    // how long should the powerup be displayed in millis
-    'duration': 10000,  // permanent?
-    'accelerate': false},    // accelerated game play. more powerups. maybe a future option?
+    'freq': 0 },      // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
 
   {
     'name': 'freeze',
-    'freq': 1,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
-    'appear': 10000,    // how long should the powerup be displayed in millis
-    'duration': 2000,  // how long the powerup lasts
-    'accelerate': false},    // accelerated game play. more powerups. maybe a future option?
+    'freq': 3,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'duration': 2000 }, // how long the powerup efects the player in millis
 
   {
     'name': 'psyMode',
     'freq': 0,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
-    'appear': 10000,    // how long should the powerup be displayed in millis
-    'duration': 2000,  // how long the powerup lasts
-    'accelerate': false}    // accelerated game play. more powerups. maybe a future option?
-
+    'duration': 2000 },  // how long the powerup efects the player in millis
 ];

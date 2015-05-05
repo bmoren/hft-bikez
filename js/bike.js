@@ -91,47 +91,47 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   };
 
 
-  this.relength = function(length){
+  // this.relength = function(length){
 
-    var origlen = this.len;
-    var newlen = this.len + length;
+  //   var origlen = this.len;
+  //   var newlen = this.len + length;
   
-  // randomly add or subtract length
-    if (random()> .5) {
+  // // randomly add or subtract length
+  //   if (random()> .5) {
 
-      // don't get longer than the screen width.
-      if ((this.len + length) > (width/this.bikeSize - 1)) {
-        this.len = round(width/this.bikeSize - 1);
-      } else {
-      this.len = this.len + length;
-      }
-    } else {
+  //     // don't get longer than the screen width.
+  //     if ((this.len + length) > (width/this.bikeSize - 1)) {
+  //       this.len = round(width/this.bikeSize - 1);
+  //     } else {
+  //     this.len = this.len + length;
+  //     }
+  //   } else {
 
-      // don't get shorter than 0
-        if ((this.len - length) < 1) {
-          this.len = 0;
-           } else {
-            this.len = this.len - length;
-            }
-    }
+  //     // don't get shorter than 0
+  //       if ((this.len - length) < 1) {
+  //         this.len = 0;
+  //          } else {
+  //           this.len = this.len - length;
+  //           }
+  //   }
 
-    // if length grows then needs to add new segments to the end.
-    if (this.len > origlen) {
-      for(i=origlen; i < this.len; i++){
-        // use last segment as the starting point to grow extra length
-        var lastposx = this.segment[origlen-1][0];
-        var lastposy = this.segment[origlen-1][1];
-        this.segment[i] = [lastposx+(i*this.bikeSize), lastposy];
-        }
-      } else {
-        //need to rebuild the segment array after length shortens
-        this.segment = subset(this.segment,0,this.len);
-      }
+  //   // if length grows then needs to add new segments to the end.
+  //   if (this.len > origlen) {
+  //     for(i=origlen; i < this.len; i++){
+  //       // use last segment as the starting point to grow extra length
+  //       var lastposx = this.segment[origlen-1][0];
+  //       var lastposy = this.segment[origlen-1][1];
+  //       this.segment[i] = [lastposx+(i*this.bikeSize), lastposy];
+  //       }
+  //     } else {
+  //       //need to rebuild the segment array after length shortens
+  //       this.segment = subset(this.segment,0,this.len);
+  //     }
 
-    // need to call display or crashes... unsure why right now.
-    this.display();
+  //   // need to call display or crashes... unsure why right now.
+  //   this.display();
 
-  };
+  // };
 
 
   this.display = function(frames) {
@@ -189,7 +189,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
 
   this.usePowerup = function(type){
     if(type == "size"){
-      var size = round(random(S.playerSize/2, S.playerSize*2));
+      var size = ceil(random((S.playerSize/poweruplist[1].scale), (S.playerSize*poweruplist[1].scale)));
       this.resize(size);
     } else 
     if(type == "ghost"){ 
