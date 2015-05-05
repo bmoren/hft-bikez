@@ -94,10 +94,10 @@ function hft_draw(init) {
       var running_freqcount = 0;  // adds randomness to powerup refresh. see setting.js
 
       choose_powerup:
-      for (var i=0;i<poweruplist.length;i++){
-        running_freqcount = running_freqcount + poweruplist[i].freq;
+      for (var i=0;i<S.poweruplist.length;i++){
+        running_freqcount = running_freqcount + S.poweruplist[i].freq;
         if (seed_num <= (running_freqcount/total_freqPU)) {
-          powerups.push(new powerUp(poweruplist[i].name));
+          powerups.push(new powerUp(S.poweruplist[i].name));
           //console.log(powerups);
           //trim back to the total allowable amount of powerups
           if(powerups.length >= S.numPU+1){
@@ -110,7 +110,7 @@ function hft_draw(init) {
 
 // see above for this choosePU
   // if (choosePU != 10) {
-  //     powerups.push(new powerUp(poweruplist[choosePU].name));
+  //     powerups.push(new powerUp(S.poweruplist[choosePU].name));
   //     //console.log(powerups);
   //     //trim back to the total allowable amount of powerups
   //     if(powerups.length >= S.numPU+1){
@@ -144,8 +144,8 @@ function updateMasterScoreList(){
 
 
 function calculate_powerup_frequency(){
-    for (var i=0;i<poweruplist.length;i++){
-      total_freqPU = total_freqPU + poweruplist[i].freq;
+    for (var i=0;i<S.poweruplist.length;i++){
+      total_freqPU = total_freqPU + S.poweruplist[i].freq;
     }
     total_freqPU = total_freqPU + S.rand_freqPU; 
   }
