@@ -41,32 +41,47 @@ requirejs([
   ], function(GameServer, GameSupport, Misc) {
     
     var globals = {
-      debug: true
+      debug: false
     };
-
-    window.queue = new Queue();
 
     Misc.applyUrlSettings(globals);
 
-    var Player = function(netPlayer, name) {
+    var Player = function(netPlayer, name, uuid) {
       this.netPlayer = netPlayer;
-      this.name = MortalKombat.get();
-      this.id = uuid();
+      this.name = name;
+      this.id = uuid;
       
       this.bike = new bike(netPlayer, this.name, this.id, S.playerSize, S.playerLength);
       this.color = this.bike.color;
       
-      queue.add( this.bike );
-      
+      netPlayers[uuid] = this.netPlayer;
+
       // set the controller background color
       netPlayer.sendCmd('setColor', this.color);
 
+
+
+      netPlayer.addEventListener('GO', Player.prototype.GO.bind(this));
+      netPlayer.addEventListener('joinGame', Player.prototype.joinGame.bind(this));
+      
       netPlayer.addEventListener('disconnect', Player.prototype.disconnect.bind(this));
       netPlayer.addEventListener('move', Player.prototype.movePlayer.bind(this));
       netPlayer.addEventListener('color', Player.prototype.setColor.bind(this));
-      netPlayer.addEventListener('setName', Player.prototype.setName.bind(this));
+      // this is how we really change your player name:
+      netPlayer.addEventListener('name', Player.prototype.setName.bind(this));
       netPlayer.addEventListener('busy', Player.prototype.busy.bind(this));
 
+    };
+
+    Player.prototype.GO = function() {
+      this.bike.go();
+    };
+
+    Player.prototype.joinGame = function() {
+      this.bike = new bike(this.netPlayer, this.name, this.id, S.playerSize, S.playerLength);
+      this.netPlayer.sendCmd('setColor', this.bike.color);
+      players.push(this.bike);
+      this.bike.joinGame();
     };
 
     // The player disconnected.
@@ -97,7 +112,21 @@ requirejs([
 
     // A new player has arrived.
     server.addEventListener('playerconnect', function(netPlayer, name) {
-      new Player(netPlayer, name);
+      // leaving the setName method that is used by HFT 
+      netPlayer.addEventListener('setName', function(){});
+
+      netPlayer.sendCmd('getCookie', uuid())
+      netPlayer.addEventListener('createPlayer', function(data){
+
+        // create a new player
+        new Player(netPlayer, data.name, data.uuid);
+
+        // if this is a new player, send them to "ENTER NAME" screen
+        if (data.new_player == true){
+          netPlayer.sendCmd('display', '#enterName');
+        }
+        
+      })
     });
 
     //send out the kills to all the controllers

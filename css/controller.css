@@ -36,10 +36,11 @@
     }
 
 
+#hft-menu { display:none !important;}
 
-#playing, #waiting, #launch { display:none; }
+#playing, #waiting, #go, #enterName { display:none; }
 
-#playing.active, #waiting.active, #launch.active { display:block; }
+#playing.active, #waiting.active, #go.active, #enterName.active { display:block; }
 
 .scoreButton{
     padding: 10px;
@@ -219,7 +220,7 @@ body{
     text-align: right;
 }
 
-#queuePos{
+#readyToPlay{
     position: absolute;
     top:0;
     left:70%;

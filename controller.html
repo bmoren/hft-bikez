@@ -1,7 +1,7 @@
   <script type="text/javascript" src="./js/utils.js"></script>
 
 
-  <div id="playing" class="active">
+  <div id="playing">
       <!-- this is inserted into index.html by build.py -->
     <div id="gamearea" class="fixheight">
       <h1 id="gamestatus">status</h1>
@@ -16,12 +16,25 @@
     </div>
   </div>
 
-  <div id="waiting" >
 
-    <div id="enterName">
-      <!-- enter your name first before anything else! -->
-      <!-- this should be 10 character MAX -->
+  <div id="go">
+    <div>FIND YOURSELF and press the button when you are ready!</div>
+    <div id="goBtn">GO!</div>
+  </div>
+
+
+  <div id="enterName">
+    <h3>Pick a Name</h3>
+    <div>
+      <input type="text" id="inputName" maxlength="6" >
     </div>
+    <div id="inputNameDone">Done</div>
+    <p class="disclaimer">Note: Names cannot be changed. Ever.</p>
+  </div>
+
+
+  <div id="waiting" class="active">
+
 
 
       <div id="scores">
@@ -85,17 +98,17 @@
 
       </div>
 
-      <div id="queuePos" >
-          <p id="waitNum">597</p>
-          <p>people in front of you in the queue</p>
+      <div id="readyToPlay" >
+          <p>Info about what to do n things</p>
+          <!-- <div id="waitingToPlayBtn">WAITING...</div> -->
+          <div id="readyToPlayBtn">JOIN</div>
       </div>
 
   </div>
 
-  <div id="launch">
-    <div id="ready-button">READY?</div>
-    <div id="go-button">GO!</div>
-  </div>
+
+
+  
 
   
 

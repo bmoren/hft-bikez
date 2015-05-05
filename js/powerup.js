@@ -6,8 +6,8 @@
 
 function powerUp(type){
   this.id = uuid();
-  // square power UPS, fool
-  this.size = S.playerSize*3;
+  // square powerips only!!
+  this.size = S.playerSize*S.powerupSize;
 
   this.x = random(width - this.size);
   this.y = random(height - this.size);

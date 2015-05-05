@@ -12,6 +12,7 @@ var _RIGHT = 4;
 var frames = 0;
 var playerColor;
 var players = [];
+var netPlayers = {};
 var powerups = [];
 var postSetup = false ;
 var total_freqPU = 0;      // calculates frequencies of powerups 
@@ -125,6 +126,7 @@ function updateMasterScoreList(){
     if (players[i] == null) continue; 
     var player = players[i];
     //get survival time
+    if (player.time == null) continue;
     var survivalTime = Date.now() - player.time;
     // the stats for this player
     var playerStats = {
@@ -162,8 +164,12 @@ function calculate_powerup_frequency(){
  * @return {array}
  */
 function updateScoreList(playerStats, type, list){
+  
   var results = list;
   var onTheList = null;
+
+  // if the current players time is null, don't do anything
+  if (playerStats[type] == null) return list;
 
   for(var x = 0; x < results.length; x++){
     var hsPlayer = results[x];

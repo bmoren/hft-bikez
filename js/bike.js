@@ -20,7 +20,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   //for testing score before adding the scorekeeping functionality.
   // this.score = round(random(1,100));
   this.score = 0; // how many people you've killed
-  this.time = Date.now(); // how long you've survived, set this to Date.now() when the player presses "GO"
+  this.time = null; // how long you've survived, set this to Date.now() when the player presses "GO"
 
   this.control = {}; //a thing
   this.started = false;
@@ -31,13 +31,18 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.go = function(){
     this.started = true;
     this.frozen = false;
-    this.ghost = false;
+    var kungfoomaster = this;
+    setTimeout(function(){kungfoomaster.ghost = false}, 1000);
+    this.time = Date.now();
   }
 
   //
   // adds frozen and ghost and sets player x/y position and builds segments
   //
-  this.ready = function(){
+  this.joinGame = function(){
+    this.frozen = true;
+    this.ghost = true;
+
     //keep it on the whole number grid
     this.x = floor(random(0, width-(this.bikeSize*2)));
     this.y = floor(random(0, height-(this.bikeSize*2)));
@@ -45,10 +50,8 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     for(i=0; i < this.len; i++){
       this.segment[i] = [this.x+(i*this.bikeSize), this.y];
     }
-
-    this.frozen = true;
-    this.ghost = true;
-
+    var gadget = this;
+    setTimeout(function(){gadget.go()}, S.releaseTime );
   };
 
   this.move = function(hTest) {
@@ -132,6 +135,8 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   //   this.display();
 
   // };
+  // 
+
 
 
   this.display = function(frames) {
@@ -255,16 +260,14 @@ function bike(netPlayer, name, playerID, bikeSz, len){
           // we hit a head of another bike!
           if (j == 0){
             // destroy the other player
-            // if(player.star != true) {
-            //   player.destroy(); //double check this......
-            // }
+            player.destroy(); 
+            
             // we killed the other player so we get a point
             this.score++;
           }
           // destroy yourself, unless you are mario star
-          if(this.star != true) {
-            this.destroy();
-          }
+          this.destroy();
+          
           // we died, so the player who killed us gets a point
           player.score++;
           break dance;
@@ -282,7 +285,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
         //If i do this.x = 0-this.bikeSize, it results in a crash, how to eliminate the gap in the loop from right to left?
   		}
   		if (mode === 'destroy' || mode === 'vertLoop'){
-  			return this.destroy();
+  			return this.destroy(true);
   		}
   	} 
 
@@ -291,7 +294,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   			this.x = width; //loop to right side
   		}
   		if (mode === 'destroy' || mode === 'vertLoop'){
-  			return this.destroy();
+  			return this.destroy(true);
   		}
 	}
 
@@ -300,7 +303,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   			this.y = 0 -this.bikeSize; //loop to top
   		}
   		if (mode === 'destroy' || mode === 'horizLoop'){
-        return this.destroy();
+        return this.destroy(true);
   		}
   	}
 
@@ -309,13 +312,15 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   			this.y = height; //loop to bottom
   		}
   		if (mode === 'destroy' || mode === 'horizLoop'){
-  			return this.destroy();
+  			return this.destroy(true);
   		}
   	}
   }; //close edgeDetection
 
 
-  this.destroy = function(){
+  this.destroy = function(hammerOfThor){
+    // if we have power star, we can't die :D WHOOP!
+    if (this.star == true && hammerOfThor == null) return;
 
     // 1. find the player in players array with this.playerID
     // 2. remove that player from the players array
@@ -328,11 +333,11 @@ function bike(netPlayer, name, playerID, bikeSz, len){
       if(p && p.playerID == id) index = i;
     }
 
-    players[id] = null;
-    queue.addToGame(index);
+    players[index] = null;
+
+    netPlayers[id].sendCmd('display', '#waiting');
 
     destroySound.play();
-
 
   };
 

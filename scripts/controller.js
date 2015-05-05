@@ -38,7 +38,8 @@ requirejs([
     'hft/misc/misc',
     'hft/misc/mobilehacks',
     'hft/misc/touch',
-    '../jquery'
+    'jquery',
+    '../jquery.cookie'
   ], function(
     CommonUI,
     GameClient,
@@ -51,7 +52,7 @@ requirejs([
   $(function(){
 
     var globals = {
-      debug: true,
+      debug: false,
     };
 
     // somehow these are not included in the controller app thing
@@ -60,11 +61,44 @@ requirejs([
     var _LEFT  = 3;
     var _RIGHT = 4;
 
+    var client = new GameClient();
+
+    // 
+    // jQuery things, listening for button presses, etc
+    // 
+
+    // set some cookie defaults so they don't expire
+    $.cookie.defaults.expires = 365;
+
+    // someone is trying to change their name using the name change screen
+    $('#inputNameDone').click(function(){
+      var newName = $('#inputName').val();
+      $.cookie('gg_name', newName);
+      client.sendCmd('name', {name: newName});
+      display('#waiting');
+    })
+    // show a name from mortal kombat, but reduce it to 6 characters
+    $('#inputName').val( (MortalKombat.get()).substr(0,6) );
+
+    // listen for 'JOIN' button press
+    $('#readyToPlayBtn').click(function(){
+      display('#go');
+      client.sendCmd('joinGame');
+    });
+
+    $('#goBtn').click(function(){
+      display('#playing');
+      client.sendCmd('GO');
+    });
+
+
+
+
+
+
+
     Misc.applyUrlSettings(globals);
     MobileHacks.fixHeightHack();
-
-    // fake jquery selectors
-    // var $ = document.getElementById.bind(document);
 
     // bind events to html buttons
     Touch.setupButtons({
@@ -76,8 +110,7 @@ requirejs([
         { element: $("#button-right")[0], callback: buttonRight, },
       ],
     });
-
-    var client = new GameClient();
+    
 
     // Note: CommonUI handles these events for almost all the samples.
     var onConnect = function() {
@@ -129,6 +162,35 @@ requirejs([
 
     });
 
+    client.addEventListener('getCookie', function(uuid){
+      var name = $.cookie('gg_name') || 'X';
+      var newPlayer = false;
+      // try to get the cookie
+      var player_uuid = $.cookie('gg_uuid');
+      // otherwise, bake some cookies with the provided uuid
+      if (!player_uuid){
+        $.cookie('gg_uuid', uuid);
+        player_uuid = uuid;
+        newPlayer = true;
+      }
+      // limit peeps from messing with our name cookie!
+      if (name) name = name.substr(0, 6);
+      // send a message back to the game.js to create the new player
+      var options = {
+        uuid: player_uuid,
+        new_player: newPlayer,
+        name: name
+      };
+
+      client.sendCmd('createPlayer', options);
+
+    });
+
+    // Wait for a message to display a specific "screen"
+    client.addEventListener('display', function(stuff){
+      display(stuff)
+    });
+
     client.addEventListener('recHighScores', function(scores){
         //console.log(scores);
 
@@ -154,12 +216,19 @@ requirejs([
 
   });
 
-  //for thesting the high score screen
-  window.display = function(){
-    $('#waiting, #playing').toggleClass('active')
+
+
+  //for thesting the high score screen. type is an html ID, eg: #waiting
+  window.display = function(type){
+    $('#waiting, #playing, #go, #enterName').removeClass('active');
+    $(type).addClass('active');
   }
 
-  
+  window.clearCookies = function(){
+    $.removeCookie('gg_uuid');
+    $.removeCookie('gg_name');
+  }
+
 
 });
 
