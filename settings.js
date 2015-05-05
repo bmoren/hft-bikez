@@ -20,7 +20,7 @@ var S = {
      'star'                // mario star invincibility
   ],
   drawPowerup: 60,       // how often to refresh the powerups, lower is faster
-  numPU: 4,              // how many powerups to display at any one time?
+  numPU: 20,              // how many powerups to display at any one time?
   
   //BRICKS
   brickMode: true,       // turn bricks on/off completely

@@ -147,7 +147,7 @@ requirejs([
         })
 
         $('#survivalList div').each(function(i){
-          $(this).text( scores[1][i].time );
+          $(this).text( readableMS(scores[1][i].time) );
         })
 
     }); //close recHighScores event listener
@@ -159,5 +159,9 @@ requirejs([
     $('#waiting, #playing').toggleClass('active')
   }
 
+  
+
 });
+
+
 

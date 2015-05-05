@@ -20,7 +20,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   //for testing score before adding the scorekeeping functionality.
   // this.score = round(random(1,100));
   this.score = 0; // how many people you've killed
-  this.time = 0; // how long you've survived, set this to Date.now() when the player presses "GO"
+  this.time = Date.now(); // how long you've survived, set this to Date.now() when the player presses "GO"
 
   this.control = {}; //a thing
   this.started = false;
@@ -255,7 +255,9 @@ function bike(netPlayer, name, playerID, bikeSz, len){
           // we hit a head of another bike!
           if (j == 0){
             // destroy the other player
-            player.destroy();
+            // if(player.star != true) {
+            //   player.destroy(); //double check this......
+            // }
             // we killed the other player so we get a point
             this.score++;
           }
@@ -330,6 +332,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     queue.addToGame(index);
 
     destroySound.play();
+
 
   };
 
