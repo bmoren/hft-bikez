@@ -76,3 +76,10 @@ function powerUp(type){
   }
  
 } //Close Powerup class
+
+function calculate_powerup_frequency(){
+    for (var i=0;i<poweruplist.length;i++){
+      S.total_freqPU = S.total_freqPU + poweruplist[i].freq;
+    }
+    S.total_freqPU = S.total_freqPU + S.rand_freqPU; 
+  }

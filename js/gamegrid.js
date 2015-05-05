@@ -37,6 +37,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   S.bgColor = color(0,0,0);
   background(S.bgColor);
+  calculate_powerup_frequency(); // calculates frequenies for powerups
 
   for(var i=0; i<10; i++){
     masterKillList.push({score:0, name: '', id: 0 });
@@ -87,15 +88,40 @@ function hft_draw(init) {
     }
 
   //write powerups to array!
-    if(frames % S.drawPowerup != 0) return;            
-      var choosePU = floor(random(S.poweruplist.length));
-      powerups.push(new powerUp(S.poweruplist[choosePU]));
-      //console.log(powerups);
-      //trim back to the total allowable amount of powerups
-      if(powerups.length >= S.numPU+1){
-        powerups.shift();
-        //powerups.pop();
+
+  if(frames % S.drawPowerup != 0) return;            
+    
+// choose which powerup to push on the basis of freq set in settings.js
+// still setting a max number of powerups via S.numPU
+
+      var seed_num = random(); 
+      var running_freqcount = 0;  // adds randomness to powerup refresh. see setting.js
+
+      choose_powerup:
+      for (var i=0;i<poweruplist.length;i++){
+        running_freqcount = running_freqcount + poweruplist[i].freq;
+        if (seed_num <= (running_freqcount/S.total_freqPU)) {
+          powerups.push(new powerUp(poweruplist[i].name));
+          //console.log(powerups);
+          //trim back to the total allowable amount of powerups
+          if(powerups.length >= S.numPU+1){
+              powerups.shift();
+              //powerups.pop();
+            }
+            break choose_powerup;
+        }
       }
+
+// see above for this choosePU
+  // if (choosePU != 10) {
+  //     powerups.push(new powerUp(poweruplist[choosePU].name));
+  //     //console.log(powerups);
+  //     //trim back to the total allowable amount of powerups
+  //     if(powerups.length >= S.numPU+1){
+  //       powerups.shift();
+  //       //powerups.pop();
+  //     }
+  //   }
 };
 
 
