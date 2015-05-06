@@ -177,8 +177,8 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     rect(this.segment[0][0], this.segment[0][1], this.bikeSize, this.bikeSize);
 
     // draw name
-    textSize(this.bikeSize/1.5);
-    text(this.name, this.x, (this.y - this.bikeSize/2));
+    textSize(this.bikeSize/1.1);
+    text(this.name, (this.x - this.bikeSize/2), (this.y - this.bikeSize/2));
 
   }; //close display
 
