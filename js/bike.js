@@ -14,8 +14,11 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.len = len ;
   this.segment = [  ] ; //keep track of each segment, how long is the bike?
   this.frozen = false;  //is there a frozen powerup?
+  this.frozenID = 0; // needed for setTimer on duration of powerup to work properly
   this.ghost = false;
+  this.ghostID = 0; // needed for setTimer on duration of powerup to work properly
   this.star = false;
+  this.starID = 0; // needed for setTimer on duration of powerup to work properly
 
   //for testing score before adding the scorekeeping functionality.
   // this.score = round(random(1,100));
@@ -173,6 +176,10 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     this.segment[0][1] = this.y;
     rect(this.segment[0][0], this.segment[0][1], this.bikeSize, this.bikeSize);
 
+    // draw name
+    textSize(this.bikeSize/1.5);
+    text(this.name, this.x, (this.y - this.bikeSize/2));
+
   }; //close display
 
 
@@ -199,18 +206,38 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     } else 
     if(type == "ghost"){ 
       //right now this is ghost mode, you cant kill or be killed.... maybe you should be able to kill...
-      this.ghost = true;
+      
+      // setTimeout does not like to be called twice; clear existing setTimeout if one is running.
+      if (this.ghost == true){
+        clearTimeout(this.ghostID);
+        var that = this; // store the this so that we can see it in the anon function in the timeout
+        this.ghostID = setTimeout(function(){
+          that.ghost = false ;
+        }, S.poweruplist[2].duration); // settings.js
+      } else {
       var that = this; // store the this so that we can see it in the anon function in the timeout
-      setTimeout(function(){
+      this.ghost = true;
+      this.ghostID = setTimeout(function(){
         that.ghost = false ;
       }, S.poweruplist[2].duration); // settings.js
+      }
     }else 
     if(type == "freeze"){
-      this.frozen = true;
+
+      // setTimeout does not like to be called twice; clear existing setTimeout if one is running.
+      if (this.frozen == true){
+        clearTimeout(this.frozenID);
+        var that = this; // store the this so that we can see it in the anon function in the timeout
+        this.frozenID = setTimeout(function(){
+          that.frozen = false ;
+        }, S.poweruplist[4].duration); // settings.js
+      } else {
       var that = this; // store the this so that we can see it in the anon function in the timeout
-      setTimeout(function(){
+      this.frozen = true;
+      this.frozenID = setTimeout(function(){
         that.frozen = false ;
       }, S.poweruplist[4].duration); // settings.js
+      }
     }else 
     if(type == "psyMode"){
       S.clearBG = false; 
@@ -224,11 +251,21 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     }else   
     if(type == "star"){
       //right now this is star mode, you cant be killed BUT YOU CAN KILL!!!!
-      this.star = true;
+
+      // setTimeout does not like to be called twice; clear existing setTimeout if one is running.
+      if (this.star == true){
+        clearTimeout(this.starID);
+        var that = this; // store the this so that we can see it in the anon function in the timeout
+        this.starID = setTimeout(function(){
+          that.star = false ;
+        }, S.poweruplist[0].duration); // settings.js
+      } else {
       var that = this; // store the this so that we can see it in the anon function in the timeout
-      setTimeout(function(){
+      this.star = true;
+      this.starID = setTimeout(function(){
         that.star = false ;
       }, S.poweruplist[0].duration); // settings.js
+      }
     }
   };
 

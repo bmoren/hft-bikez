@@ -56,12 +56,24 @@ function powerUp(type){
       strokeWeight(4);
       text("L",this.x,this.y+(this.size-5));
     }else if(this.type == 'star'){
-      fill(random(255),random(255),random(255));
+
       strokeWeight(0);
-      // change from star of david to actual star eventually
-      var yoffset = round(this.size / 3); 
-      triangle(this.x + (this.size/2), this.y - yoffset, this.x, (this.y + this.size - yoffset), (this.x+this.size), (this.y+this.size-yoffset));
-      triangle(this.x, this.y, (this.x + this.size), this.y, this.x + (this.size/2), (this.y+this.size)); 
+      fill(random(255),random(255),random(255));
+      // plain ol regular star.      
+      beginShape();
+      vertex(this.x + (this.size/6), (this.y + this.size));
+      vertex((this.x+(this.size/2)),this.y);
+      vertex((this.x+(this.size - this.size/6)), (this.y + this.size));
+      vertex(this.x, (this.y+(this.size/3)));
+      vertex((this.x+this.size), (this.y+(this.size/3)));
+      endShape(CLOSE);
+
+      // Mario Star of David instead?
+      // var yoffset = round(this.size / 3); 
+      // triangle(this.x + (this.size/2), this.y - yoffset, this.x, (this.y + this.size - yoffset), (this.x+this.size), (this.y+this.size-yoffset));
+      // triangle(this.x, this.y, (this.x + this.size), this.y, this.x + (this.size/2), (this.y+this.size)); 
+
+
     }
   }
 
