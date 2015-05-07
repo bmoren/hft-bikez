@@ -1,9 +1,10 @@
 //
 // Game Settings
-// XXX
-// note: save this file as settings.js
 // 
-// 
+// note: 
+// this is the standard settings file, copy this file as settings.js as to not manipulate  
+// someone elses settings with each git push/pull.
+// settings.js should be in the .gitignore
 var S = {
   //PLAYERS
   maxPlayers: 2,         // how many players
