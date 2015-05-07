@@ -182,7 +182,6 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     if(S.displayNames){
       textSize(this.bikeSize/1.1);
       textStyle(BOLD);
-      text
       fill(inverseColor(this.color));
       text(this.name,this.x+this.bikeSize,this.y - this.bikeSize/2);
     }
