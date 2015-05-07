@@ -27,7 +27,7 @@ var S = {
   poweruplist: [
   {
     'name': 'star', 
-    'freq': 20,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
+    'freq': 5,          // how frequently to create this powerup. 0 = inactive; 1 = infrequent; 5 = frequent
     'duration': 10000 },  // how long the powerup efects the player in millis
 
   {
