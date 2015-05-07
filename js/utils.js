@@ -57,9 +57,9 @@ function readableMS(ms){
    sec = (ms/1000) % 60;
 
    	if( min <= 0){
-   		 message = Math.round(sec) + " sec";
+   		 message = Math.round(sec) + " SEC";
 	} else{
-		message = min + ' m ' + Math.round(sec) + " s" ;
+		message = min + ' M ' + Math.round(sec) + " S" ;
 	}
 
 	return message;

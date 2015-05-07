@@ -89,6 +89,7 @@ requirejs([
     $('#goBtn').click(function(){
       display('#playing');
       client.sendCmd('GO');
+      clearInterval(ticker);
     });
 
 
@@ -150,6 +151,8 @@ requirejs([
     client.addEventListener('setColor', function(c){
       //console.log('setting color to ', String(c.colorString))
       $("#buttons").css("background-color", c.colorString) ;
+      $('#goBtn').css("background-color", c.colorString) ;
+      $('#wormBody').css("background-color", c.colorString) ;
 
       var r = c.rgba[0];
       var g = c.rgba[1];
@@ -159,6 +162,8 @@ requirejs([
 
       $('.button').css("border-color", inverseColor);
       $('#buttons span').css("color", inverseColor);
+      $('#goBtn').css("color", inverseColor);
+      $('#wormHead').css("background-color", inverseColor);
 
     });
 
@@ -215,6 +220,19 @@ requirejs([
     }); //close recHighScores event listener
 
   });
+  
+  //count down until they are auto released for display on the controller (THIS IS GLITCHY)
+  var countdown = S.releaseTime/1000;
+    var ticker = setInterval(function(){
+      countdown --;
+      if (countdown <0){
+        // display('#playing');
+        clearInterval(ticker);
+      }else{
+      $('#countdown').text(countdown);
+      } 
+    }, 1000);
+
 
 
 

@@ -1,24 +1,34 @@
   <script type="text/javascript" src="./js/utils.js"></script>
+   <script type="text/javascript" src="settings.js"></script>
 
 
   <div id="playing">
-      <!-- this is inserted into index.html by build.py -->
-    <div id="gamearea" class="fixheight">
-      <h1 id="gamestatus">status</h1>
-      <div id="display" class="hft-fullcenter fixheight">
         <div id="buttons" class="hft-fullsize">
-          <div class="button" id="button-up"><span>&#9650;</span></div>
-          <div class="button" id="button-down"><span>&#9660;</span></div>
-          <div class="button" id="button-left"><span>&#9668;</span></div>
-          <div class="button" id="button-right"><span>&#9658;</span></div>
+
+            <div id="leftButton">
+              <div class="button" id="button-left"><span>&#9668;</span></div>
+            </div>
+
+            <div id="middleButton">
+              <div class="button" id="button-up"><span>&#9650;</span></div>
+              <div class="button" id="button-down"><span>&#9660;</span></div>
+            </div>
+
+            <div id="rightButton">
+             <div class="button" id="button-right"><span>&#9658;</span></div>
+            </div>
+
+          
         </div>
-      </div>
-    </div>
   </div>
 
 
   <div id="go">
-    <div>FIND YOURSELF and press the button when you are ready!</div>
+    Find youself on the GameGrid. You look like this:
+
+    <div id="playerIcon"><div id="wormBody"><div id="wormHead"></div></div></div>
+    <span id="countdown"></span><br>
+    seconds remaining to find your player
     <div id="goBtn">GO!</div>
   </div>
 
@@ -35,14 +45,10 @@
 
   <div id="waiting" class="active">
 
-
-
-      <div id="scores">
-
         <div id="kills">
-          <h3>POINTS</h3>
+          <h2>POINTS</h2>
           <div id="killNames">
-            <div></div>
+            <div>Loading...</div>
             <div></div>
             <div></div>
             <div></div>
@@ -68,7 +74,7 @@
         </div>
 
         <div id="survivals">
-          <h3>SURVIVAL</h3>
+          <h2>SURVIVAL</h2>
           <div id="survivalNames">
             <div></div>
             <div></div>
@@ -96,21 +102,21 @@
 
         </div>
 
-      </div>
-
       <div id="readyToPlay" >
-          <p>Info about what to do n things</p>
-          <!-- <div id="waitingToPlayBtn">WAITING...</div> -->
-          <div id="readyToPlayBtn">JOIN</div>
+          <h2>TO PLAY: </h2> <p>press the join button below when it becomes available. </p>
+          <div id="readyToPlayBtn">
+          JOIN! 
+          <!--WAIT.-->
+          </div>
       </div>
 
-  </div>
+  </div> <!--close waiting -->
 
-
+<!-- 
   <div id="rotatePhone">
       ROTATE PHONE!
   </div>
-
+ -->
 
 
   
