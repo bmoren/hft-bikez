@@ -9,7 +9,7 @@ var S = {
   playerLength: 40,      // length of the players, length also effects speed (length greatly affects framerate capability)
   playerSize: 20,        // how big are the players
   drawFrame: 5,          // speed to render the players, lower is faster 
-  displayName: true,     // display player names?
+  displayNames: true,     // display player names?
   releaseTime: 2000,    // how long until they autorelease on the ready/waiting screen.
 
   //WORLD PARAMS

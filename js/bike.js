@@ -10,7 +10,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.origBikeSize = bikeSz;
   this.direction =  _LEFT;
   this.playerID = playerID;
-  this.name = name;
+  this.name = name.toUpperCase();
   this.len = len ;
   this.segment = [  ] ; //keep track of each segment, how long is the bike?
   this.frozen = false;  //is there a frozen powerup?
@@ -18,8 +18,8 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.star = false;
 
   //for testing score before adding the scorekeeping functionality.
-  // this.score = round(random(1,100));
-  this.score = 0; // how many people you've killed
+   this.score = round(random(1,100));
+  //this.score = 0; // how many people you've killed
   this.time = null; // how long you've survived, set this to Date.now() when the player presses "GO"
 
   this.control = {}; //a thing
@@ -144,6 +144,8 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     noStroke();
     // draw segments (but not the head)
     // if mario stared make look blinky. like the star you are!
+    // 
+
     if (this.star == true){
       fill(random(255),random(255),random(255));
     } else {
@@ -172,6 +174,18 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     this.segment[0][0] = this.x;
     this.segment[0][1] = this.y;
     rect(this.segment[0][0], this.segment[0][1], this.bikeSize, this.bikeSize);
+
+    //bens name implementation..... maybe johns is better?
+    //display the name next to the player?
+    //do this here so the name stays on top!
+    // if(S.displayNames){
+    //   textSize(18);
+    //   textStyle(BOLD);
+    //   text
+    //   fill(inverseColor(this.color));
+    //   text(this.name,this.x+this.bikeSize,this.y - this.bikeSize/2);
+    // }
+
 
   }; //close display
 
