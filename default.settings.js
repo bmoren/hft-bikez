@@ -59,9 +59,3 @@ var S = {
 
 };
 
-// master settings list for powerups. is this a good location for this? thoughts?
-// this should probably be moved into S, but can't think of a good way to do this.
-
-// a current limitation is that the names of the powerups need to correspond with names in bike.js and gamegrid.js
-                                                
-
