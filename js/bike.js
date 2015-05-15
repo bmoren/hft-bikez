@@ -21,7 +21,8 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.starID = 0; // needed for setTimer on duration of powerup to work properly
 
   //for testing score before adding the scorekeeping functionality.
-   //this.score = round(random(1,100));
+  //this.score = round(random(1,100));
+  
   this.score = 0; // how many people you've killed
   this.time = null; // how long you've survived, set this to Date.now() when the player presses "GO"
 
@@ -379,7 +380,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     players[index] = null;
 
     netPlayers[id].sendCmd('display', '#waiting');
-
+    netPlayers[id].sendCmd('destroySound', 'boom');
     destroySound.play();
 
   };

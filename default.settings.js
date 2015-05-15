@@ -15,7 +15,7 @@ var S = {
   releaseTime: 2000,    // how long until they autorelease on the ready/waiting screen.
 
   //WORLD PARAMS
-  soundOn: true,        // true: play sounds. false: no sounds
+  soundOn: true,         // play sounds (server and handset)
   clearBG: true,         // clear the background? leave trails? (does not change hit detection)
   loopMode: 'horizLoop', // loop, destroy, horizLoop, vertLoop
   gameStarted: false,    // true: the game is being played. false: not playing

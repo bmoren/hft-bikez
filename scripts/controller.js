@@ -137,6 +137,7 @@ requirejs([
       countDown();
       glog("join clicked");
       joinPressed = true;
+      if (S.soundOn) $('#beepSound').get(0).play();
 
     }
 
@@ -146,6 +147,7 @@ requirejs([
       clearCountdown();
       //reset the debounce for next time
       joinPressed = false;
+      if (S.soundOn) $('#beepSound').get(0).play();
     };
 
     // show a name from mortal kombat, but reduce it to 6 characters
@@ -160,6 +162,8 @@ requirejs([
       $.cookie('gg_name', newName);
       client.sendCmd('name', {name: newName});
       display('#waiting');
+      if (S.soundOn) $('#beepSound').get(0).play();
+
 
     }
 
@@ -228,6 +232,11 @@ requirejs([
     // Wait for a message to display a specific "screen"
     client.addEventListener('display', function(stuff){
       display(stuff)
+    });
+
+    //play the destroy sound locally if they die.
+    client.addEventListener('destroySound', function(){
+      if (S.soundOn) $('#boomSound').get(0).play();
     });
 
     client.addEventListener('recHighScores', function(scores){

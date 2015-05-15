@@ -159,9 +159,15 @@ body{
 }
 
 
-#killNames, #survivalNames{
+#killNames{
     position: relative;
     width:50%;
+    float: left;
+}
+
+#survivalNames{
+    position: relative;
+    width:40%;
     float: left;
 }
 
@@ -176,7 +182,7 @@ body{
 
 #survivalList{
     position: relative;
-    width:50%;
+    width:60%;
     float: left;
     padding-right:20px;
     text-align: right;
