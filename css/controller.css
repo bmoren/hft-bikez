@@ -145,20 +145,6 @@ body{
 
 }*/
 
-#leftButton{
-
-}
-
-#middleButton{
-
-
-}
-
-#rightButton{
-
-
-}
-
 #waiting{
     line-height: 4vw;
     font-size: 2.5vw;
@@ -215,7 +201,7 @@ body{
     text-decoration: none;
 }
 
-#go{
+#go, #enterName{
     text-align: center;
     font-size: 2vw;
     height:100%;
@@ -264,4 +250,27 @@ body{
     -moz-user-select: text !important;
     -ms-user-select: text !important; /* multiple scroliosis? */
     -webkit-user-select: text !important;
+}
+
+#enterName h3{font-size: 6vw; margin-top:2%;}
+
+#inputName{
+    width:50%;
+    font-size: 6vw;
+    margin-bottom: 8%;
+    font-family: tron, sans-serif;
+    border:0px;
+    padding:10px;
+    text-align: center;
+}
+
+#inputNameDone{
+    font-size: 6vw;
+    width: 30%;
+    height: 17%;
+    color:black;
+    background-color: white;
+    padding:1%;
+    margin: 0 auto;
+
 }

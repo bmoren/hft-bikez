@@ -151,6 +151,10 @@ requirejs([
     // show a name from mortal kombat, but reduce it to 6 characters
     $('#inputName').val( (MortalKombat.get()).substr(0,6) );
 
+    $('#inputName').focus(function() {
+      this.value = "";
+    });
+
     function nameBtnEvent(){
       var newName = $('#inputName').val();
       $.cookie('gg_name', newName);
