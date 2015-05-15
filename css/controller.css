@@ -211,11 +211,13 @@ body{
     padding: 20% 5px 20% 5px;
     font-size: 6vw; 
     margin-top: 30%;
+    display: block;
+    text-decoration: none;
 }
 
 #go{
     text-align: center;
-    font-size: 3.5vw;
+    font-size: 2vw;
     height:100%;
     padding: 20px;
 }
@@ -229,10 +231,12 @@ body{
     text-align: center;
     font-size: 10vw; 
     margin-top: 5%;
+    display: block;
+    text-decoration: none;
 }
 
 #playerIcon{
-    height: 35%;
+    height: 30%;
     background-color: black;
 }
 
@@ -255,7 +259,9 @@ body{
     font-size: 6vw; 
 }
 
-
-
-
-
+/*fix the text input */
+#inputName {
+    -moz-user-select: text !important;
+    -ms-user-select: text !important; /* multiple scroliosis? */
+    -webkit-user-select: text !important;
+}

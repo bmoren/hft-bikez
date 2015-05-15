@@ -63,40 +63,16 @@ requirejs([
 
     var client = new GameClient();
 
+    var ticker = null;
+    var joinIsActive = true; //join on is the default!
+    var joinPressed = false; 
+
     // 
     // jQuery things, listening for button presses, etc
     // 
 
     // set some cookie defaults so they don't expire
     $.cookie.defaults.expires = 365;
-
-    // someone is trying to change their name using the name change screen
-    $('#inputNameDone').click(function(){
-      var newName = $('#inputName').val();
-      $.cookie('gg_name', newName);
-      client.sendCmd('name', {name: newName});
-      display('#waiting');
-    })
-    // show a name from mortal kombat, but reduce it to 6 characters
-    $('#inputName').val( (MortalKombat.get()).substr(0,6) );
-
-    // listen for 'JOIN' button press
-    $('#readyToPlayBtn').click(function(){
-      display('#go');
-      client.sendCmd('joinGame');
-    });
-
-    $('#goBtn').click(function(){
-      display('#playing');
-      client.sendCmd('GO');
-      clearInterval(ticker);
-    });
-
-
-
-
-
-
 
     Misc.applyUrlSettings(globals);
     MobileHacks.fixHeightHack();
@@ -111,7 +87,33 @@ requirejs([
         { element: $("#button-right")[0], callback: buttonRight, },
       ],
     });
-    
+
+    Touch.setupButtons({
+      inputElement: $('#readyToPlay')[0],
+      buttons: [
+        { element: $('#readyToPlayBtn')[0], callback: joinBtnEvent }
+      ]
+    })
+
+     Touch.setupButtons({
+      inputElement: $('#go')[0],
+      buttons: [
+        { element: $('#goBtn')[0], callback: goBtnEvent }
+      ]
+    })
+
+    Touch.setupButtons({
+      inputElement: $('#enterName')[0],
+      buttons: [
+        { element: $('#inputNameDone')[0], callback: nameBtnEvent }
+      ]
+    })
+
+    //utility to log to the game consol from the controller
+    function glog(message){
+      client.sendCmd('gameLog', message);
+    }
+
 
     // Note: CommonUI handles these events for almost all the samples.
     var onConnect = function() {
@@ -128,6 +130,34 @@ requirejs([
 
     CommonUI.setupStandardControllerUI(client, globals);
 
+    function joinBtnEvent(){
+      if(joinIsActive == false || joinPressed == true) return;
+      display('#go');
+      client.sendCmd('joinGame');
+      countDown();
+      glog("join clicked");
+      joinPressed = true;
+
+    }
+
+    function goBtnEvent(){
+      display('#playing');
+      client.sendCmd('GO');
+      clearCountdown();
+      //reset the debounce for next time
+      joinPressed = false;
+    };
+
+    // show a name from mortal kombat, but reduce it to 6 characters
+    $('#inputName').val( (MortalKombat.get()).substr(0,6) );
+
+    function nameBtnEvent(){
+      var newName = $('#inputName').val();
+      $.cookie('gg_name', newName);
+      client.sendCmd('name', {name: newName});
+      display('#waiting');
+
+    }
 
     //
     // the sickest shit you ever seen bro
@@ -219,24 +249,44 @@ requirejs([
 
     }); //close recHighScores event listener
 
-  });
+
+
+    client.addEventListener('joinButtonActive', function(active){
+      if(active == true){
+       $('#readyToPlayBtn').text("JOIN!");
+      }else{
+       $('#readyToPlayBtn').text("WAIT.");
+      }
+      joinIsActive = active;
+    });
   
   //count down until they are auto released for display on the controller (THIS IS GLITCHY)
+function countDown(){
   var countdown = S.releaseTime/1000;
-    var ticker = setInterval(function(){
+    ticker = setInterval(function(){
       countdown --;
-      if (countdown <0){
-        // display('#playing');
-        clearInterval(ticker);
+      if (countdown <= 0){
+        // reset
+        clearCountdown();
       }else{
       $('#countdown').text(countdown);
       } 
     }, 1000);
+  }
+
+  function clearCountdown(){
+    if(ticker != null){
+      clearInterval(ticker);
+      ticker = null;
+      $('#countdown').text(" ");
+      display('#playing');
+    }
+  }
+
+}); //close jQuery onready
 
 
-
-
-  //for thesting the high score screen. type is an html ID, eg: #waiting
+  //what controller 'page' to show?
   window.display = function(type){
     $('#waiting, #playing, #go, #enterName').removeClass('active');
     $(type).addClass('active');

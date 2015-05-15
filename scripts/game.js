@@ -44,6 +44,8 @@ requirejs([
       debug: false
     };
 
+    var g_readyToPlay = true; // false: waiting, true: join
+
     Misc.applyUrlSettings(globals);
 
     var Player = function(netPlayer, name, uuid) {
@@ -71,6 +73,11 @@ requirejs([
       netPlayer.addEventListener('name', Player.prototype.setName.bind(this));
       netPlayer.addEventListener('busy', Player.prototype.busy.bind(this));
 
+      netPlayer.addEventListener('gameLog', function(message){
+        console.log("gameLog:", message);
+      });
+
+
     };
 
     Player.prototype.GO = function() {
@@ -80,7 +87,18 @@ requirejs([
     Player.prototype.joinGame = function() {
       this.bike = new bike(this.netPlayer, this.name, this.id, S.playerSize, S.playerLength);
       this.netPlayer.sendCmd('setColor', this.bike.color);
-      players.push(this.bike);
+      var setBike = false;
+      for(var i=0; i<players.length; i++){
+        if (players[i] == null){
+          players[i] = this.bike;
+          setBike = true;
+          break;
+        }
+      }
+      // ensure there are only ever S.maxPlayers in the players array
+      // by not pushing new players when the limit is reached
+      if (setBike == false && players.length < S.maxPlayers) players.push(this.bike);
+
       this.bike.joinGame();
     };
 
@@ -129,6 +147,7 @@ requirejs([
       })
     });
 
+
     //send out the kills to all the controllers
     setInterval(function(){
       server.broadcastCmd('recHighScores', updateMasterScoreList());
@@ -136,7 +155,30 @@ requirejs([
 
     GameSupport.run(globals, hft_draw);
 
+    setInterval(function(){
+      var player_count = 0;
+      for(var i=0; i<players.length; i++){
+        if (players[i] != null) player_count++;
+      }
 
+      //
+      if(player_count < S.maxPlayers){
+        //if we are under out s.Maxplayers and we are waiting then change to join.
+        if (g_readyToPlay == false){
+          server.broadcastCmd('joinButtonActive', true);
+        }
+        g_readyToPlay = true;
+      // if we are over or = to s.maxplayers then set it to wait status, unless we are already in wait status.
+      } else {
+        if (g_readyToPlay == true){
+          server.broadcastCmd('joinButtonActive', false); 
+        }
+        g_readyToPlay = false;
+      }
+
+      
+
+    }, 500);
 
 });
 

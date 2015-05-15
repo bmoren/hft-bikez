@@ -17,6 +17,7 @@ var powerups = [];
 var postSetup = false ;
 var total_freqPU = 0;      // calculates frequencies of powerups 
 
+//the singularity storage
 var masterKillList = [];
 var masterSurvivalList = [];
 
