@@ -52,18 +52,22 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     this.frozen = true;
     this.ghost = true;
 
-    // set team for team play
+    // set team for team play.
     if (S.teamPlay){
       if ((team1count <= team2count) && (team1count <= team3count)) {
+        this.team = 1;
         team1count++;
         this.color = color(S.team1color[0],S.team1color[1],S.team1color[2]);
       } else if ((team2count <= team1count) && (team2count <= team3count)){
+        this.team = 2;
         team2count++;
         this.color = color(S.team2color[0],S.team2color[1],S.team2color[2]);
       } else if ((team3count <= team1count) && (team3count <= team2count)) {
+        this.team = 3;
         team3count++;
         this.color = color(S.team3color[0],S.team3color[1],S.team3color[2]);
       } else{
+        this.team = 1;
         team1count++;
         this.color = color(S.team1color[0],S.team1color[1],S.team1color[2]);
       }
@@ -327,7 +331,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
 
             // team play; check team by color; need to break this out into a different section
             // NOT DONE. need to subtract team numbers too.
-           if(S.teamPlay && (this.color != player.color){  
+           if((S.teamPlay) && (this.color != player.color)){  
 
               if (j == 0){
                 // destroy the other player
@@ -356,7 +360,6 @@ function bike(netPlayer, name, playerID, bikeSz, len){
               // we died, so the player who killed us gets a point
               player.score++;
               break dance;
-            }
           }
         }
       }
