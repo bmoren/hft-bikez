@@ -328,26 +328,6 @@ function bike(netPlayer, name, playerID, bikeSz, len){
           var sW = player.bikeSize;
           if ( hitTest(x,y,w, sX,sY,sW) ){
             // we hit a head of another bike!
-
-            // team play; check team by color; need to break this out into a different section
-            // NOT DONE. need to subtract team numbers too.
-           if((S.teamPlay) && (this.color != player.color)){  
-
-              if (j == 0){
-                // destroy the other player
-                player.destroy(); 
-                // we killed the other player so we get a point
-                this.score++;
-              }
-              // destroy yourself, unless you are mario star
-              this.destroy();
-              
-              // we died, so the player who killed us gets a point
-              player.score++;
-              break dance;
-
-            } else {
-
               if (j == 0){
                 // destroy the other player
                 player.destroy(); 
@@ -363,7 +343,6 @@ function bike(netPlayer, name, playerID, bikeSz, len){
           }
         }
       }
-    }
   }; //close collision
 
   this.edgeDetection = function(mode){ // enable edge detection for top,right,bottom,left
@@ -425,9 +404,21 @@ function bike(netPlayer, name, playerID, bikeSz, len){
 
     players[index] = null;
 
+    // if team play. change total team player count with destroy. 
+    if (S.teamPlay){
+      if (this.team = 1){
+          team1count--;
+      } else if (this.team = 2){
+          team2count--;
+      } else if (this.team = 3){
+          team2count--;
+      } 
+    }
+
     netPlayers[id].sendCmd('display', '#waiting');
     netPlayers[id].sendCmd('destroySound', 'boom');
     destroySound.play();
+
 
   };
 
