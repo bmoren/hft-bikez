@@ -1,6 +1,10 @@
 //
 // Bike
 //
+// for team play
+var team1count = 0;         // number of active players in each team
+var team2count = 0;
+var team3count = 0;
 
 function bike(netPlayer, name, playerID, bikeSz, len){
  
@@ -19,6 +23,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.ghostID = 0; // needed for setTimer on duration of powerup to work properly
   this.star = false;
   this.starID = 0; // needed for setTimer on duration of powerup to work properly
+  this.team = 0; // team number for team play
 
   //for testing score before adding the scorekeeping functionality.
   //this.score = round(random(1,100));
@@ -47,6 +52,23 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     this.frozen = true;
     this.ghost = true;
 
+    // set team for team play
+    if (S.teamPlay){
+      if ((team1count <= team2count) && (team1count <= team3count)) {
+        team1count++;
+        this.color = color(S.team1color[0],S.team1color[1],S.team1color[2]);
+      } else if ((team2count <= team1count) && (team2count <= team3count)){
+        team2count++;
+        this.color = color(S.team2color[0],S.team2color[1],S.team2color[2]);
+      } else if ((team3count <= team1count) && (team3count <= team2count)) {
+        team3count++;
+        this.color = color(S.team3color[0],S.team3color[1],S.team3color[2]);
+      } else{
+        team1count++;
+        this.color = color(S.team1color[0],S.team1color[1],S.team1color[2]);
+      }
+    }
+    
     //keep it on the whole number grid
     this.x = floor(random(0, width-(this.bikeSize*2)));
     this.y = floor(random(0, height-(this.bikeSize*2)));
@@ -291,30 +313,51 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     for(var i=0; i<players.length; i++){
       if (players[i] == null) continue;
       var player = players[i];
-      if(player.ghost == true) continue;
-      // don't hit your own head
-      for(var j=0; j < player.segment.length; j++){
-        // loop through player segments
-        if (player.playerID == id && j < 4) continue;
-        var seg = player.segment[j];
-        var sX = seg[0];
-        var sY = seg[1];
-        var sW = player.bikeSize;
-        if ( hitTest(x,y,w, sX,sY,sW) ){
-          // we hit a head of another bike!
-          if (j == 0){
-            // destroy the other player
-            player.destroy(); 
-            
-            // we killed the other player so we get a point
-            this.score++;
+        if(player.ghost == true) continue;      // check if powerup ghost
+        // don't hit your own head
+        for(var j=0; j < player.segment.length; j++){
+          // loop through player segments
+          if (player.playerID == id && j < 4) continue;
+          var seg = player.segment[j];
+          var sX = seg[0];
+          var sY = seg[1];
+          var sW = player.bikeSize;
+          if ( hitTest(x,y,w, sX,sY,sW) ){
+            // we hit a head of another bike!
+
+            // team play; check team by color; need to break this out into a different section
+            // NOT DONE. need to subtract team numbers too.
+           if(S.teamPlay && (this.color != player.color){  
+
+              if (j == 0){
+                // destroy the other player
+                player.destroy(); 
+                // we killed the other player so we get a point
+                this.score++;
+              }
+              // destroy yourself, unless you are mario star
+              this.destroy();
+              
+              // we died, so the player who killed us gets a point
+              player.score++;
+              break dance;
+
+            } else {
+
+              if (j == 0){
+                // destroy the other player
+                player.destroy(); 
+                // we killed the other player so we get a point
+                this.score++;
+              }
+              // destroy yourself, unless you are mario star
+              this.destroy();
+              
+              // we died, so the player who killed us gets a point
+              player.score++;
+              break dance;
+            }
           }
-          // destroy yourself, unless you are mario star
-          this.destroy();
-          
-          // we died, so the player who killed us gets a point
-          player.score++;
-          break dance;
         }
       }
     }
