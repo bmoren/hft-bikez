@@ -244,7 +244,7 @@ requirejs([
 
         // add the names and score for the Kill List
         $('#killNames div').each(function(i){
-          $(this).text( scores[0][i].name );
+          $(this).text( String(scores[0][i].name).toUpperCase() );
         })
 
         $('#killList div').each(function(i){
@@ -253,7 +253,7 @@ requirejs([
 
         // add the names and score for the Survival List
         $('#survivalNames div').each(function(i){
-          $(this).text( scores[1][i].name );
+          $(this).text( String(scores[1][i].name).toUpperCase() );
         })
 
         $('#survivalList div').each(function(i){

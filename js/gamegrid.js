@@ -18,6 +18,7 @@ var postSetup = false ;
 var total_freqPU = 0;      // calculates frequencies of powerups 
 
 //the singularity storage
+// note: these get updated in game.js from the highscores db server
 var masterKillList = [];
 var masterSurvivalList = [];
 

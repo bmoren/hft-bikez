@@ -38,8 +38,9 @@ requirejs([
     'hft/gameserver',
     'hft/gamesupport',
     'hft/misc/misc',
-  ], function(GameServer, GameSupport, Misc) {
-    
+    'jquery',
+  ], function(GameServer, GameSupport, Misc, jq) {
+    var canSaveHS = false;
     var globals = {
       debug: false
     };
@@ -47,6 +48,14 @@ requirejs([
     var g_readyToPlay = true; // false: waiting, true: join
 
     Misc.applyUrlSettings(globals);
+
+    // Attempt to get the Highscores from the server
+    $.getJSON('http://localhost:3000/', function(data){
+      if (data && data.kill) masterKillList = data.kill;
+      if (data && data.time) masterSurvivalList = data.time;
+      canSaveHS = true;
+    })
+    
 
     var Player = function(netPlayer, name, uuid) {
       this.netPlayer = netPlayer;
@@ -152,6 +161,22 @@ requirejs([
     setInterval(function(){
       server.broadcastCmd('recHighScores', updateMasterScoreList());
     }, 1500);
+
+    // save the highscores list every so often
+    setInterval(function(){
+      if (canSaveHS == false) return;
+      var data = {
+        kill: masterKillList,
+        time: masterSurvivalList
+      };
+      $.ajax({
+        type: 'POST',
+        url: 'http://localhost:3000/save',
+        data: JSON.stringify( data ),
+        success: function(){}
+      })
+    }, 10 * 1000);
+
 
     GameSupport.run(globals, hft_draw);
 
