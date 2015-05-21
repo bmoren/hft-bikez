@@ -1,51 +1,129 @@
-  <div id="playing" class="active">
-      <!-- this is inserted into index.html by build.py -->
-    <div id="gamearea" class="fixheight">
-      <h1 id="gamestatus">status</h1>
-      <div id="display" class="hft-fullcenter fixheight">
+  <script type="text/javascript" src="./js/utils.js"></script>
+   <script type="text/javascript" src="settings.js"></script>
+
+
+  <div id="playing">
         <div id="buttons" class="hft-fullsize">
-          <div class="button" id="button-up"><span>&#9650;</span></div>
-          <div class="button" id="button-down"><span>&#9660;</span></div>
-          <div class="button" id="button-left"><span>&#9668;</span></div>
-          <div class="button" id="button-right"><span>&#9658;</span></div>
+
+            <div id="leftButton">
+              <div class="button" id="button-left"><span>&#9668;</span></div>
+            </div>
+
+            <div id="middleButton">
+              <div class="button" id="button-up"><span>&#9650;</span></div>
+              <div class="button" id="button-down"><span>&#9660;</span></div>
+            </div>
+
+            <div id="rightButton">
+             <div class="button" id="button-right"><span>&#9658;</span></div>
+            </div>
+
+          
         </div>
+  </div>
+
+
+  <div id="go">
+    Find youself on the GameGrid. You look like this:
+
+    <div id="playerIcon"><div id="wormBody"><div id="wormHead"></div></div></div>
+    <span id="countdown"></span><br>
+    seconds remaining to locate your player
+    <a href="#" id="goBtn">GO!</a>
+  </div>
+
+
+  <div id="enterName" class="active">
+    <h3>CHOOSE A NAME</h3>
+    <div>
+      <input type="text" id="inputName" maxlength="6"  >
+    </div>
+    <div id="inputNameDone">Done</div>
+    <p class="disclaimer">Note: Names cannot be changed. Ever.</p>
+  </div>
+
+
+  <!--This should be defult active-->
+  <div id="waiting">
+
+        <div id="kills">
+          <h2>POINTS</h2>
+          <div id="killNames">
+            <div>Loading...</div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div id="killList">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <div id="survivals">
+          <h2>SURVIVAL</h2>
+          <div id="survivalNames">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div id="survivalList">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+
+        </div>
+
+      <div id="readyToPlay" >
+          <h2>TO PLAY: </h2> <p>press the join button below when it becomes available. </p>
+          <div id="readyToPlayBtn">
+          JOIN! <!--Join on is the default -->
+          <!--WAIT.-->
+          </div>
       </div>
-    </div>
+
+  </div> <!--close waiting -->
+
+  <!--controller sound playback-->
+  <audio id="boomSound" src="assets/boom.mp3">
+  <audio id="beepSound" src="assets/beep.mp3">
+<!-- 
+  <div id="rotatePhone">
+      ROTATE PHONE!
   </div>
-
-  <div id="waiting" >
-    <div id="hs-button" class="scoreButton">High Scores</div>
-    <div id="highscores">
-      <h3>HIGHSCORES</h3>
-      <ul>
-        <li>player 1</li>
-        <li>player 2</li>
-        <li>player 3</li>
-        <li>player 4</li>
-        <li>player 5</li>
-      </ul>
-    </div>
+ -->
 
 
-    <div id="surv-button" class="scoreButton" >Longest Survival </div>
-    <div id="survivals">
-      <h3>LONGEST SURVIVAL</h3>
-      <ul>
-        <li>player 1</li>
-        <li>player 2</li>
-        <li>player 3</li>
-        <li>player 4</li>
-        <li>player 5</li>
-      </ul>
-
-    </div>
-  </div>
-
-  <div id="launch">
-    <div id="ready-button">READY?</div>
-    <div id="go-button">GO!</div>
-  </div>
-
+  
 
   
 

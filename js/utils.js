@@ -36,27 +36,52 @@ function inverseColor(c){
 
 // this is for RGB css property
 function inverseRGB(r,g,b){
+  // var rgb = color.split(',');
+
+  // var r = rgb[1];
+  // var g = rgb[2];
+  // var b = rgb[3];
+
 	var iR = 255 - r;
 	var iG = 255 - g;
 	var iB = 255 - b;
 
-	return iR + "," + iG + "," + iB;
+	return "rgb(" + iR + "," + iG + "," + iB + ")";
 
 }
 
+
 //human readable Miliseconds
 function readableMS(ms){
-   min = (ms/1000/60) << 0,
+   min = (ms/1000/60) << 0;
    sec = (ms/1000) % 60;
 
    	if( min <= 0){
-   		 message = Math.round(sec) + " seconds";
-	}else if(min ==1){ 
-		message = min + ' minute ' + Math.round(sec) + " seconds" ;
+   		 message = Math.round(sec) + " SEC";
 	} else{
-		message = min + ' minutes ' + Math.round(sec) + " seconds" ;
+		message = min + ' M ' + Math.round(sec) + " S" ;
 	}
 
 	return message;
 }
+
+
+var MortalKombat={characters:["Goro","Johnny Cage","Kano","Liu Kang","Raiden","Reptile","Scorpion","Shang Tsung","Sonya Blade","Sub-Zero","Baraka","Jade","Jax","Kintaro","Kitana","Kung Lao","Mileena","Noob Saibot","Shao Kahn","Smoke","Chameleon","Cyrax","Ermac","Kabal","Khameleon","Motaro","Nightwolf","Rain","Sektor","Sheeva","Sindel","Stryker","Fujin","Quan Chi","Kia","Jataaka","Sareena","Shinnok","Jarek","Kai","Meat","Reiko","Tanya","Blaze","Bo Rai Cho","Drahmin","Frost","Hsu Hao","Kenshi","Li Mei","Mokap","Moloch","Nitara","Ashrah","Dairou","Darrius","Havik","Hotaru","Kira","Kobra","Monster","Onaga","Shujinko","Daegon","Taven","Dark Kahn","Cyber Sub-Zero","Kratos","Skarlet","Belokk","Hornbuckle","Nimbus Terrafaux"],get:function(){var a=this.characters.length-1;return this.characters[Math.floor(Math.random()*a)]}};
+
+function nodeToString ( node ) {
+   var tmpNode = document.createElement( "div" );
+   tmpNode.appendChild( node.cloneNode( true ) );
+   var str = tmpNode.innerHTML;
+   tmpNode = node = null; // prevent memory leaks in IE
+   return str;
+}
+
+
+
+
+
+
+
+
+
 

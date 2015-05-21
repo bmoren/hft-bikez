@@ -1,7 +1,7 @@
 
 //
 // Game.js
-// SHOULD THIS BECOME PART OF GAME.JS?
+// 
 //
 
 //Constants
@@ -12,8 +12,14 @@ var _RIGHT = 4;
 var frames = 0;
 var playerColor;
 var players = [];
+var netPlayers = {};
 var powerups = [];
+var postSetup = false ;
+var total_freqPU = 0;      // calculates frequencies of powerups 
 
+//the singularity storage
+var masterKillList = [];
+var masterSurvivalList = [];
 
 //
 // Preload
@@ -25,7 +31,6 @@ function preload(){
   }
 };
 
-
 //
 // Setup
 //
@@ -33,19 +38,27 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   S.bgColor = color(0,0,0);
   background(S.bgColor);
+  calculate_powerup_frequency(); // calculates frequenies for powerups
+
+  for(var i=0; i<10; i++){
+    masterKillList.push({score:0, name: '', id: 0 });
+    masterSurvivalList.push({time:0, name: '', id: 0 });
+  }
+
+  postSetup = true ; 
+
 };
 
-
-
-// this is dead space, p5 eats a chilidog here. 
+// using the HFT render instead of the p5.js draw method. 
 function draw(){}
-
 
 //
 // Draw
 //
 function hft_draw(init) {
+  if (! postSetup) return;
   frames++;
+
 
   //render bikes to screen
   if (frames % S.drawFrame != 0) return;
@@ -73,69 +86,150 @@ function hft_draw(init) {
     }
 
   //write powerups to array!
-    if(frames % S.drawPowerup != 0) return;            
-      var choosePU = floor(random(S.poweruplist.length));
-      powerups.push(new powerUp(S.poweruplist[choosePU]));
-      //console.log(powerups);
-      //trim back to the total allowable amount of powerups
-      if(powerups.length >= S.numPU+1){
-        powerups.shift();
-        //powerups.pop();
+
+  if(frames % S.drawPowerup != 0) return;            
+    
+// choose which powerup to push on the basis of freq set in settings.js
+// still setting a max number of powerups via S.numPU
+
+      var seed_num = random(); 
+      var running_freqcount = 0;  // adds randomness to powerup refresh. see setting.js
+
+      choose_powerup:
+      for (var i=0;i<S.poweruplist.length;i++){
+        running_freqcount = running_freqcount + S.poweruplist[i].freq;
+        if (seed_num <= (running_freqcount/total_freqPU)) {
+          powerups.push(new powerUp(S.poweruplist[i].name));
+          //console.log(powerups);
+          //trim back to the total allowable amount of powerups
+          if(powerups.length >= S.numPU+1){
+              powerups.shift();
+              //powerups.pop();
+            }
+            break choose_powerup;
+        }
       }
+
+// see above for this choosePU
+  // if (choosePU != 10) {
+  //     powerups.push(new powerUp(S.poweruplist[choosePU].name));
+  //     //console.log(powerups);
+  //     //trim back to the total allowable amount of powerups
+  //     if(powerups.length >= S.numPU+1){
+  //       powerups.shift();
+  //       //powerups.pop();
+  //     }
+  //   }
 };
 
-
-//I WASNT SURE THE BEST PLACE TO PUT THIS......
-// get an array of the scores of all players and sort by ascending. 
-function getKills(){
-  var scores = [];
-
+function updateMasterScoreList(){
   for(i=0;i<players.length; i++){
     if (players[i] == null) continue; 
-    var score = players[i].score ;
-    var name = players[i].name ;
-    scores[i] = [score,name];
+    var player = players[i];
+    //get survival time
+    if (player.time == null) continue;
+    var survivalTime = Date.now() - player.time;
+    // the stats for this player
+    var playerStats = {
+      score: player.score,
+      time: survivalTime,
+      name: player.name,
+      id: player.playerID
+    };
 
+    masterKillList     = updateScoreList(playerStats, 'score', masterKillList);
+    masterSurvivalList = updateScoreList(playerStats, 'time', masterSurvivalList);
+
+  } 
+
+  return [masterKillList, masterSurvivalList];
+}
+
+
+function calculate_powerup_frequency(){
+    for (var i=0;i<S.poweruplist.length;i++){
+      total_freqPU = total_freqPU + S.poweruplist[i].freq;
+    }
+    total_freqPU = total_freqPU + S.rand_freqPU; 
   }
 
-  //give the list in order from hightst to lowest 
-  scores.sort();
-  scores.reverse();
-  return scores; // sometimes this return one undefined for whatever reason.
 
-}
+/**
+ * util to update highscores list given the list to update and the type of list to update
+ * 
+ * @param  {object} player - the player object
+ * @param  {object} playerStats - the players stats object
+ * @param  {string} type - the type of list, either 'score', or 'time'
+ * @param  {array} list - the list to use, (masterKillList or masterSurvivalList)
+ * 
+ * @return {array}
+ */
+function updateScoreList(playerStats, type, list){
+  
+  var results = list;
+  var onTheList = null;
 
+  // if the current players time is null, don't do anything
+  if (playerStats[type] == null) return list;
 
-function getSurvival(){
-  var survival = [];
-
-  for(i=0;i<players.length; i++){
-    if (players[i] == null) continue; 
-
-    var name = players[i].name ;
-    var now = Date.now();
-    var playerBirth = players[i].time;
-    var survivalTime = now - playerBirth
-
-    //console.log(readableMS(survivalTime));
-    survival[i] = [survivalTime,name];
+  for(var x = 0; x < results.length; x++){
+    var hsPlayer = results[x];
+    // Q: are we on the list?
+    if (playerStats.id == hsPlayer.id){
+      // A: yes we are on the list!
+      onTheList = x;
+      break;
     }
+  }
 
-    survival.sort();
-    survival.reverse();
-    return survival;
+  // Try to add us to the master kill list!@!@!@!@!@### X_X_X
+  outOfJail:
+  for(var x = 0; x < results.length; x++){
+    var hsPlayer = results[x];
+    
+    // Are we better than (or equal to) anyone on the list?
+    if (playerStats[type] > hsPlayer[type]){
 
-}
+      // we are not on the list yet, so add us
+      if (onTheList === null) {
+        results.splice(x,0, playerStats);
+        results.pop();
+        break;
+      }
 
+      // we're on the list: 
+      // are we the leader?
+      if (x == 0){
+        // we are the leader already, but we got a better score so update it!
+        results[x] = playerStats;
+        break;
+      }
+      // we have the same score, let's update it anyone (accounting for name changes)
+      // if (playerStats[type] == results[onTheList][type]){
+      //   results[onTheList] = playerStats;
+      //   break;
+      // }
 
+      // We're on the list, but we're not the leader:
+      // Q: Are we better than our top score???
+      if (playerStats[type] > results[onTheList][type]){
+        // A: Yes
+        // remove ourself from the list
+        results.splice(onTheList, 1);
 
-
-
-
-
-
-
-
+        // then add ourself back into the list at the right spot
+        for(var y = 0; y < results.length; y++){
+          var hsPlayerY = results[y];
+          if (playerStats[type] >= hsPlayerY[type]){
+            results.splice(y, 0, playerStats);
+            break outOfJail;
+          }
+        }
+      }
+    }
+  }
+  return results;
+}; // end of updateKillList
 
 
 

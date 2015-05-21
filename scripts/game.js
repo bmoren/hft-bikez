@@ -41,33 +41,65 @@ requirejs([
   ], function(GameServer, GameSupport, Misc) {
     
     var globals = {
-      debug: true
+      debug: false
     };
 
-    window.queue = new Queue();
+    var g_readyToPlay = true; // false: waiting, true: join
 
     Misc.applyUrlSettings(globals);
 
-    var Player = function(netPlayer, name) {
+    var Player = function(netPlayer, name, uuid) {
       this.netPlayer = netPlayer;
       this.name = name;
-      this.id = uuid();
+      this.id = uuid;
       
-      console.log( 'creating a new bike object' );
-      this.bike = new bike(netPlayer, name, this.id, S.playerSize, S.playerLength);
+      this.bike = new bike(netPlayer, this.name, this.id, S.playerSize, S.playerLength);
       this.color = this.bike.color;
       
-      queue.add( this.bike );
-      
+      netPlayers[uuid] = this.netPlayer;
 
       // set the controller background color
       netPlayer.sendCmd('setColor', this.color);
 
+
+
+      netPlayer.addEventListener('GO', Player.prototype.GO.bind(this));
+      netPlayer.addEventListener('joinGame', Player.prototype.joinGame.bind(this));
+      
       netPlayer.addEventListener('disconnect', Player.prototype.disconnect.bind(this));
       netPlayer.addEventListener('move', Player.prototype.movePlayer.bind(this));
       netPlayer.addEventListener('color', Player.prototype.setColor.bind(this));
-      netPlayer.addEventListener('setName', Player.prototype.setName.bind(this));
+      // this is how we really change your player name:
+      netPlayer.addEventListener('name', Player.prototype.setName.bind(this));
       netPlayer.addEventListener('busy', Player.prototype.busy.bind(this));
+
+      netPlayer.addEventListener('gameLog', function(message){
+        console.log("gameLog:", message);
+      });
+
+
+    };
+
+    Player.prototype.GO = function() {
+      this.bike.go();
+    };
+
+    Player.prototype.joinGame = function() {
+      this.bike = new bike(this.netPlayer, this.name, this.id, S.playerSize, S.playerLength);
+      this.netPlayer.sendCmd('setColor', this.bike.color);
+      var setBike = false;
+      for(var i=0; i<players.length; i++){
+        if (players[i] == null){
+          players[i] = this.bike;
+          setBike = true;
+          break;
+        }
+      }
+      // ensure there are only ever S.maxPlayers in the players array
+      // by not pushing new players when the limit is reached
+      if (setBike == false && players.length < S.maxPlayers) players.push(this.bike);
+
+      this.bike.joinGame();
     };
 
     // The player disconnected.
@@ -86,7 +118,11 @@ requirejs([
       
     };
     Player.prototype.setColor = function(cmd) {};
-    Player.prototype.setName = function(cmd) {};
+    Player.prototype.setName = function(o) {
+      if(o.name === "") return;
+      this.name = o.name;
+      this.bike.name = o.name;
+    };
     Player.prototype.busy = function(cmd) {};
 
     var server = new GameServer();
@@ -94,13 +130,55 @@ requirejs([
 
     // A new player has arrived.
     server.addEventListener('playerconnect', function(netPlayer, name) {
-      new Player(netPlayer, name);
+      // leaving the setName method that is used by HFT 
+      netPlayer.addEventListener('setName', function(){});
+
+      netPlayer.sendCmd('getCookie', uuid())
+      netPlayer.addEventListener('createPlayer', function(data){
+
+        // create a new player
+        new Player(netPlayer, data.name, data.uuid);
+
+        // if this is a new player, send them to "ENTER NAME" screen
+        if (data.new_player == true){
+          netPlayer.sendCmd('display', '#enterName');
+        }
+        
+      })
     });
+
+
+    //send out the kills to all the controllers
+    setInterval(function(){
+      server.broadcastCmd('recHighScores', updateMasterScoreList());
+    }, 1500);
 
     GameSupport.run(globals, hft_draw);
 
-    
+    setInterval(function(){
+      var player_count = 0;
+      for(var i=0; i<players.length; i++){
+        if (players[i] != null) player_count++;
+      }
 
+      //
+      if(player_count < S.maxPlayers){
+        //if we are under out s.Maxplayers and we are waiting then change to join.
+        if (g_readyToPlay == false){
+          server.broadcastCmd('joinButtonActive', true);
+        }
+        g_readyToPlay = true;
+      // if we are over or = to s.maxplayers then set it to wait status, unless we are already in wait status.
+      } else {
+        if (g_readyToPlay == true){
+          server.broadcastCmd('joinButtonActive', false); 
+        }
+        g_readyToPlay = false;
+      }
+
+      
+
+    }, 500);
 
 });
 

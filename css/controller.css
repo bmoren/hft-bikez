@@ -29,38 +29,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#playing, #waiting, #launch { display:none; }
-
-#playing.active, #waiting.active, #launch.active { display:block; }
-
-.scoreButton{
-    padding: 10px;
+body{
     background-color: black;
-    color:white;
-    font-size: 20px;
-    width:180px;
-    text-transform: uppercase;
-    text-align: center;
-}
-
-
-
-#gamearea {
-    width: 100%;
-    height: 100%;
-}
-#gamestatus {
-    position: absolute;
-    z-index: 4000;
-    border-radius: 5px;
-    background-color: rgba(0,0,0,0.5);
-    margin: 0.5em;
-    padding: 0.5em;
     color: white;
-    font-size: medium;
+    font-family: tron, sans-serif;
+
 }
-#display {
+
+ @font-face {
+      font-family: "tron";
+      src: url("ShareTechMono-Regular.ttf");
+    }
+
+
+#hft-menu { display:none !important;}
+
+#hft-content{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
+
+#playing, #waiting, #go, #enterName { display:none; }
+
+#playing.active, #waiting.active, #go.active, #enterName.active { display:block; }
 
 #buttons {
     display:block;
@@ -71,7 +64,7 @@
     bottom: 0px;
     left:   0px;
     right:  0px;
-    border:1px solid #fff;
+    /*border:1px solid #fff;*/
 
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -87,7 +80,7 @@
     position:absolute;
     opacity:0.8;
 
-    border:2px solid #fff;
+    border:10px solid #000;
     /* center magic */
     text-align:center;
     white-space:nowrap;
@@ -103,7 +96,7 @@
 #buttons .button span {
     font-size:60px;
     color:#000;
-    background:#fff;
+    /*background:#fff;*/
     font-weight:bold;
     width:80px;
     height:80px;
@@ -119,7 +112,7 @@
     bottom:50%;
     left:33.3%;
     /*border-bottom:5px solid #fff;*/
-    width:33.6% !important;
+    width:33.4% !important;
 }
 
 #button-up span, #button-down span { top:28% !important; }
@@ -129,7 +122,7 @@
     bottom:0;
     left:33.3%;
     /*border-top:5px solid #fff;*/
-    width:33.6% !important;
+    width:33.4% !important;
 }
 #button-left {
     top:0;
@@ -142,4 +135,148 @@
     bottom:0;
     right:0;
     /*border-left:10px solid #fff;*/
+}
+
+/*to try some bug fixing by making 3 columns 33% and fitting the buttons into the 3 cols...*/
+/*#leftButton, #middleButton, #rightButton{
+    float:left;
+    width:33%;
+    height:100%;
+
+}*/
+
+#waiting{
+    line-height: 4vw;
+    font-size: 2.5vw;
+}
+
+#kills, #survivals, #readyToPlay{
+    position: relative;
+    width:33%;
+    height:100%;
+    padding-left:10px;
+    float:left;
+}
+
+
+#killNames{
+    position: relative;
+    width:50%;
+    float: left;
+}
+
+#survivalNames{
+    position: relative;
+    width:40%;
+    float: left;
+}
+
+#killList{
+    position: relative;
+    width:45%;
+    float: left;
+    text-align: right;
+    border-right: 1px white solid;
+    padding-right:20px;
+}
+
+#survivalList{
+    position: relative;
+    width:60%;
+    float: left;
+    padding-right:20px;
+    text-align: right;
+    border-right: 1px white solid;
+
+}
+
+#readyToPlay{
+    text-align: center;
+}
+
+#readyToPlayBtn{
+    margin: 0 auto;
+    width:70%;
+    height: 30%;
+    background-color: white;
+    color:black;
+    padding: 20% 5px 20% 5px;
+    font-size: 6vw; 
+    margin-top: 30%;
+    display: block;
+    text-decoration: none;
+}
+
+#go, #enterName{
+    text-align: center;
+    font-size: 2vw;
+    height:100%;
+    padding: 20px;
+}
+
+#goBtn{
+    background-color: white;
+    /*color:black;*/
+    margin: 0 auto;
+    width: 50%;
+    padding: 20%, 10px, 20%, 10px;
+    text-align: center;
+    font-size: 10vw; 
+    margin-top: 5%;
+    display: block;
+    text-decoration: none;
+}
+
+#playerIcon{
+    height: 30%;
+    background-color: black;
+}
+
+#wormBody{
+    position: relative;
+    top:40%;
+    width:70%;
+    margin: 0 auto;
+    /*background-color: red;*/
+    height:20%;
+}
+
+#wormHead{
+    width:5%;
+    height:100%;
+    /*background-color: blue;*/
+}
+
+#countdown{
+    font-size: 6vw; 
+}
+
+/*fix the text input */
+#inputName {
+    -moz-user-select: text !important;
+    -ms-user-select: text !important; /* multiple scroliosis? */
+    -webkit-user-select: text !important;
+}
+
+#enterName h3{font-size: 6vw; margin-top:2%;}
+
+#inputName{
+    width:50%;
+    font-size: 6vw;
+    margin-bottom: 8%;
+    font-family: tron, sans-serif;
+    border:0px;
+    padding:10px;
+    text-align: center;
+}
+
+#inputNameDone{
+    font-size: 6vw;
+    width: 30%;
+    height: 17%;
+    color:black;
+    background-color: white;
+    padding:1%;
+    margin: 0 auto;
+
 }
