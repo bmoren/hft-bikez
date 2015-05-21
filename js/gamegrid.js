@@ -182,7 +182,7 @@ function updateScoreList(playerStats, type, list){
     }
   }
 
-  // Try to add us to the master kill list!@!@!@!@!@### X_X_X
+  // Try to add us to the highsore list
   outOfJail:
   for(var x = 0; x < results.length; x++){
     var hsPlayer = results[x];
@@ -199,9 +199,9 @@ function updateScoreList(playerStats, type, list){
 
       // we're on the list: 
       // are we the leader?
-      if (x == 0){
+      if (x == 0 && onTheList == 0){
         // we are the leader already, but we got a better score so update it!
-        results[x] = playerStats;
+        results[0] = playerStats;
         break;
       }
       // we have the same score, let's update it anyone (accounting for name changes)
