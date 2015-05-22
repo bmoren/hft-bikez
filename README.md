@@ -9,9 +9,8 @@ by @bmoren @jkim5 and @mediaupstream
 2. install [happyfuntimes](http://superhappyfuntimes.net/install)
 3. install [nodejs](https://nodejs.org)
 4. cd to the game directory and run `hft add`
-5. `hft start --app-mode`
+5. call `./start.sh` you might need to make it executable with `chmod +x start.sh`
 
 to open a controller on:
 - your phone: open a new tab with the IP address plus port 8080, example: `192.168.0.102:8080`
 - your desktop: open a new tab with http://localhost:8080/games.html
-
