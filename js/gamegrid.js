@@ -26,7 +26,7 @@ var masterSurvivalList = [];
 // Preload
 //
 function preload(){
-  destroySound = loadSound('assets/boom.mp3');  // @timgormly freesound.org
+  // destroySound = loadSound('assets/boom.mp3');  // @timgormly freesound.org
   if (S.soundOn == false){
     masterVolume(0);
   }

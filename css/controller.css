@@ -55,6 +55,18 @@ body{
 
 #playing.active, #waiting.active, #go.active, #enterName.active { display:block; }
 
+#rotatePhone{
+    display: none;
+    text-align: center;
+    padding-top: 20%;
+    z-index:9999;
+    width:100%;
+    height:100%;
+    background-color: black;
+    color:white;
+    font-size: 20vw;
+}
+
 #buttons {
     display:block;
     position: absolute;
@@ -254,7 +266,7 @@ body{
 /*fix the text input */
 #inputName {
     -moz-user-select: text !important;
-    -ms-user-select: text !important; /* multiple scroliosis? */
+    -ms-user-select: text !important; 
     -webkit-user-select: text !important;
 }
 

@@ -83,7 +83,7 @@ requirejs([
       netPlayer.addEventListener('busy', Player.prototype.busy.bind(this));
 
       netPlayer.addEventListener('gameLog', function(message){
-        console.log("gameLog:", message);
+        console.log("controllerLog:", message);
       });
 
 

@@ -49,7 +49,9 @@ requirejs([
     Touch,
     jq) {
 
-  $(function(){
+ 
+
+  $(function(){  // onload start jQuery
 
     var globals = {
       debug: false,
@@ -66,10 +68,10 @@ requirejs([
     var ticker = null;
     var joinIsActive = true; //join on is the default!
     var joinPressed = false; 
+    var screenOrientation = 0;
 
-    // 
-    // jQuery things, listening for button presses, etc
-    // 
+
+    ///////////////// jQuery things, listening for button presses, etc
 
     // set some cookie defaults so they don't expire
     $.cookie.defaults.expires = 365;
@@ -109,7 +111,7 @@ requirejs([
       ]
     })
 
-    //utility to log to the game consol from the controller
+    //utility to log to the game console from the controller
     function glog(message){
       client.sendCmd('gameLog', message);
     }
@@ -296,6 +298,21 @@ function countDown(){
     }
   }
 
+  //detect landscape (90) / portrait (0) orientation
+$(window).bind("resize", function(){
+    screenOrientation = ($(window).width() > $(window).height())? 90 : 0;
+});
+
+if (screenOrientation == 0){
+  $('#rotatePhone').css('display', 'block');
+  glog('rotation:0');
+}else{
+  //its 90 (landscape)
+  $('#rotatePhone').css('display', 'none');
+    glog('rotation:90');
+
+}
+
 }); //close jQuery onready
 
 
@@ -311,7 +328,9 @@ function countDown(){
   }
 
 
-});
+}); // is this an extra closure?
+
+
 
 
 
