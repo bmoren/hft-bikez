@@ -416,9 +416,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     }
 
     netPlayers[id].sendCmd('display', '#waiting');
-    netPlayers[id].sendCmd('destroySound', 'boom');
-    destroySound.play();
-
+    netPlayers[id].sendCmd('destroySound', 'boom'); // send the destroy sound to the controller.
 
   };
 

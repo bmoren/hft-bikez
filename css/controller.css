@@ -42,6 +42,13 @@ body{
     }
 
 
+/* HFT creates a div with this ID and embeds controller.html into it... */
+#hft-content {
+    position:relative;
+    z-index:0;
+}
+
+
 #hft-menu { display:none !important;}
 
 #hft-content{
@@ -55,22 +62,26 @@ body{
 
 #playing.active, #waiting.active, #go.active, #enterName.active { display:block; }
 
+
 #rotatePhone{
     display: none;
     text-align: center;
     padding-top: 20%;
-    z-index:9999;
-    width:100%;
-    height:100%;
+    z-index:9998;
     background-color: black;
     color:white;
-    font-size: 20vw;
+    font-size: 60px;
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
 }
 
 #buttons {
     display:block;
     position: absolute;
-    z-index: 4100;
+    z-index: 99999;
     
     top:    0px;
     bottom: 0px;
@@ -93,6 +104,8 @@ body{
     opacity:0.8;
 
     border:10px solid #000;
+
+    background:#000;
     /* center magic */
     text-align:center;
     white-space:nowrap;
@@ -117,6 +130,8 @@ body{
     display: inline-block;
     vertical-align: middle;
     line-height: normal;
+    
+    font-family: monospace !important;
 }
 
 #button-up {
@@ -160,6 +175,8 @@ body{
 #waiting{
     line-height: 4vw;
     font-size: 2.5vw;
+    position: relative;
+    /*height:100%;*/
 }
 
 #kills, #survivals, #readyToPlay{
@@ -168,6 +185,17 @@ body{
     height:100%;
     padding-left:10px;
     float:left;
+}
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+
+    #rotatePhone {
+        display:block;
+    }
 }
 
 

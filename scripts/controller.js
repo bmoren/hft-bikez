@@ -55,6 +55,7 @@ requirejs([
 
     var globals = {
       debug: false,
+      orientation: "landscape-primary",
     };
 
     // somehow these are not included in the controller app thing
@@ -111,10 +112,10 @@ requirejs([
       ]
     })
 
-    //utility to log to the game console from the controller
-    function glog(message){
-      client.sendCmd('gameLog', message);
-    }
+    // //utility to log to the game console from the controller
+    // function glog(message){
+    //   client.sendCmd('gameLog', message);
+    // }
 
 
     // Note: CommonUI handles these events for almost all the samples.
@@ -137,7 +138,6 @@ requirejs([
       display('#go');
       client.sendCmd('joinGame');
       countDown();
-      glog("join clicked");
       joinPressed = true;
       if (S.soundOn) $('#beepSound').get(0).play();
 
@@ -190,7 +190,6 @@ requirejs([
     //
     client.addEventListener('setColor', function(c){
       //console.log('setting color to ', String(c.colorString))
-      $("#buttons").css("background-color", c.colorString) ;
       $('#goBtn').css("background-color", c.colorString) ;
       $('#wormBody').css("background-color", c.colorString) ;
 
@@ -200,8 +199,12 @@ requirejs([
 
       var inverseColor = inverseRGB(r,g,b)
 
-      $('.button').css("border-color", inverseColor);
-      $('#buttons span').css("color", inverseColor);
+      $("#buttons").css("background-color", c.colorString) ;
+
+      $('.button').css("background", inverseColor);
+      $('.button').css("border-color", c.colorString);
+      $('#buttons span').css("color", c.colorString);
+      
       $('#goBtn').css("color", inverseColor);
       $('#wormHead').css("background-color", inverseColor);
 
@@ -299,19 +302,16 @@ function countDown(){
   }
 
   //detect landscape (90) / portrait (0) orientation
-$(window).bind("resize", function(){
-    screenOrientation = ($(window).width() > $(window).height())? 90 : 0;
-});
+// $(window).bind("resize", function(){
+//     screenOrientation = ($(window).width() > $(window).height())? 90 : 0;
+// });
 
-if (screenOrientation == 0){
-  $('#rotatePhone').css('display', 'block');
-  glog('rotation:0');
-}else{
-  //its 90 (landscape)
-  $('#rotatePhone').css('display', 'none');
-    glog('rotation:90');
-
-}
+// if (screenOrientation == 0){
+//   $('#rotatePhone').css('display', 'block');
+// }else{
+//   //its 90 (landscape)
+//   $('#rotatePhone').css('display', 'none');
+// }
 
 }); //close jQuery onready
 
