@@ -233,6 +233,9 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   };
 
   this.usePowerup = function(type){
+    
+    netPlayers[this.playerID].sendCmd('powerupSound', 'gettingPoweredUpBRO'); // send the powerup sound message to the controller.
+
     if(type == "size"){
       var size = ceil(random((S.playerSize/S.poweruplist[1].scale), (S.playerSize*S.poweruplist[1].scale)));
       this.resize(size);

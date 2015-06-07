@@ -39,7 +39,8 @@ requirejs([
     'hft/misc/mobilehacks',
     'hft/misc/touch',
     'jquery',
-    '../jquery.cookie'
+    '../jquery.cookie',
+    '../bower_components/hft-utils/dist/audio',
   ], function(
     CommonUI,
     GameClient,
@@ -47,9 +48,9 @@ requirejs([
     Misc,
     MobileHacks,
     Touch,
-    jq) {
-
- 
+    jq,
+    jqCookie,
+    AudioManager) {
 
   $(function(){  // onload start jQuery
 
@@ -70,6 +71,24 @@ requirejs([
     var joinIsActive = true; //join on is the default!
     var joinPressed = false; 
     var screenOrientation = 0;
+    var g_audioManager;
+
+    var sounds = {
+      explosion: {
+        filename: "assets/boom.mp3",
+        samples: 1,
+      },
+      buttonPress: {
+        filename: "assets/beep.mp3",
+        samples: 1,
+      },
+      powerUp: {
+        filename: "assets/powerup.mp3",
+        samples: 1,
+      }
+    };
+
+    g_audioManager = new AudioManager(sounds);
 
 
     ///////////////// jQuery things, listening for button presses, etc
@@ -139,7 +158,9 @@ requirejs([
       client.sendCmd('joinGame');
       countDown();
       joinPressed = true;
-      if (S.soundOn) $('#beepSound').get(0).play();
+      if (S.soundOn) {
+        g_audioManager.playSound('buttonPress');
+      }
 
     }
 
@@ -149,7 +170,9 @@ requirejs([
       clearCountdown();
       //reset the debounce for next time
       joinPressed = false;
-      if (S.soundOn) $('#beepSound').get(0).play();
+      if (S.soundOn) {
+        g_audioManager.playSound('buttonPress');
+      }
     };
 
     // show a name from mortal kombat, but reduce it to 6 characters
@@ -164,7 +187,9 @@ requirejs([
       $.cookie('gg_name', newName);
       client.sendCmd('name', {name: newName});
       display('#waiting');
-      if (S.soundOn) $('#beepSound').get(0).play();
+      if (S.soundOn) {
+        g_audioManager.playSound('buttonPress');
+      }
 
 
     }
@@ -241,7 +266,15 @@ requirejs([
 
     //play the destroy sound locally if they die.
     client.addEventListener('destroySound', function(){
-      if (S.soundOn) $('#boomSound').get(0).play();
+      if (S.soundOn) {
+        g_audioManager.playSound('explosion');
+      }
+    });
+    // play the powerup sound locally when they get a power up
+    client.addEventListener('powerupSound', function(){
+      if (S.soundOn) {
+        g_audioManager.playSound('powerUp');
+      }
     });
 
     client.addEventListener('recHighScores', function(scores){
