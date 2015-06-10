@@ -42,7 +42,10 @@ requirejs([
   ], function(GameServer, GameSupport, Misc, jq) {
     var canSaveHS = false;
     var globals = {
-      debug: false
+      debug: false,
+      askName:false,
+      menu:false,
+
     };
 
     var g_readyToPlay = true; // false: waiting, true: join

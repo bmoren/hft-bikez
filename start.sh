@@ -19,10 +19,32 @@ npm install
 #   kill -INT "$node_pid"
 # }
 
-# start the highscores server in the background
-node hs_server.js &
-# save the process id
-# node_pid="$!"
+if [ "$1" = "-cleardb" ]; then
+	rm -rf db
+	echo "High Scores Cleared"
+ 	exit 
 
-# start HappyFunTimes in app mode
-hft start --app-mode
+fi
+
+if [ "$1" = "-dns" ]; then
+	echo "DNS Mode"
+	# start the highscores server in the background
+	node hs_server.js &
+	# save the process id
+	# node_pid="$!"
+	# 
+	#start HappyFunTimes in DNS Mode
+	sudo hft start --dns --app-mode --no-ask-name --no-menu --no-check-for-app
+else
+	echo "Local Mode"
+	# start the highscores server in the background
+	node hs_server.js &
+	# save the process id
+	# node_pid="$!"
+	# 
+	# start HappyFunTimes in LOCAL app mode
+	hft start --app-mode
+fi
+
+
+

@@ -11,7 +11,7 @@
   "happyFunTimes": {
     "gameId": "game_grid",
     "category": "gamegrid",
-    "apiVersion": "0.0.0",
+    "apiVersion": "1.10.0",
     "gameType": "html",
     "minPlayers": 1
   }

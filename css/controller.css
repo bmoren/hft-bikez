@@ -130,8 +130,8 @@ body{
     display: inline-block;
     vertical-align: middle;
     line-height: normal;
-    
-    font-family: monospace !important;
+
+    /*font-family: monospace !important;*/
 }
 
 #button-up {

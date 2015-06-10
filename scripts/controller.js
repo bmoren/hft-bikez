@@ -334,18 +334,6 @@ function countDown(){
     }
   }
 
-  //detect landscape (90) / portrait (0) orientation
-// $(window).bind("resize", function(){
-//     screenOrientation = ($(window).width() > $(window).height())? 90 : 0;
-// });
-
-// if (screenOrientation == 0){
-//   $('#rotatePhone').css('display', 'block');
-// }else{
-//   //its 90 (landscape)
-//   $('#rotatePhone').css('display', 'none');
-// }
-
 }); //close jQuery onready
 
 
