@@ -77,6 +77,10 @@ function powerUp(type){
       // vertex((this.x+this.size), (this.y+(this.size/3)));
       // endShape(CLOSE);
 
+      strokeWeight(0);
+      fill(random(255),random(255),random(255));
+      ellipse(this.x+(this.size/2), this.y+(this.size/2), this.size, this.size)
+
       image(starIcon,this.x,this.y,this.size, this.size);
 
       // Mario Star of David instead?
