@@ -22,6 +22,10 @@ var total_freqPU = 0;      // calculates frequencies of powerups
 var masterKillList = [];
 var masterSurvivalList = [];
 
+var sizeIcon;
+var freezeIcon;
+var starIcon;
+
 //
 // Preload
 //
@@ -35,12 +39,16 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   S.bgColor = color(0,0,0);
   background(S.bgColor);
-  calculate_powerup_frequency(); // calculates frequenies for powerups
+  calculate_powerup_frequency(); // calculates frequencies for powerups
 
   for(var i=0; i<10; i++){
     masterKillList.push({score:0, name: '', id: 0 });
     masterSurvivalList.push({time:0, name: '', id: 0 });
   }
+
+  sizeIcon = loadImage("assets/sizeup.png");
+  freezeIcon = loadImage("assets/freeze.png");
+  starIcon = loadImage("assets/star.png");
 
   postSetup = true ; 
 
