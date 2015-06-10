@@ -79,8 +79,8 @@ function powerUp(type){
 
       strokeWeight(0);
       fill(random(255),random(255),random(255));
-      ellipse(this.x+(this.size/2), this.y+(this.size/2), this.size, this.size)
-
+//      ellipse(this.x+(this.size/2), this.y+(this.size/2), this.size + 5, this.size+5)
+      ellipse(this.x+(this.size/2), this.y+(this.size/2), this.size + round(this.size / 10), this.size + round(this.size / 10)) // with halo
       image(starIcon,this.x,this.y,this.size, this.size);
 
       // Mario Star of David instead?
