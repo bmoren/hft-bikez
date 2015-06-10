@@ -33,32 +33,43 @@
 // Require will call this with GameServer, GameSupport, and Misc once
 // gameserver.js, gamesupport.js, and misc.js have loaded.
 
+requirejs.config({
+  paths: {
+    lockr : '../bower_components/lockr/lockr',
+    jquery: '../scripts/jquery'
+  }
+});
+
 // Start the main app logic.
 requirejs([
     'hft/gameserver',
     'hft/gamesupport',
     'hft/misc/misc',
     'jquery',
-  ], function(GameServer, GameSupport, Misc, jq) {
-    var canSaveHS = false;
+    'lockr'
+  ], function(GameServer, GameSupport, Misc, jq, lockr) {
     var globals = {
       debug: false,
       askName:false,
       menu:false,
-
     };
 
     var g_readyToPlay = true; // false: waiting, true: join
 
     Misc.applyUrlSettings(globals);
-
-    // Attempt to get the Highscores from the server
-    $.getJSON('http://localhost:3000/', function(data){
-      if (data && data.kill) masterKillList = data.kill;
-      if (data && data.time) masterSurvivalList = data.time;
-      canSaveHS = true;
-    })
     
+    // Get the Highscores from localStorage
+    var _hs = lockr.get('hs');
+    if (_hs && _hs.kill) masterKillList = _hs.kill;
+    if (_hs && _hs.time) masterSurvivalList = _hs.time;
+    
+    // you can call this from the console to clear the highscores list
+    window.clearDb = function(){
+      lockr.flush();
+    };
+    // access Lockr from the console too
+    window.Lockr = lockr;
+
 
     var Player = function(netPlayer, name, uuid) {
       this.netPlayer = netPlayer;
@@ -163,23 +174,13 @@ requirejs([
     //send out the kills to all the controllers
     setInterval(function(){
       server.broadcastCmd('recHighScores', updateMasterScoreList());
-    }, 1500);
-
-    // save the highscores list every so often
-    setInterval(function(){
-      if (canSaveHS == false) return;
+      // save the highscores list (to localStorage)
       var data = {
         kill: masterKillList,
-        time: masterSurvivalList
+        time: masterSurvivalList 
       };
-      $.ajax({
-        type: 'POST',
-        url: 'http://localhost:3000/save',
-        data: JSON.stringify( data ),
-        success: function(){}
-      })
-    }, 10 * 1000);
-
+      lockr.set('hs', data);
+    }, 1500);
 
     GameSupport.run(globals, hft_draw);
 
