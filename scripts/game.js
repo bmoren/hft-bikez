@@ -65,6 +65,12 @@ requirejs([
     
     // you can call this from the console to clear the highscores list
     window.clearDb = function(){
+      masterKillList = [];
+      masterSurvivalList = [];
+      for(var i=0; i<10; i++){
+        masterKillList.push({score:0, name: '', id: 0 });
+        masterSurvivalList.push({time:0, name: '', id: 0 });
+      }
       lockr.flush();
     };
     // access Lockr from the console too
@@ -73,7 +79,7 @@ requirejs([
 
     var Player = function(netPlayer, name, uuid) {
       this.netPlayer = netPlayer;
-      this.name = name;
+      if (name) this.name = name;
       this.id = uuid;
       
       this.bike = new bike(netPlayer, this.name, this.id, S.playerSize, S.playerLength);
@@ -84,8 +90,6 @@ requirejs([
       // set the controller background color
       netPlayer.sendCmd('setColor', this.color);
 
-
-
       netPlayer.addEventListener('GO', Player.prototype.GO.bind(this));
       netPlayer.addEventListener('joinGame', Player.prototype.joinGame.bind(this));
       
@@ -93,7 +97,7 @@ requirejs([
       netPlayer.addEventListener('move', Player.prototype.movePlayer.bind(this));
       netPlayer.addEventListener('color', Player.prototype.setColor.bind(this));
       // this is how we really change your player name:
-      netPlayer.addEventListener('name', Player.prototype.setName.bind(this));
+      netPlayer.addEventListener('ggName', Player.prototype.ggName.bind(this));
       netPlayer.addEventListener('busy', Player.prototype.busy.bind(this));
 
       // netPlayer.addEventListener('gameLog', function(message){
@@ -141,11 +145,13 @@ requirejs([
       
     };
     Player.prototype.setColor = function(cmd) {};
-    Player.prototype.setName = function(o) {
-      if(o.name === "") return;
+
+    Player.prototype.ggName = function(o) {
+      if(!o.name || o.name === "") return;
       this.name = o.name;
       this.bike.name = o.name;
     };
+
     Player.prototype.busy = function(cmd) {};
 
     var server = new GameServer();
@@ -158,15 +164,8 @@ requirejs([
 
       netPlayer.sendCmd('getCookie', uuid())
       netPlayer.addEventListener('createPlayer', function(data){
-
         // create a new player
         new Player(netPlayer, data.name, data.uuid);
-
-        // if this is a new player, send them to "ENTER NAME" screen
-        if (data.new_player == true){
-          netPlayer.sendCmd('display', '#enterName');
-        }
-        
       })
     });
 

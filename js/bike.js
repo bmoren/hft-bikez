@@ -14,7 +14,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.origBikeSize = bikeSz;
   this.direction =  _LEFT;
   this.playerID = playerID;
-  this.name = name.toUpperCase();
+  this.name = (name) ? name.toUpperCase() : name;
   this.len = len ;
   this.segment = [  ] ; //keep track of each segment, how long is the bike?
   this.frozen = false;  //is there a frozen powerup?

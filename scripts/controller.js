@@ -95,6 +95,12 @@ requirejs([
 
     // set some cookie defaults so they don't expire
     $.cookie.defaults.expires = 365;
+    
+    // used to clear the user cookies
+    window.clearCookies = function(){
+      $.removeCookie('gg_name');
+      $.removeCookie('gg_uuid');
+    };
 
     Misc.applyUrlSettings(globals);
     MobileHacks.fixHeightHack();
@@ -185,7 +191,7 @@ requirejs([
     function nameBtnEvent(){
       var newName = $('#inputName').val();
       $.cookie('gg_name', newName);
-      client.sendCmd('name', {name: newName});
+      client.sendCmd('ggName', {name: newName});
       display('#waiting');
       if (S.soundOn) {
         g_audioManager.playSound('buttonPress');
@@ -236,7 +242,7 @@ requirejs([
     });
 
     client.addEventListener('getCookie', function(uuid){
-      var name = $.cookie('gg_name') || 'X';
+      var name = $.cookie('gg_name');
       var newPlayer = false;
       // try to get the cookie
       var player_uuid = $.cookie('gg_uuid');
@@ -245,6 +251,8 @@ requirejs([
         $.cookie('gg_uuid', uuid);
         player_uuid = uuid;
         newPlayer = true;
+        // show the enterName screen for "new" players
+        display('#enterName');
       }
       // limit peeps from messing with our name cookie!
       if (name) name = name.substr(0, 6);
@@ -254,9 +262,7 @@ requirejs([
         new_player: newPlayer,
         name: name
       };
-
       client.sendCmd('createPlayer', options);
-
     });
 
     // Wait for a message to display a specific "screen"
