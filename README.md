@@ -13,6 +13,8 @@ by @bmoren @jkim5 and @mediaupstream
 7. call `./start.sh` you might need to make it executable with `chmod +x start.sh`
   - To start in [DNS](https://github.com/greggman/HappyFunTimes/blob/master/docs/network.md) mode call `./start.sh -dns`
 
+to clear the High Score database call `./start.sh -cleardb'
+
 ### to open a controller on:
 - your phone: open a new tab with the IP address plus port 8080, example: `192.168.0.102:8080`
 - your desktop: open a new tab with http://localhost:8080/games.html
