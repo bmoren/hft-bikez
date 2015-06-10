@@ -53,7 +53,7 @@ function powerUp(type){
       // fill(0);
       // rect(this.x, this.y, this.size, this.size); 
 
-      image(freezeIcon,this.x,this.y,this.size*1.5, this.size*1.5);
+      image(freezeIcon,this.x,this.y,this.size*.75, this.size*1.5);
 
     }else if( this.type == 'psyMode'){
       fill(random(255),random(255),random(255));
