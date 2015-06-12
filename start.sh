@@ -18,4 +18,3 @@ else
 	# start HappyFunTimes in LOCAL app mode
 	hft start --app-mode
 fi
-
