@@ -64,7 +64,9 @@ requirejs([
     // you can call this from the console to clear the highscores list
     window.clearDb = function(){
       playerManager.reset();
+      Lockr.set('playerManager', null);
       lockr.flush();
+      server.broadcastCmd('clearCookies', true);
     };
     // access Lockr from the console too
     window.Lockr = lockr;
@@ -103,12 +105,18 @@ requirejs([
       netPlayer.addEventListener('ggName', Player.prototype.ggName.bind(this));
       netPlayer.addEventListener('busy', Player.prototype.busy.bind(this));
 
+      netPlayer.addEventListener('enableCheatMode', Player.prototype.cheatMode.bind(this));
+
       // netPlayer.addEventListener('gameLog', function(message){
       //   console.log("controllerLog:", message);
       // });
 
 
     };
+
+    Player.prototype.cheatMode = function(){
+      this.bike.__cheat_mode = true;
+    }
 
     Player.prototype.GO = function() {
       this.bike.go();

@@ -26,6 +26,8 @@ function bike(netPlayer, name, playerID, bikeSz, len, score, ctime){
   this.team = 0; // team number for team play
   this.createdTime = Date.now();
 
+  this.__cheat_mode = false;
+
   //for testing score before adding the scorekeeping functionality.
   //this.score = round(random(1,100));
   
@@ -215,14 +217,20 @@ function bike(netPlayer, name, playerID, bikeSz, len, score, ctime){
     }
 
     //if your not started then blink!
-    if( frames % 5 == 0 && this.started == false){
-      fill(inverseColor(this.color));
-    }
+    // if( frames % 5 == 0 && this.started == false){
+    //   fill(inverseColor(this.color));
+    // }
 
     for (var i = this.len-1; i > 0; i--) {
       if (this.frozen == false){
         this.segment[i][0] = Number(this.segment[i-1][0]);
         this.segment[i][1] = Number(this.segment[i-1][1]);
+      }
+
+      if (i % 2 == 0 && this.__cheat_mode) {
+        fill(inverseColor(this.color));
+      } else {
+        fill(this.color);
       }
       rect(this.segment[i][0], this.segment[i][1], this.bikeSize, this.bikeSize);
     }
@@ -245,7 +253,14 @@ function bike(netPlayer, name, playerID, bikeSz, len, score, ctime){
       fill(color(255,255,255));
       textFont("Helvetica");
       var n = this.name;
-      if (this.rank == 1) n = "👑 "+ this.name;
+
+      if (this.__cheat_mode){
+        n = '✨👾'
+      }
+
+      if (this.rank == 1){
+        n = "👑 "+ this.name;
+      }
 
       text(n, this.x+this.bikeSize,this.y - this.bikeSize/2);
     }

@@ -54,6 +54,19 @@ requirejs([
 
   $(function(){  // onload start jQuery
 
+
+    var emojiArray = function (str) {
+      var spliz = String(str).split(/([\uD800-\uDBFF][\uDC00-\uDFFF])/);
+      var arr = [];
+      for (var i=0; i<spliz.length; i++) {
+        var chr = spliz[i]
+        if (chr !== "") {
+          arr.push(chr);
+        }
+      }
+      return arr;
+    };
+
     var globals = {
       debug: false,
       orientation: "landscape-primary",
@@ -193,6 +206,20 @@ requirejs([
       // trim leading / trailing whitespace
       newName = newName.replace(/(^\s+|\s+$)/g,'');
 
+      // if the user chooses a Crown for the first character in the name
+      // replace it with a poop.
+      var crown = emojiArray(newName);
+
+      if (crown[0] == '👑'){
+        newName = newName.substring(2);
+        newName = '💩'+newName;
+      }
+
+      // enable cheat mode
+      if (newName.toUpperCase() == 'G3G2G1'){
+        client.sendCmd('enableCheatMode', true);
+      }
+
       // no name was chosen, try again?!
       if (newName == "") return;
 
@@ -269,8 +296,6 @@ requirejs([
         display('#enterName');
       }
 
-      // limit peeps from messing with our name cookie!
-      if (name) name = name.substr(0, 6);
       // send a message back to the game.js to create the new player
       var options = {
         uuid: player_uuid,
@@ -305,15 +330,28 @@ requirejs([
       }
       for(var i=0; i<scores.length; i++){
         var x = $('#hs'+ i);
-        var name = scores[i][0]
-        name = String(name).trim()
-        name = name.substring(0,6)
-        name = name.toUpperCase();
+        var s = scores[i];
+        if (!s) continue;
 
-        $('.hs-name', x).text( name );
-        $('.hs-score', x).text( scores[i][1] );
+        var name = scores[i][0];
+        var score = scores[i][1] || 0;
+
+        name = String(name).trim()
+        var name_array = emojiArray(name);
+        var _name = [];
+        for(var j=0; j<6; j++){
+          var _n = name_array[j];
+          if (typeof _n != 'undefined') _name.push(name_array[j])
+        }
+
+        $('.hs-name', x).text( _name.join('') );
+        $('.hs-score', x).text( score );
       }
     });
+
+    client.addEventListener('clearCookies', function(){
+      clearCookies();
+    })
 
     // client.addEventListener('recHighScores', function(scores){
         //console.log(scores);
