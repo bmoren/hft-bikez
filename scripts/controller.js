@@ -95,12 +95,6 @@ requirejs([
 
     // set some cookie defaults so they don't expire
     $.cookie.defaults.expires = 365;
-    
-    // used to clear the user cookies
-    window.clearCookies = function(){
-      $.removeCookie('gg_name');
-      $.removeCookie('gg_uuid');
-    };
 
     Misc.applyUrlSettings(globals);
     MobileHacks.fixHeightHack();
@@ -137,6 +131,11 @@ requirejs([
       ]
     })
 
+    // change your name by clicking on the name in the UI
+    $('#playerNM').click(function(){
+      display('#enterName');
+    })
+
     // //utility to log to the game console from the controller
     // function glog(message){
     //   client.sendCmd('gameLog', message);
@@ -159,7 +158,7 @@ requirejs([
     CommonUI.setupStandardControllerUI(client, globals);
 
     function joinBtnEvent(){
-      if(joinIsActive == false || joinPressed == true) return;
+      if(joinPressed == true) return;
       display('#go');
       client.sendCmd('joinGame');
       countDown();
@@ -167,7 +166,6 @@ requirejs([
       if (S.soundOn) {
         g_audioManager.playSound('buttonPress');
       }
-
     }
 
     function goBtnEvent(){
@@ -182,22 +180,28 @@ requirejs([
     };
 
     // show a name from mortal kombat, but reduce it to 6 characters
-    $('#inputName').val( (MortalKombat.get()).substr(0,6) );
+    // $('#inputName').val( (MortalKombat.get()).substr(0,6) );
 
-    $('#inputName').focus(function() {
-      this.value = "";
-    });
+    $('#inputName').val('');
+
+    // $('#inputName').focus(function() {
+    //   this.value = "";
+    // });
 
     function nameBtnEvent(){
       var newName = $('#inputName').val();
+      // trim leading / trailing whitespace
+      newName = newName.replace(/(^\s+|\s+$)/g,'');
+
+      // no name was chosen, try again?!
+      if (newName == "") return;
+
       $.cookie('gg_name', newName);
       client.sendCmd('ggName', {name: newName});
       display('#waiting');
       if (S.soundOn) {
         g_audioManager.playSound('buttonPress');
       }
-
-
     }
 
     //
@@ -238,8 +242,14 @@ requirejs([
       
       $('#goBtn').css("color", inverseColor);
       $('#wormHead').css("background-color", inverseColor);
-
     });
+
+    client.addEventListener('updateUI', function(data){
+      $('#playerNM').text(data.name);
+      $('#playerHS').text(data.score);
+      $('#playerRank').text(data.rank);
+    })
+
 
     client.addEventListener('getCookie', function(uuid){
       var name = $.cookie('gg_name');
@@ -254,6 +264,11 @@ requirejs([
         // show the enterName screen for "new" players
         display('#enterName');
       }
+
+      if (!name){
+        display('#enterName');
+      }
+
       // limit peeps from messing with our name cookie!
       if (name) name = name.substr(0, 6);
       // send a message back to the game.js to create the new player
@@ -272,6 +287,7 @@ requirejs([
 
     //play the destroy sound locally if they die.
     client.addEventListener('destroySound', function(){
+      joinPressed = false;
       if (S.soundOn) {
         g_audioManager.playSound('explosion');
       }
@@ -283,64 +299,80 @@ requirejs([
       }
     });
 
-    client.addEventListener('recHighScores', function(scores){
+    client.addEventListener('updateHighScores', function(scores){
+      if ($('#waiting').hasClass('active') == false){
+        return;
+      }
+      for(var i=0; i<scores.length; i++){
+        var x = $('#hs'+ i);
+        var name = scores[i][0]
+        name = String(name).trim()
+        name = name.substring(0,6)
+        name = name.toUpperCase();
+
+        $('.hs-name', x).text( name );
+        $('.hs-score', x).text( scores[i][1] );
+      }
+    });
+
+    // client.addEventListener('recHighScores', function(scores){
         //console.log(scores);
 
-        // add the names and score for the Kill List
-        $('#killNames div').each(function(i){
-          $(this).text( String(scores[0][i].name).toUpperCase() );
-        })
+        // // add the names and score for the Kill List
+        // $('#killNames div').each(function(i){
+        //   $(this).text( String(scores[0][i].name).toUpperCase() );
+        // })
 
-        $('#killList div').each(function(i){
-          $(this).text( scores[0][i].score );
-        })
+        // $('#killList div').each(function(i){
+        //   $(this).text( scores[0][i].score );
+        // })
 
-        // add the names and score for the Survival List
-        $('#survivalNames div').each(function(i){
-          $(this).text( String(scores[1][i].name).toUpperCase() );
-        })
+        // // add the names and score for the Survival List
+        // $('#survivalNames div').each(function(i){
+        //   $(this).text( String(scores[1][i].name).toUpperCase() );
+        // })
 
-        $('#survivalList div').each(function(i){
-          $(this).text( readableMS(scores[1][i].time) );
-        })
+        // $('#survivalList div').each(function(i){
+        //   $(this).text( readableMS(scores[1][i].time) );
+        // })
 
-    }); //close recHighScores event listener
+    // }); //close recHighScores event listener
 
 
 
-    client.addEventListener('joinButtonActive', function(active){
-      if(active == true){
-       $('#readyToPlayBtn').text("JOIN!");
-      }else{
-       $('#readyToPlayBtn').text("WAIT.");
-      }
-      joinIsActive = active;
-    });
+    // client.addEventListener('joinButtonActive', function(active){
+    //   if(active == true){
+    //    $('#readyToPlayBtn').text("JOIN!");
+    //   }else{
+    //    $('#readyToPlayBtn').text("WAIT.");
+    //   }
+    //   joinIsActive = active;
+    // });
   
-  //count down until they are auto released for display on the controller (THIS IS GLITCHY)
-function countDown(){
-  var countdown = S.releaseTime/1000;
-    ticker = setInterval(function(){
-      countdown --;
-      if (countdown <= 0){
-        // reset
-        clearCountdown();
-      }else{
-      $('#countdown').text(countdown);
-      } 
-    }, 1000);
-  }
+    //count down until they are auto released for display on the controller (THIS IS GLITCHY)
+    function countDown(){
+      var countdown = S.releaseTime/1000;
+        ticker = setInterval(function(){
+          countdown --;
+          if (countdown <= 0){
+            // reset
+            clearCountdown();
+          }else{
+          $('#countdown').text(countdown);
+          } 
+        }, 1000);
+      }
 
-  function clearCountdown(){
-    if(ticker != null){
-      clearInterval(ticker);
-      ticker = null;
-      $('#countdown').text(" ");
-      display('#playing');
-    }
-  }
+      function clearCountdown(){
+        if(ticker != null){
+          clearInterval(ticker);
+          ticker = null;
+          $('#countdown').text(" ");
+          display('#playing');
+        }
+      }
 
-}); //close jQuery onready
+  }); //close jQuery onready
 
 
   //what controller 'page' to show?
@@ -355,9 +387,4 @@ function countDown(){
   }
 
 
-}); // is this an extra closure?
-
-
-
-
-
+}); // the requirejs closure ends here...

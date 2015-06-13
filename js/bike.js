@@ -6,8 +6,8 @@ var team1count = 0;         // number of active players in each team
 var team2count = 0;
 var team3count = 0;
 
-function bike(netPlayer, name, playerID, bikeSz, len){
- 
+function bike(netPlayer, name, playerID, bikeSz, len, score, ctime){
+  var _self = this;
   this.netPlayer = netPlayer;
   this.color = color(random(255),random(255),random(255));
   this.bikeSize = bikeSz;
@@ -24,15 +24,47 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   this.star = false;
   this.starID = 0; // needed for setTimer on duration of powerup to work properly
   this.team = 0; // team number for team play
+  this.createdTime = Date.now();
 
   //for testing score before adding the scorekeeping functionality.
   //this.score = round(random(1,100));
   
-  this.score = 0; // how many people you've killed
+  this.score = score; // how many people you've killed
   this.time = null; // how long you've survived, set this to Date.now() when the player presses "GO"
 
   this.control = {}; //a thing
   this.started = false;
+
+
+  // update the player UI
+  this.updateUI = function(){
+    var rank = playerManager.getRank(_self.playerID);
+    this.netPlayer.sendCmd('updateUI', {
+      playerID: _self.playerID,
+      name: _self.name,
+      score: _self.score,
+      time: _self.createdTime,
+      rank: rank
+    })
+    playerManager.updatePlayer(this);
+
+    this.rank = rank;
+
+  };
+  // do this right away!
+  this.updateUI();
+
+
+  this.init = function(){
+    this.started = false;
+    this.color = color(random(255),random(255),random(255));
+    this.direction = _LEFT;
+    this.bikeSize = this.origBikeSize;
+    this.frozen = false;
+    this.ghost = false;
+    this.star = false;
+  }
+
 
   //
   // removes frozen and ghost and starts the player moving
@@ -207,10 +239,15 @@ function bike(netPlayer, name, playerID, bikeSz, len){
 
     //do this here so the name stays on top!
     if(S.displayNames){
-      textSize(this.bikeSize/1.1);
-      textStyle(BOLD);
-      fill(inverseColor(this.color));
-      text(this.name,this.x+this.bikeSize,this.y - this.bikeSize/2);
+      textSize(S.playerNameSize || 24);
+      // textStyle(BOLD);
+      // fill(inverseColor(this.color));
+      fill(color(255,255,255));
+      textFont("Helvetica");
+      var n = this.name;
+      if (this.rank == 1) n = "👑 "+ this.name;
+
+      text(n, this.x+this.bikeSize,this.y - this.bikeSize/2);
     }
 
   }; //close display
@@ -233,7 +270,7 @@ function bike(netPlayer, name, playerID, bikeSz, len){
   };
 
   this.usePowerup = function(type){
-    
+
     netPlayers[this.playerID].sendCmd('powerupSound', 'gettingPoweredUpBRO'); // send the powerup sound message to the controller.
 
     if(type == "size"){
@@ -336,12 +373,21 @@ function bike(netPlayer, name, playerID, bikeSz, len){
                 player.destroy(); 
                 // we killed the other player so we get a point
                 this.score++;
+                playerManager.updatePlayer(this);
               }
               // destroy yourself, unless you are mario star
               this.destroy();
               
               // we died, so the player who killed us gets a point
-              player.score++;
+              if (player.playerID != id){
+                player.score++;
+                playerManager.updatePlayer(player);
+              }
+
+              // just in case
+              this.updateUI();
+              player.updateUI();
+
               break dance;
           }
         }
@@ -394,6 +440,8 @@ function bike(netPlayer, name, playerID, bikeSz, len){
     // if we have power star, we can't die :D WHOOP!
     if (this.star == true && hammerOfThor == null) return;
 
+    this.updateUI();
+
     // 1. find the player in players array with this.playerID
     // 2. remove that player from the players array
     // 3. add next player from the queue to the same index in the players array
@@ -417,9 +465,9 @@ function bike(netPlayer, name, playerID, bikeSz, len){
           team2count--;
       } 
     }
-
-    netPlayers[id].sendCmd('display', '#waiting');
-    netPlayers[id].sendCmd('destroySound', 'boom'); // send the destroy sound to the controller.
+    var np = netPlayers[id];
+    np.sendCmd('display', '#waiting');
+    np.sendCmd('destroySound', 'boom'); // send the destroy sound to the controller.
 
   };
 

@@ -179,13 +179,94 @@ body{
     /*height:100%;*/
 }
 
-#kills, #survivals, #readyToPlay{
+#kills, #survivals, #readyToPlay, .kills {
     position: relative;
     width:33%;
     height:100%;
     padding-left:10px;
+    padding-top:6vw;
     float:left;
 }
+
+.kills {
+    list-style-type:none;
+    font-size:3.3vw;
+    line-height:5.5vw;
+}
+.kills li {
+    list-style-type:none;
+    margin-left:2vw;
+    position:relative;
+}
+.kills .hs-num,
+.kills .hs-name,
+.kills .hs-score {
+    text-align:left;
+    display:inline-block;
+}
+.kills .hs-name {
+    color:#fff;
+    padding-left:20px;
+}
+.kills .hs-score { 
+    position:absolute;
+    right:0;
+    top:0;
+    color:cyan;
+}
+.kills .hs-num {
+    padding:0 10px;
+    /*color:#fff;
+    background:magenta;*/
+    color:magenta;
+    border-bottom:16px solid #000;
+}
+#kills01 {
+    /*border-right:1px solid #ddd;*/
+    padding-right:10px;
+}
+#kills02 {
+    padding-left:10px;
+}
+
+#waiting {
+    position:relative;
+}
+#hs-title {
+    position:absolute;
+    margin:0;
+    padding:3vw 0 0 4vw;
+    top:0;
+    left:0;
+    line-height:3.5vw;
+    font-size:3.5vw;
+}
+#readyToPlay ul {
+    margin:0;
+    margin-top:-4vw;
+    padding:0;
+}
+#readyToPlay ul li {
+    list-style-type:none;
+    font-size:3.5vw;
+    padding:1vw 0;
+    margin:0;
+}
+#readyToPlay ul li:first-child {
+    color:yellow;
+    padding-bottom:5vw;
+}
+#playerNM {
+    font-size:5vw;
+    cursor:pointer;
+}
+#playerRank { 
+    padding:0 10px;
+    /*color:#fff;*/
+    color:magenta;
+}
+#playerHS { color:cyan; }
+
 
 @media only screen 
   and (min-device-width: 320px) 
@@ -240,9 +321,9 @@ body{
     height: 30%;
     background-color: white;
     color:black;
-    padding: 20% 5px 20% 5px;
+    padding: 20% 5px;
     font-size: 6vw; 
-    margin-top: 30%;
+    margin-top: 20%;
     display: block;
     text-decoration: none;
 }

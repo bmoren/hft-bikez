@@ -12,7 +12,9 @@ var _RIGHT = 4;
 var frames = 0;
 var playerColor;
 var players = [];
+
 var netPlayers = {};
+
 var powerups = [];
 var postSetup = false ;
 var total_freqPU = 0;      // calculates frequencies of powerups 
@@ -25,6 +27,127 @@ var masterSurvivalList = [];
 var sizeIcon;
 var freezeIcon;
 var starIcon;
+
+
+
+var PlayerManager = function(save){
+  this.players = {};
+  this.save = save || false;
+
+  if (save){
+    var x = Lockr.get('playerManager');
+    this.players = x || {};
+  } else {
+    Lockr.set('playerManager', null);
+  }
+
+  this.addPlayer = function(player){
+    var data = {
+      playerID: player.playerID,
+      name: player.name,
+      score: player.score,
+      time: player.createdTime
+    };
+    this.players[ player.playerID ] = data;
+    if (this.save){
+      this.savePlayers()
+    }
+    return this.players;
+  }
+
+  this.updatePlayer = this.addPlayer;
+
+  this.getPlayer = function(id){
+    return this.players[id] || null;
+  }
+
+  this.sortPlayers = function(){
+    var p = this.players;
+    var results = [];
+    var _players = [];
+    for(var player in p){
+      _players.push( p[player] );
+    }
+    // sort players based on score
+    _players = _players.sort(function(a,b){
+      return a.score > b.score ? -1 : 1;
+    })
+    // group players by score
+    _players = _.groupBy(_players, 'score');
+    for(var num in _players){
+      var x = _players[num];
+      // sort the "tied" players by most recently joined the game.
+      x = x.sort(function(a,b){ return Number(a.time) > Number(b.time) ? 1 : -1; });
+      // add them to the results array
+      for(var i=0; i<x.length; i++){
+        results.push( x[i] )
+      }
+    }
+
+    return results.reverse();
+  }
+
+  this.sortScores = function(){
+    var x = this.sortPlayers();
+    var result = [];
+    for(var i=0; i<x.length; i++){
+      var player = x[i];
+      result.push( [player.name, player.score] );
+    }
+    return result;
+  }
+
+  this.topTenScores = function(){
+    var x = this.sortScores();
+    return _.slice(x, 0, 10);
+  }
+
+  this.logScores = function(){
+    var x = this.sortScores();
+    for(var i=0; i<x.length; i++){
+      console.log(x[i][0], x[i][1] );
+    }
+  }
+
+  this.savePlayers = function(){
+    Lockr.set('playerManager', this.players);
+    return true;
+  }
+
+  this.getRank = function(id){
+    var x = this.sortPlayers();
+    var rank = -1;
+    for(var i=0; i<x.length; i++){
+      if (x[i].playerID == id){
+        rank = i+1;
+        break;
+      }
+    }
+    return rank;
+  }
+
+  this.reset = function(){
+    Lockr.set('playerManager', null);
+    this.players = {};
+    return true;
+  }
+
+  this._fakeData = function(){
+    for(var i=0; i<30; i++){
+      var d = {
+        playerID: 'id-'+ (Math.random()*100) +'-'+ Date.now(),
+        name: 'Player-fake-'+ i,
+        score: Math.floor(Math.random()*5),
+        time: Date.now() + (Math.floor(Math.random()*11))
+      }
+      this.addPlayer(d);
+    }
+  }
+
+};
+
+
+
 
 //
 // Preload
@@ -45,7 +168,8 @@ function setup() {
     masterKillList.push({score:0, name: '', id: 0 });
     masterSurvivalList.push({time:0, name: '', id: 0 });
   }
-
+  
+  // kingIcon = loadImage("assets/king.png");
   sizeIcon = loadImage("assets/sizeup.png");
   freezeIcon = loadImage("assets/freeze.png");
   starIcon = loadImage("assets/star.png");
@@ -69,6 +193,7 @@ function hft_draw(init) {
   if (frames % S.drawFrame != 0) return;
 
   background(0);
+  // background( color(0,0,0,20) ) // the real psymode!
 
 	for (var i=0; i<players.length; i++) {
     if (players[i] == null) continue;

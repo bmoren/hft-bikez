@@ -28,7 +28,7 @@
 
 
   <div id="go">
-    Find youself on the GameGrid. You look like this:
+    Find yourself on the GameGrid. You look like this:
 
     <div id="playerIcon"><div id="wormBody"><div id="wormHead"></div></div></div>
     <span id="countdown"></span><br>
@@ -47,10 +47,42 @@
   </div>
 
 
-  <!--This should be defult active-->
-  <div id="waiting" class="active">
+<div id="waiting" class="active">
 
-        <div id="kills">
+  <h2 id="hs-title"><span>HIGHSCORES</span></h2>
+
+  <ul id="kills01" class="kills">
+    <li id="hs0"><span class="hs-num">#1</span><span class="hs-name"></span><span class="hs-score"></span></li>
+    <li id="hs1"><span class="hs-num">#2</span><span class="hs-name"></span><span class="hs-score"></span></li>
+    <li id="hs2"><span class="hs-num">#3</span><span class="hs-name"></span><span class="hs-score"></span></li>
+    <li id="hs3"><span class="hs-num">#4</span><span class="hs-name"></span><span class="hs-score"></span></li>
+    <li id="hs4"><span class="hs-num">#5</span><span class="hs-name"></span><span class="hs-score"></span></li>
+  </ul>
+  <ul id="kills02" class="kills">
+    <li id="hs5"><span class="hs-num">#6</span><span class="hs-name"></span><span class="hs-score"></span></li>
+    <li id="hs6"><span class="hs-num">#7</span><span class="hs-name"></span><span class="hs-score"></span></li>
+    <li id="hs7"><span class="hs-num">#8</span><span class="hs-name"></span><span class="hs-score"></span></li>
+    <li id="hs8"><span class="hs-num">#9</span><span class="hs-name"></span><span class="hs-score"></span></li>
+    <li id="hs9"><span class="hs-num">10</span><span class="hs-name"></span><span class="hs-score"></span></li>
+  </ul>
+
+  <div id="readyToPlay" >
+  
+    <ul>
+      <li><span id="playerNM"></span> </li>
+      <li>Score <span id="playerHS"></span> </li>
+      <li>Rank <span id="playerRank"></span> </li>
+    </ul>
+
+    <div id="readyToPlayBtn"> JOIN! </div>
+  </div>
+
+</div>
+
+  <!--This should be defult active-->
+  <div id="waiting_old">
+
+        <!-- <div id="kills">
           <h2>POINTS</h2>
           <div id="killNames">
             <div>Loading...</div>
@@ -58,18 +90,8 @@
             <div></div>
             <div></div>
             <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
           </div>
           <div id="killList">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
             <div></div>
             <div></div>
             <div></div>
@@ -105,14 +127,11 @@
             <div></div>
           </div>
 
-        </div>
+        </div> -->
 
-      <div id="readyToPlay" >
+      <!-- <div id="readyToPlay" >
           <h2>TO PLAY: </h2> <p>press the join button below when it becomes available. </p>
-          <div id="readyToPlayBtn">
-          JOIN! <!--Join on is the default -->
-          <!--WAIT.-->
-          </div>
-      </div>
+          <div id="readyToPlayBtn"> JOIN! </div>
+      </div> -->
 
   </div> <!--close waiting -->

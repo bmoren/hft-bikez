@@ -54,35 +54,38 @@ requirejs([
       menu:false,
     };
 
-    var g_readyToPlay = true; // false: waiting, true: join
-
     Misc.applyUrlSettings(globals);
     
     // Get the Highscores from localStorage
-    var _hs = lockr.get('hs');
-    if (_hs && _hs.kill) masterKillList = _hs.kill;
-    if (_hs && _hs.time) masterSurvivalList = _hs.time;
+    // var _hs = lockr.get('hs');
+    // if (_hs && _hs.kill) masterKillList = _hs.kill;
+    // if (_hs && _hs.time) masterSurvivalList = _hs.time;
     
     // you can call this from the console to clear the highscores list
     window.clearDb = function(){
-      masterKillList = [];
-      masterSurvivalList = [];
-      for(var i=0; i<10; i++){
-        masterKillList.push({score:0, name: '', id: 0 });
-        masterSurvivalList.push({time:0, name: '', id: 0 });
-      }
+      playerManager.reset();
       lockr.flush();
     };
     // access Lockr from the console too
     window.Lockr = lockr;
 
+    // create a new global player manager class
+    var playerManager = window.playerManager = new PlayerManager(true);
 
     var Player = function(netPlayer, name, uuid) {
-      this.netPlayer = netPlayer;
-      if (name) this.name = name;
+      this.netPlayer = netPlayer;      
+      this.name = name || null;
       this.id = uuid;
+
+
+      var data = playerManager.getPlayer(uuid);
+      if (data && data.name) this.name = data.name;
+      var score = (data && data.score) ? Number(data.score) : 0;
+
+      this.bike = new bike(netPlayer, this.name, this.id, S.playerSize, S.playerLength, score);
       
-      this.bike = new bike(netPlayer, this.name, this.id, S.playerSize, S.playerLength);
+      playerManager.updatePlayer(this.bike);
+      
       this.color = this.bike.color;
       
       netPlayers[uuid] = this.netPlayer;
@@ -112,7 +115,8 @@ requirejs([
     };
 
     Player.prototype.joinGame = function() {
-      this.bike = new bike(this.netPlayer, this.name, this.id, S.playerSize, S.playerLength);
+      this.bike.init();
+      // this.bike = new bike(this.netPlayer, this.name, this.id, S.playerSize, S.playerLength);
       this.netPlayer.sendCmd('setColor', this.bike.color);
       var setBike = false;
       for(var i=0; i<players.length; i++){
@@ -124,7 +128,8 @@ requirejs([
       }
       // ensure there are only ever S.maxPlayers in the players array
       // by not pushing new players when the limit is reached
-      if (setBike == false && players.length < S.maxPlayers) players.push(this.bike);
+      // if (setBike == false && players.length < S.maxPlayers) players.push(this.bike);
+      if (setBike == false) players.push(this.bike);
 
       this.bike.joinGame();
     };
@@ -150,6 +155,7 @@ requirejs([
       if(!o.name || o.name === "") return;
       this.name = o.name;
       this.bike.name = o.name;
+      this.bike.updateUI()
     };
 
     Player.prototype.busy = function(cmd) {};
@@ -161,52 +167,32 @@ requirejs([
     server.addEventListener('playerconnect', function(netPlayer, name) {
       // leaving the setName method that is used by HFT 
       netPlayer.addEventListener('setName', function(){});
-
-      netPlayer.sendCmd('getCookie', uuid())
+      netPlayer.sendCmd('getCookie', netPlayer.getSessionId() )
       netPlayer.addEventListener('createPlayer', function(data){
         // create a new player
         new Player(netPlayer, data.name, data.uuid);
       })
     });
 
+    setInterval(function(){
+      var scores = playerManager.topTenScores()
+      server.broadcastCmd('updateHighScores', scores );
+    }, 2000);
+
 
     //send out the kills to all the controllers
-    setInterval(function(){
-      server.broadcastCmd('recHighScores', updateMasterScoreList());
-      // save the highscores list (to localStorage)
-      var data = {
-        kill: masterKillList,
-        time: masterSurvivalList 
-      };
-      lockr.set('hs', data);
-    }, 1500);
+    // setInterval(function(){
+    //   server.broadcastCmd('recHighScores', updateMasterScoreList());
+    //   // save the highscores list (to localStorage)
+    //   var data = {
+    //     kill: masterKillList,
+    //     time: masterSurvivalList 
+    //   };
+    //   lockr.set('hs', data);
+    // }, 1500);
+
 
     GameSupport.run(globals, hft_draw);
-
-    setInterval(function(){
-      var player_count = 0;
-      for(var i=0; i<players.length; i++){
-        if (players[i] != null) player_count++;
-      }
-
-      //
-      if(player_count < S.maxPlayers){
-        //if we are under out s.Maxplayers and we are waiting then change to join.
-        if (g_readyToPlay == false){
-          server.broadcastCmd('joinButtonActive', true);
-        }
-        g_readyToPlay = true;
-      // if we are over or = to s.maxplayers then set it to wait status, unless we are already in wait status.
-      } else {
-        if (g_readyToPlay == true){
-          server.broadcastCmd('joinButtonActive', false); 
-        }
-        g_readyToPlay = false;
-      }
-
-      
-
-    }, 500);
 
 });
 
