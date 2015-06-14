@@ -227,11 +227,20 @@ function bike(netPlayer, name, playerID, bikeSz, len, score, ctime){
         this.segment[i][1] = Number(this.segment[i-1][1]);
       }
 
-      if (i % 2 == 0 && this.__cheat_mode) {
-        fill(inverseColor(this.color));
-      } else {
-        fill(this.color);
+      if (this.__cheat_mode) {
+        // alternate colors in cheat mode
+        if (i % 2 == 0){
+          fill(inverseColor(this.color));
+        } else {
+          // still blink when you get star / donut
+          if (this.star == true){
+            fill( random(255), random(255), random(255) );
+          } else {
+            fill(this.color);
+          }
+        }
       }
+
       rect(this.segment[i][0], this.segment[i][1], this.bikeSize, this.bikeSize);
     }
 
@@ -253,14 +262,15 @@ function bike(netPlayer, name, playerID, bikeSz, len, score, ctime){
       fill(color(255,255,255));
       textFont("Helvetica");
       var n = this.name;
-
+      
       if (this.__cheat_mode){
         n = '✨👾'
       }
 
       if (this.rank == 1){
-        n = "👑 "+ this.name;
+        n = "👑 "+ n;
       }
+
 
       text(n, this.x+this.bikeSize,this.y - this.bikeSize/2);
     }

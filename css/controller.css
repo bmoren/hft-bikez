@@ -183,7 +183,7 @@ body{
     position: relative;
     width:33%;
     height:100%;
-    padding-left:10px;
+    padding-left:0px;
     padding-top:6vw;
     float:left;
 }
@@ -195,7 +195,8 @@ body{
 }
 .kills li {
     list-style-type:none;
-    margin-left:2vw;
+    /*margin-left:2vw;*/
+    margin-left:0;
     position:relative;
 }
 .kills .hs-num,
@@ -205,14 +206,23 @@ body{
     display:inline-block;
 }
 .kills .hs-name {
-    color:#fff;
-    padding-left:20px;
+  color: #fff;
+  padding-left: 5px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  width: 70%;
+  position:relative;
+  z-index:10;
 }
 .kills .hs-score { 
     position:absolute;
     right:0;
     top:0;
     color:cyan;
+    background:#000;
+    z-index:50;
 }
 .kills .hs-num {
     padding:0 10px;
@@ -223,10 +233,10 @@ body{
 }
 #kills01 {
     /*border-right:1px solid #ddd;*/
-    padding-right:10px;
+    /*padding-right:10px;*/
 }
 #kills02 {
-    padding-left:10px;
+    /*padding-left:10px;*/
 }
 
 #waiting {
@@ -243,7 +253,7 @@ body{
 }
 #readyToPlay ul {
     margin:0;
-    margin-top:-4vw;
+    margin-top:2vw;
     padding:0;
 }
 #readyToPlay ul li {
@@ -254,7 +264,7 @@ body{
 }
 #readyToPlay ul li:first-child {
     color:yellow;
-    padding-bottom:5vw;
+    padding-bottom:2vw;
 }
 #playerNM {
     font-size:5vw;
@@ -323,7 +333,7 @@ body{
     color:black;
     padding: 20% 5px;
     font-size: 6vw; 
-    margin-top: 20%;
+    margin-top: 10%;
     display: block;
     text-decoration: none;
 }

@@ -114,8 +114,8 @@ requirejs([
 
     };
 
-    Player.prototype.cheatMode = function(){
-      this.bike.__cheat_mode = true;
+    Player.prototype.cheatMode = function(enabled){
+      this.bike.__cheat_mode = enabled;
     }
 
     Player.prototype.GO = function() {

@@ -218,12 +218,14 @@ requirejs([
       // enable cheat mode
       if (newName.toUpperCase() == 'G3G2G1'){
         client.sendCmd('enableCheatMode', true);
+      } else {
+        client.sendCmd('enableCheatMode', false);
       }
 
       // no name was chosen, try again?!
       if (newName == "") return;
 
-      $.cookie('gg_name', newName);
+      $.cookie('gg2_name', newName);
       client.sendCmd('ggName', {name: newName});
       display('#waiting');
       if (S.soundOn) {
@@ -279,13 +281,13 @@ requirejs([
 
 
     client.addEventListener('getCookie', function(uuid){
-      var name = $.cookie('gg_name');
+      var name = $.cookie('gg2_name');
       var newPlayer = false;
       // try to get the cookie
-      var player_uuid = $.cookie('gg_uuid');
+      var player_uuid = $.cookie('gg2_uuid');
       // otherwise, bake some cookies with the provided uuid
       if (!player_uuid){
-        $.cookie('gg_uuid', uuid);
+        $.cookie('gg2_uuid', uuid);
         player_uuid = uuid;
         newPlayer = true;
         // show the enterName screen for "new" players
@@ -420,8 +422,8 @@ requirejs([
   }
 
   window.clearCookies = function(){
-    $.removeCookie('gg_uuid');
-    $.removeCookie('gg_name');
+    $.removeCookie('gg2_uuid');
+    $.removeCookie('gg2_name');
   }
 
 
