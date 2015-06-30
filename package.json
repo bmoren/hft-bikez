@@ -3,11 +3,7 @@
   "description": "A simple game grid",
   "version": "0.0.1",
   "private": true,
-  "dependencies": {
-    "leveldown": "^1.0.6",
-    "levelup": "^1.1.0",
-    "tiny-router": "^0.1.4"
-  },
+  "dependencies": {},
   "happyFunTimes": {
     "gameId": "game_grid",
     "category": "gamegrid",
